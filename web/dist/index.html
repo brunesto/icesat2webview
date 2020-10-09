@@ -6,12 +6,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
 
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    <!--script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>
 
@@ -19,7 +23,7 @@
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script-->
 
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -40,7 +44,53 @@
 
     <!-- script type="text/javascript" src="index.js"></script-->
 
+    <!--script src="http://zverik.github.io/leaflet-grayscale/TileLayer.Grayscale.js"></script-->
 
+    <link rel="stylesheet"
+        href="https://kartena.github.io/Leaflet.Pancontrol/lib/Leaflet.Pancontrol/src/L.Control.Pan.css">
+    </script>
+    <script src="https://kartena.github.io/Leaflet.Pancontrol/lib/Leaflet.Pancontrol/src/L.Control.Pan.js"></script>
+
+    <style>
+        #alertInfo,
+        #locateBtn {}
+
+        #locateBtn {
+            position: absolute;
+            right: 100px;
+
+            z-index: 3000;
+            padding: 10px;
+            margin: 10px;
+            border: 2px solid gray;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        #alertInfo {
+            position: absolute;
+            padding: 10px;
+            background-color: lightyellow;
+            border: 2px solid red;
+            border-radius: 5px;
+        }
+
+
+        #alertInfoWrap {
+            float: left;
+            position: relative;
+            left: 50%;
+            padding-left:20px;
+            z-index: 3000;
+        }
+
+        #alertInfo {
+            float: left;
+            position: relative;
+            left: -50%;
+            top: 100px;
+        }
+    </style>
     <script>
         'use strict';
 
@@ -56,26 +106,23 @@
 
         function handleError(error) {
             console.error('Error: ', error);
-            toast("ERROR" + error)
+
 
         }
 
         function alertInfo(msg) {
+            $('#alertInfo').display(msg != "")
             $('#alertInfo').html(msg)
         }
 
-        function toast(msg) {
-            $('.toast-body').html(msg)
-            $('.toast').toast('show')
-        }
+
 
 
         $(document).ready(function () {
 
             console.log("onLoad()")
+            alertInfo("")
             coordsOnLoad();
-            $('.toast').toast()
-            toast('ready')
             initMap();
 
         });
@@ -85,6 +132,8 @@
         body,
         #map {
             height: 100%;
+            margin:0px;
+            padding:0px;
         }
 
         #mapContainer {
@@ -100,23 +149,15 @@
             bottom: 0;
             width: 100%;
         }
-
-        #floating {
-            position: absolute;
-
-            z-index: 3000;
-            margin-left: 200px;
-
-        }
     </style>
 </head>
 
 <body>
+    <button type="button" class="btn btn-primary" id="locateBtn">Find my position</button>
 
 
-    <div id="floating">
-        <button type="button" class="btn btn-primary" id="grabCoordsNowBtn">Find my position</button>
-        <div id="alertInfo" width="200" class="alert alert-info" role="alert"></div>
+    <div id="alertInfoWrap">
+        <div id="alertInfo" class="alert alert-info" role="alert"></div>
     </div>
 
     <div id="mapContainer">
@@ -151,18 +192,22 @@
 
         function showHideMarkerGroup() {
             if (myMap.getZoom() < TILE_SHOW_FROM_ZL) {
-                alertInfo("zoom in to display data")
+                alertInfo("&#9888; Zoom in to display data")
                 myMap.removeLayer(myMarkersGroup);
             }
             else {
-                alertInfo("&nbsp;")
+                alertInfo("")
                 myMap.addLayer(myMarkersGroup);
             }
         }
         function initMap() {
-            myMap = L.map('map').setView([50, 14], 13);
+            myMap = L.map('map', { fadeAnimation: false }).setView([50, 14], 13);
 
             myRenderer = L.canvas({ padding: 0.5 });
+
+
+            L.control.scale().addTo(myMap);
+            L.control.pan().addTo(myMap);
 
             // add the OpenStreetMap tiles
             var osmTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -171,8 +216,9 @@
             })
 
 
+           
 
-            var mapBoxTileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+            var mapBoxTileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnJ1bmVzdG8iLCJhIjoiY2lvNGowMmx4MDAycXZ5a3A0aXdqZTZjbCJ9.0kHXvJmsETs_QzfXfQv9mw', {
                 maxZoom: 18,
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
                     '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -196,7 +242,7 @@
 
 
             //var esriTileLayer=L.tileLayer.provider('Stamen.Watercolor')               
-            var switchBtn = L.control.layers({ "mapbox": mapBoxTileLayer, "satellite": esriTileLayer, "osm": osmTileLayer })
+            var switchBtn = L.control.layers({  "mapbox": mapBoxTileLayer, "satellite": esriTileLayer, "osm": osmTileLayer })
             switchBtn.addTo(myMap);
 
             myMarkersGroup = new L.FeatureGroup();
@@ -291,14 +337,14 @@
             var src = d[0]
             var channel = d[1]
             var rgt = d[2]
-            
+
             var time = parseFloat(d[3])
             var amsl = parseFloat(d[6]).toFixed(1)
             var agl = parseFloat(d[7]).toFixed(1)
 
 
 
-            var date = new Date(1000 * (315964800 + 1198800000 + time ))
+            var date = new Date(1000 * (315964800 + 1198800000 + time))
             // console.log("record2string:" + date)
 
             var r = "<br/>date:<b>" + date.toISOString() +
@@ -390,7 +436,7 @@
 
         function coordsOnLoad() {
             console.log("coordsOnLoad()")
-            $("#grabCoordsNowBtn").click(function () { getLocation(); });
+            $("#locateBtn").click(function () { getLocation(); });
 
 
 
