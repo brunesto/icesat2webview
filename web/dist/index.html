@@ -53,7 +53,9 @@
 
     <style>
         #alertInfo,
-        #locateBtn {}
+        #locateBtn {
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
         #locateBtn {
             position: absolute;
@@ -71,7 +73,7 @@
             position: absolute;
             padding: 10px;
             background-color: lightyellow;
-            border: 2px solid red;
+            border: 2px dashed red;
             border-radius: 5px;
         }
 
@@ -80,7 +82,7 @@
             float: left;
             position: relative;
             left: 50%;
-            padding-left:20px;
+            padding-left: 20px;
             z-index: 3000;
         }
 
@@ -120,8 +122,8 @@
 
         $(document).ready(function () {
 
-            console.log("onLoad()")
-            alertInfo("")
+            console.log("onLoad()2222")
+            alertInfo("loaded")
             coordsOnLoad();
             initMap();
 
@@ -132,8 +134,8 @@
         body,
         #map {
             height: 100%;
-            margin:0px;
-            padding:0px;
+            margin: 0px;
+            padding: 0px;
         }
 
         #mapContainer {
@@ -148,6 +150,12 @@
             top: 0;
             bottom: 0;
             width: 100%;
+        }
+
+        .tilePath {
+            padding: 10px;
+            color: blue;
+            font-family: 'Courier New', Courier, monospace;
         }
     </style>
 </head>
@@ -165,6 +173,22 @@
     </div>
 
     <script>
+
+
+        // TODO use CircleMarker, it will be faster
+        const CircleMarkerWithZoom = L.Circle.extend({
+
+            _updateBounds: function () {
+                L.Circle.prototype._updateBounds.call(this)
+                if (this._radius < 5) {
+                    this._radius = 5
+                    this._radiusY = 5
+                }
+            },
+
+
+        });
+
 
 
         // icesat data tile level - this cannot be changed without recompiling the data
@@ -216,7 +240,7 @@
             })
 
 
-           
+
 
             var mapBoxTileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnJ1bmVzdG8iLCJhIjoiY2lvNGowMmx4MDAycXZ5a3A0aXdqZTZjbCJ9.0kHXvJmsETs_QzfXfQv9mw', {
                 maxZoom: 18,
@@ -242,7 +266,7 @@
 
 
             //var esriTileLayer=L.tileLayer.provider('Stamen.Watercolor')               
-            var switchBtn = L.control.layers({  "mapbox": mapBoxTileLayer, "satellite": esriTileLayer, "osm": osmTileLayer })
+            var switchBtn = L.control.layers({ "mapbox": mapBoxTileLayer, "satellite": esriTileLayer, "osm": osmTileLayer })
             switchBtn.addTo(myMap);
 
             myMarkersGroup = new L.FeatureGroup();
@@ -316,7 +340,9 @@
 
 
         function addTileMarker(yx) {
-            var bounds = [[tile2lat(yx[0], TILE_DEF_ZL), tile2long(yx[1], TILE_DEF_ZL)], [tile2lat(yx[0] + 1, TILE_DEF_ZL), tile2long(yx[1] + 1, TILE_DEF_ZL)]]
+            var bounds =
+                [[tile2lat(yx[0], TILE_DEF_ZL), tile2long(yx[1], TILE_DEF_ZL)],
+                [tile2lat(yx[0] + 1, TILE_DEF_ZL), tile2long(yx[1] + 1, TILE_DEF_ZL)]]
             var tileMarker = L.rectangle(bounds, {
                 renderer: myRenderer,
                 color: 'blue',
@@ -330,6 +356,10 @@
 
             tileMarker.addTo(myMarkersGroup);
 
+            var myIcon = L.divIcon({ className: 'tilePath', html: yx[1] + "/" + yx[0] });
+            L.marker(bounds[0], { icon: myIcon }).addTo(myMarkersGroup);
+
+
         }
 
         function record2string(d) {
@@ -342,18 +372,34 @@
             var amsl = parseFloat(d[6]).toFixed(1)
             var agl = parseFloat(d[7]).toFixed(1)
 
+            var lat = parseFloat(d[4])
+            var lon = parseFloat(d[5])
 
 
             var date = new Date(1000 * (315964800 + 1198800000 + time))
             // console.log("record2string:" + date)
 
-            var r = "<br/>date:<b>" + date.toISOString() +
-                '</b><br/>rgt:' + rgt +
-                "<br/>channel:gt" + channel +
-                '<br/>amsl:' + amsl + "m <br/>agl:" + agl + "m " +
+            var r =
+                '<tr><th>Track id:</th><td>' + rgt + "</td></tr>" +
+                "<tr><th>Lat,Lon:</th><td>" + lat + "," + lon + "</td></tr>" +
+                '<tr><th>Elevation:</th><td>' + amsl + "m" + "</td></tr>" +
+                "<tr><th>Time:</th><td>" + date.toISOString() + "</td></tr>" +
+
+                "<tr><th>Beam:</th><td>gt" + channel + "</td></tr>" +
+
+                "<tr><th>h_canopy:</th><td>" + agl + "m" + "</td></tr>" +
                 "";
             return r
         }
+
+        var channelColors = new Object();
+
+        channelColors['1l'] = '#ffd92f';
+        channelColors['2l'] = '#e78ac3';
+        channelColors['3l'] = '#fc8d62';
+        channelColors['1r'] = '#a6d854';
+        channelColors['2r'] = '#8da0cb';
+        channelColors['3r'] = '#66c2a5';
         function addDataMarker(ds) {
 
 
@@ -364,29 +410,62 @@
 
 
             //  console.log("latLng:" + (d[2]))
+            var channel = ds[0][1]
 
+            var channelColor = channelColors[channel]
+            console.log("channel:" + channel + " channelColor:" + channelColor)
 
+            if (channelColor == undefined)
+                channelColor = "red"
 
-            var circleMarker = L.circle(latLng, {
+            var circleMarker = new CircleMarkerWithZoom(latLng, {
                 renderer: myRenderer,
-                color: 'red',
-                fillColor: 'red',
+                color: "black",
+                fillColor: channelColor,
                 radius: 10,
                 weight: 1,
                 opacity: 1,
-                fillOpacity: 0,
+                fillOpacity: 1,
             })
 
-            var info = "lat,lon:" + latLng[0] + "," + latLng[1] + "";
+            circleMarker.getRadius = () => {
+                return 20;
+            }
+
+            var info = "<table><tbody>"
+
             //info += '<table class="table"><th><td>src</td><td>elevation</td><td></td><td>canopy</td><td>channel</td><td>UTC</td></th><tbody>'
+
 
             for (var i in ds) {
                 info += "\n" + record2string(ds[i])
             }
-            //  info += "</tbody></table>"
+            info += "</tbody></table>"
 
             circleMarker.bindPopup(info);
             circleMarker.addTo(myMarkersGroup);
+
+        }
+
+        const okTiles = new Object()
+
+
+        okTiles['2207/1388'] = true;
+        okTiles['2207/1389'] = true;
+        okTiles['2207/1390'] = true;
+        
+
+        okTiles['2208/1388'] = true;
+        okTiles['2208/1389'] = true;
+        okTiles['2208/1390'] = true;
+        
+
+        function filterTile(yx) {
+
+            var key = yx[1] + "/" + yx[0]
+            var r = okTiles[key] == true
+            console.log("filterTile " + yx + " is " + r)
+            return r
 
         }
         function loadTile(yx) {
@@ -398,40 +477,41 @@
             addTileMarker(yx)
 
 
+            if (filterTile(yx)) {
 
+                Papa.parse(path, {
+                    download: true,
+                    complete: function (results) {
+                        console.log("regroup");
 
-            Papa.parse(path, {
-                download: true,
-                complete: function (results) {
-                    console.log("regroup");
+                        var coords2data = new Object()
+                        for (d of results.data) {
 
-                    var coords2data = new Object()
-                    for (d of results.data) {
-
-                        var latLng = [parseFloat(d[4]), parseFloat(d[5])]
-                        if (d[3] == 24762270.185411237) {
-                            console.log("more!" + coords2data[latLng] + " d:" + d);
-                        }
-                        if (!isNaN(latLng[0])) {
-                            if (!(latLng in coords2data)) {
-                                coords2data["" + latLng] = []
-                            } else {
-                                console.log("...");
+                            var latLng = [parseFloat(d[4]), parseFloat(d[5])]
+                            if (d[3] == 24762270.185411237) {
+                                console.log("more!" + coords2data[latLng] + " d:" + d);
                             }
-                            coords2data["" + latLng].push(d) // CAPTCHA
-                        }
+                            if (!isNaN(latLng[0])) {
+                                if (!(latLng in coords2data)) {
+                                    coords2data["" + latLng] = []
+                                } else {
+                                    console.log("...");
+                                }
+                                coords2data["" + latLng].push(d) // CAPTCHA
+                            }
 
-                    }
-                    console.log("add markers");
-                    for (latLng in coords2data) {
-                        addDataMarker(coords2data[latLng])
-                    }
-                    console.log("done");
-                },
-                error: function (e) {
-                    console.error(e);
-                },
-            });
+                        }
+                        console.log("add markers");
+                        for (latLng in coords2data) {
+                            addDataMarker(coords2data[latLng])
+                        }
+                        console.log("done");
+                    },
+                    error: function (e) {
+                        console.error(e);
+                    },
+                });
+            }
         }
 
         function coordsOnLoad() {
@@ -450,7 +530,7 @@
         function tile2long(x, z) {
             return (x / Math.pow(2, z) * 360 - 180);
         }
-        // used by addTileMarker
+        // used by addTileMarker 
         function tile2lat(y, z) {
             var n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
             return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
