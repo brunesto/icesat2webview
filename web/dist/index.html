@@ -557,8 +557,11 @@
                     //someImageElement.src = url;
 
                     // whatever...
+                    tiles[yx] = 'ok'
                 };
-
+                oReq.onerror= function (oEvent) {
+                    tiles[yx] = 'x'
+                }
                 oReq.send();
 
 
@@ -684,7 +687,7 @@
         function maybeLoadTile(yx) {
             console.log("maybeLoadTile " + yx[1] + "/" + yx[0])
             if (!(yx in tiles)) { // 1048576
-                tiles[yx] = true
+                tiles[yx] = 'L'
                 loadTile(yx)
             }
         }
