@@ -1,8 +1,12 @@
 # icesat2webview
 
 
+inspiration of icesat2arview:
+https://www.youtube.com/watch?v=OQg5ov6zths
 
 
+
+Some explanations:
 
 https://www.youtube.com/watch?v=TDeVdV7vdog 
 @11'36

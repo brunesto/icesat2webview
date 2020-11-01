@@ -394,7 +394,8 @@
 
             var time = parseFloat(d[3])
             var amsl = parseFloat(d[6]).toFixed(1)
-            var agl = parseFloat(d[7]).toFixed(1)
+            var canopy = parseFloat(d[7]).toFixed(1)
+            var direction = d[8]
 
             var lat = parseFloat(d[4])
             var lon = parseFloat(d[5])
@@ -411,9 +412,9 @@
                 '<tr><th>Elevation:</th><td>elipsoid' + amsl + "m " + "</td></tr>" +
                 "<tr><th>Time:</th><td>" + date.toISOString() + "</td></tr>" +
 
-                "<tr><th>Beam:</th><td>gt" + channel + "</td></tr>" +
+                "<tr><th>Beam:</th><td>gt" + channel + " "+direction+"</td></tr>" +
 
-                "<tr><th>h_canopy:</th><td>" + agl + "m" + "</td></tr>" +
+                "<tr><th>h_canopy:</th><td>" + canopy + "m" + "</td></tr>" +
                 "";
             return r
         }
@@ -445,8 +446,12 @@
                 channelColor = "red"
 
 
+            // hack to display the segment - will not work for high lats
+            var direction = ds[0][8]
             var dlat=0.00040;
             var dlatlonratio=0.0000649/0.00044
+            if (direction=='s')
+                dlatlonratio=-dlatlonratio
             var dlon=dlat*dlatlonratio;
 
 

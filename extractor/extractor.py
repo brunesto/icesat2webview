@@ -38,10 +38,10 @@ def coords2tilexy(lat_deg, lon_deg, zoom):
   return (xtile, ytile)
 
 
-def recordPoint(filename,channel,rgt,time,lat,lon,terrain,canopy):
+def recordPoint(filename,channel,rgt,time,lat,lon,terrain,canopy,direction):
    global coordsCnt
    key=coords2tilexy(lat,lon,ZOOM_LEVEL)
-   payload=filename+";"+channel+";"+str(rgt)+";"+str(time)+";"+str(lat)+";"+str(lon)+";"+str(terrain)+";"+str(canopy)
+   payload=filename+";"+channel+";"+str(rgt)+";"+str(time)+";"+str(lat)+";"+str(lon)+";"+str(terrain)+";"+str(canopy)+";"+str(direction)
    # print("=="+payload)
    tilesStore.setdefault(key, []).append(payload)
    coordsCnt=coordsCnt+1
@@ -56,8 +56,9 @@ def processFile(filename,addDebugInfo):
     if (addDebugInfo):
        debugInfo=os.path.basename(filename)
 
-
     channels = ['1l', '1r','2l', '2r','3l', '3r']
+
+    #channels =['1r']
     for channel in channels:
 
 
@@ -77,7 +78,7 @@ def processFile(filename,addDebugInfo):
         ##print("terrain" ,terrain.keys())
         ##print("canopy" ,canopy.keys())
 
-
+        plat=-999
         for x in list(zip(
         land_segments['rgt'],  
         land_segments['delta_time'],
@@ -88,15 +89,24 @@ def processFile(filename,addDebugInfo):
         canopy['h_canopy'],
         )):
           if (x[5]<1000):
+            lat=x[2]
+            if (not (plat == -999) and plat>lat):
+              direction='s'
+            else:
+              direction='n'  
 
-            recordPoint(debugInfo,channel,x[0],x[1],x[2],x[3],x[4],x[5])
+            recordPoint(debugInfo,channel,x[0],x[1],lat,x[3],x[4],x[5],direction)
+
+            plat=lat
 
 
 #
 # empty the store
 #
 def resetStore():
-    tilesStore= {}
+    global tilesStore
+    tilesStore={}
+    global  coordsCnt
     coordsCnt=0
 
 
@@ -121,6 +131,15 @@ def saveStore(storePath):
           tileCsvText = fin.read()
       else:          
           tileCsvText=""
+
+      #if (tile[0]==1103 and tile[1]==694):
+      #  print("====================================")
+      #  print("tileCsvGz:"+tileCsvGz)
+      #  print("tileCsvText:"+tileCsvText)
+      #  print("new lines:"+tileCsvText)
+      #  for line in tilesStore[tile]:
+      #        print(line)
+      #  print("====================================")
 
       # BRITTLE 
       with gzip.open(tileCsvGz, 'wt') as fout:
