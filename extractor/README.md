@@ -39,6 +39,10 @@ grabbing photon data url>
 
 https://openaltimetry.org/data/icesat2/getPhotonData.jsp?id=17472&product=ATL08&segmentId=277841&trackId=1219&beam=2&fileId=95734&date=2020-06-12&client=portal&action=photon_chart
 
+ 
+
+# extracting h5 to tiles (will only process new files)
+extractor/extractor.py ~/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/tiles  /home/bc/Downloads/icesat2/*.h5
 
 
 # uploading to aws

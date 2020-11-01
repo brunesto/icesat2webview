@@ -5,7 +5,7 @@
 
 syntax: db-path [file-1.h5 [file-2.h5 [...]]] 
 
-the db-path must be non existent
+
 the h5 files will be all parsed and the relevant data extracted into tiles at zoomlevel 11,
 the tiles are saved in the db path
 
@@ -30,7 +30,7 @@ ZOOM_LEVEL=11
 tilesStore= {}
 coordsCnt=0
 # https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
-def deg2num(lat_deg, lon_deg, zoom):
+def coords2tilexy(lat_deg, lon_deg, zoom):
   lat_rad = math.radians(lat_deg)
   n = 2.0 ** zoom
   xtile = int((lon_deg + 180.0) / 360.0 * n)
@@ -38,21 +38,23 @@ def deg2num(lat_deg, lon_deg, zoom):
   return (xtile, ytile)
 
 
-def store(filename,channel,rgt,time,lat,lon,terrain,canopy):
+def recordPoint(filename,channel,rgt,time,lat,lon,terrain,canopy):
    global coordsCnt
-   key=deg2num(lat,lon,ZOOM_LEVEL)
+   key=coords2tilexy(lat,lon,ZOOM_LEVEL)
    payload=filename+";"+channel+";"+str(rgt)+";"+str(time)+";"+str(lat)+";"+str(lon)+";"+str(terrain)+";"+str(canopy)
    # print("=="+payload)
    tilesStore.setdefault(key, []).append(payload)
    coordsCnt=coordsCnt+1
 
 
-def processFile(filename):
+def processFile(filename,addDebugInfo):
     print("processFile "+filename)
     f = h5py.File(filename)
     #list(f.keys())
     #['METADATA', 'ancillary_data', 'ds_geosegments', 'ds_metrics', 'ds_surf_type', 'gt1l', 'gt1r', 'gt2l', 'gt2r', 'gt3l', 'gt3r', 'orbit_info', 'quality_assessment']
-
+    debugInfo=""
+    if (addDebugInfo):
+       debugInfo=os.path.basename(filename)
 
 
     channels = ['1l', '1r','2l', '2r','3l', '3r']
@@ -86,7 +88,8 @@ def processFile(filename):
         canopy['h_canopy'],
         )):
           if (x[5]<1000):
-            store('',channel,x[0],x[1],x[2],x[3],x[4],x[5])
+
+            recordPoint(debugInfo,channel,x[0],x[1],x[2],x[3],x[4],x[5])
 
 
 #
@@ -133,11 +136,12 @@ def saveStore(storePath):
 
 
 #-- main --
-def main(storePath,granules):
+def main(storePath,addDebugInfo,granules):
 
   
   srcs={}
   
+  # open or create src.txt (the list of already processed h5 files)
   if (not os.path.exists(storePath)):
      print("new tiles db will be created: "+storePath)
      os.mkdir(storePath) 
@@ -155,22 +159,24 @@ def main(storePath,granules):
 
 
 
-
+  # process each h5 file
 
   for filename in granules:
-      if (filename in srcs):
+      if (not os.path.exists(filename)):
+        print(filename+": does not exists")
+      elif (os.path.basename(filename) in srcs):
         print(filename+":already loaded")
       else :  
         resetStore()
-        processFile(filename)
+        processFile(filename,addDebugInfo)
         saveStore(storePath)
         srcInfoLine=datetime.datetime.now().replace(microsecond=0).isoformat()+";"+str(coordsCnt)+" records in "+str(len(tilesStore))+" tiles "
-        print(filename+":"+srcInfoLine)
+        print(os.path.basename(filename)+":"+srcInfoLine)
         with open(storePath+"/src.txt", 'a+') as out:
-          print(filename+";"+srcInfoLine,file=out)
+          print(os.path.basename(filename)+";"+srcInfoLine,file=out)
 
 
 
 
 
-main ( storePath=sys.argv[1], granules=sys.argv[2:])
+main ( storePath=sys.argv[1], addDebugInfo=sys.argv[2],granules=sys.argv[3:])
