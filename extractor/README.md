@@ -41,3 +41,10 @@ https://openaltimetry.org/data/icesat2/getPhotonData.jsp?id=17472&product=ATL08&
 
 
 
+# uploading to aws
+aws s3 sync /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/icesat-tiles s3://icesat2webview/tiles/
+
+
+# links
+https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html
+http://icesat2webview.s3-website.eu-central-1.amazonaws.com/
