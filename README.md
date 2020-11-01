@@ -33,3 +33,4 @@ TODO:
 -store tiles on s3 compressed
 
 
+webpack/babel setup following https://github.com/taniarascia/webpack-boilerplate
