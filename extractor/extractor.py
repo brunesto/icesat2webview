@@ -78,6 +78,7 @@ def processFile(filename,addDebugInfo):
         ##print("terrain" ,terrain.keys())
         ##print("canopy" ,canopy.keys())
 
+        # previous latitude - 999 means uninitialized
         plat=-999
         for x in list(zip(
         land_segments['rgt'],  
@@ -90,6 +91,8 @@ def processFile(filename,addDebugInfo):
         )):
           if (x[5]<1000):
             lat=x[2]
+
+            #  hacky detection of rgt direction
             if (not (plat == -999) and plat>lat):
               direction='s'
             else:
