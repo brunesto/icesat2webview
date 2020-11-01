@@ -27,3 +27,17 @@ copy the filename and use it again to search by text
 click download script
 run script
 
+== to extract all countries polygon ==
+curl https://datahub.io/core/geo-countries/r/geo-countries_zip.zip
+unzip geo-countries_zip.zip
+cd archive
+
+for iso3 in `cat countries.geojson  | grep 'ISO_A3": "[A-Z]*"' -o | cut -c11-13 ` ; do echo $iso3; cat countries.geojson  | grep $iso3 | sed 's/,$//' > $iso3.geojson; done
+
+
+grabbing photon data url>
+
+https://openaltimetry.org/data/icesat2/getPhotonData.jsp?id=17472&product=ATL08&segmentId=277841&trackId=1219&beam=2&fileId=95734&date=2020-06-12&client=portal&action=photon_chart
+
+
+

@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 
+
 """
 
 syntax: db-path [file-1.h5 [file-2.h5 [...]]] 
 
 the db-path must be non existent
-the h5 files will be all parsed and the relevant data extracted into tiles at zoomlevel 12,
+the h5 files will be all parsed and the relevant data extracted into tiles at zoomlevel 11,
 the tiles are saved in the db path
 
 tile format:
@@ -14,19 +15,21 @@ each tile consists of a simple csv file
 
 """
 
-
+import gzip
 import sys
 import h5py
 import numpy as np
 import os
+import re
+import datetime
 
-# https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 import math
 
 
-zl=12
+ZOOM_LEVEL=11
 tilesStore= {}
-
+coordsCnt=0
+# https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 def deg2num(lat_deg, lon_deg, zoom):
   lat_rad = math.radians(lat_deg)
   n = 2.0 ** zoom
@@ -36,14 +39,16 @@ def deg2num(lat_deg, lon_deg, zoom):
 
 
 def store(filename,channel,rgt,time,lat,lon,terrain,canopy):
-   key=deg2num(lat,lon,zl)
+   global coordsCnt
+   key=deg2num(lat,lon,ZOOM_LEVEL)
    payload=filename+";"+channel+";"+str(rgt)+";"+str(time)+";"+str(lat)+";"+str(lon)+";"+str(terrain)+";"+str(canopy)
-  # print("=="+payload)
+   # print("=="+payload)
    tilesStore.setdefault(key, []).append(payload)
+   coordsCnt=coordsCnt+1
 
 
 def processFile(filename):
-    print(filename)
+    print("processFile "+filename)
     f = h5py.File(filename)
     #list(f.keys())
     #['METADATA', 'ancillary_data', 'ds_geosegments', 'ds_metrics', 'ds_surf_type', 'gt1l', 'gt1r', 'gt2l', 'gt2r', 'gt3l', 'gt3r', 'orbit_info', 'quality_assessment']
@@ -56,8 +61,8 @@ def processFile(filename):
 
         ancillary_data=f['/ancillary_data']
 
-        print(ancillary_data['atlas_sdp_gps_epoch'][0])
-        exit 
+        print(filename+":"+" reading channel:"+channel)
+        
 
         land_segments=f['/gt'+channel+'/land_segments']
         terrain=f['/gt'+channel+'/land_segments/terrain']
@@ -81,33 +86,91 @@ def processFile(filename):
         canopy['h_canopy'],
         )):
           if (x[5]<1000):
-            store(filename,channel,x[0],x[1],x[2],x[3],x[4],x[5])
+            store('',channel,x[0],x[1],x[2],x[3],x[4],x[5])
 
 
-
-def saveStore(storePath):
-    for tile in tilesStore:
-        print(tile)
-        # tile[0]
-        latDir=storePath+"/"+str(zl)+"/"+str(tile[0])
-        os.makedirs(latDir, exist_ok=True)
-        tileCsv=latDir+"/"+str(tile[1])+".csv"
-        print(tileCsv+" has "+str(len(tilesStore[tile]))+" records")
-        with open(tileCsv, 'a+') as out:
-            for line in tilesStore[tile]:
-               print(line,file=out)
-
-
-storePath=sys.argv[1]
-print("tiles db: "+storePath)
-if (os.path.exists(storePath)):
-   sys.exit("cant overwrite store "+storePath) 
- 
-
-for filename in sys.argv[2:]:
+#
+# empty the store
+#
+def resetStore():
     tilesStore= {}
-    processFile(filename)
-    saveStore(storePath)
+    coordsCnt=0
+
+
+#
+# store the store :)
+#
+def saveStore(storePath):
+  for tile in tilesStore:
+      # print(tile)
+      # tile[0]
+      latDir=storePath+"/"+str(ZOOM_LEVEL)+"/"+str(tile[0])
+      
+      os.makedirs(latDir, exist_ok=True)
+      tileCsv=latDir+"/"+str(tile[1])+".csv"
+      tileCsvGz=tileCsv+".gz"
+      # print(tileCsv+" has "+str(len(tilesStore[tile]))+" records")
+
+
+    
+      if (os.path.exists(tileCsvGz)):
+        with gzip.open(tileCsvGz, 'rt') as fin:          
+          tileCsvText = fin.read()
+      else:          
+          tileCsvText=""
+
+      # BRITTLE 
+      with gzip.open(tileCsvGz, 'wt') as fout:
+          fout.write(tileCsvText)
+          for line in tilesStore[tile]:
+              print(line,file=fout)
+
+  
 
 
 
+
+
+
+#-- main --
+def main(storePath,granules):
+
+  
+  srcs={}
+  
+  if (not os.path.exists(storePath)):
+     print("new tiles db will be created: "+storePath)
+     os.mkdir(storePath) 
+     open(storePath+"/src.txt", 'a').close()     
+  else:
+     print("found existing tiles db: "+storePath)
+
+
+
+  with open(storePath+"/src.txt") as f:
+      for line in f.read().splitlines():
+        tokens=re.split(';',line)
+        srcs[tokens[0]]=tokens[1:]
+        print(tokens[0]+";"+line)
+
+
+
+
+
+  for filename in granules:
+      if (filename in srcs):
+        print(filename+":already loaded")
+      else :  
+        resetStore()
+        processFile(filename)
+        saveStore(storePath)
+        srcInfoLine=datetime.datetime.now().replace(microsecond=0).isoformat()+";"+str(coordsCnt)+" records in "+str(len(tilesStore))+" tiles "
+        print(filename+":"+srcInfoLine)
+        with open(storePath+"/src.txt", 'a+') as out:
+          print(filename+";"+srcInfoLine,file=out)
+
+
+
+
+
+main ( storePath=sys.argv[1], granules=sys.argv[2:])

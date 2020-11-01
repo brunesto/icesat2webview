@@ -12,9 +12,8 @@
 
 
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    </script>
     <!--script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>
@@ -51,19 +50,34 @@
     </script>
     <script src="https://kartena.github.io/Leaflet.Pancontrol/lib/Leaflet.Pancontrol/src/L.Control.Pan.js"></script>
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"
+        integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ=="
+        crossorigin="anonymous"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.11/pako.min.js"
+        integrity="sha512-euWc/Qv8Kp0CbTX1M+Q3BvUyoOaq9Au50TT7vz3MFf5ver39ybq6zV+RngDY8eN8AIQFigxjwYv6jhoP546vfQ=="
+        crossorigin="anonymous"></script>
+
+
     <style>
         #alertInfo,
-        #locateBtn {
+        #btnBar {
             font-family: Arial, Helvetica, sans-serif;
         }
 
-        #locateBtn {
+        #btnBar {
             position: absolute;
             right: 100px;
 
             z-index: 3000;
             padding: 10px;
             margin: 10px;
+
+        }
+
+        #btnBar button {
             border: 2px solid gray;
             background-color: #fff;
             border-radius: 5px;
@@ -161,8 +175,15 @@
 </head>
 
 <body>
-    <button type="button" class="btn btn-primary" id="locateBtn">Find my position</button>
+    <div id="btnBar">
+        <button type="button" class="btn btn-primary" id="locateBtn" title="center the map around your position">Find
+            me</button>
+        <button type="button" class="btn btn-primary" id="polygonBtn"
+            title="download the visible map bbox in poly json format">Poly</button>
+        <button type="button" class="btn btn-primary" id="gotoCoordsBtn"
+            title="center the map around given coordinates">Goto</button>
 
+    </div>
 
     <div id="alertInfoWrap">
         <div id="alertInfo" class="alert alert-info" role="alert"></div>
@@ -192,11 +213,11 @@
 
 
         // icesat data tile level - this cannot be changed without recompiling the data
-        var TILE_DEF_ZL = 12
+        var TILE_DEF_ZL = 11
         // tiles will be loaded from zoomlevel
-        var TILE_LOAD_FROM_ZL = 13
+        var TILE_LOAD_FROM_ZL = 12
         // tiles will be shown from zoomlevel
-        var TILE_SHOW_FROM_ZL = 13
+        var TILE_SHOW_FROM_ZL = 5
 
 
         var myMap;
@@ -453,24 +474,26 @@
         okTiles['2207/1388'] = true;
         okTiles['2207/1389'] = true;
         okTiles['2207/1390'] = true;
-        
+
 
         okTiles['2208/1388'] = true;
         okTiles['2208/1389'] = true;
         okTiles['2208/1390'] = true;
-        
+
 
         function filterTile(yx) {
-
-            var key = yx[1] + "/" + yx[0]
+            return true
+            /*var key = yx[1] + "/" + yx[0]
             var r = okTiles[key] == true
             console.log("filterTile " + yx + " is " + r)
-            return r
+            return r*/
 
         }
         function loadTile(yx) {
 
-            var path = "icesat-tiles/" + TILE_DEF_ZL + "/" + yx[1] + "/" + yx[0] + ".csv"
+            var path = "icesat-tiles/" + TILE_DEF_ZL + "/" + yx[1] + "/" + yx[0] + ".csv.gz"
+
+            path = "icesat-tiles/11/1101/678.csv.gz"
             console.log("loadTile " + path);
 
 
@@ -479,49 +502,139 @@
 
             if (filterTile(yx)) {
 
-                Papa.parse(path, {
-                    download: true,
-                    complete: function (results) {
-                        console.log("regroup");
 
-                        var coords2data = new Object()
-                        for (d of results.data) {
 
-                            var latLng = [parseFloat(d[4]), parseFloat(d[5])]
-                            if (d[3] == 24762270.185411237) {
-                                console.log("more!" + coords2data[latLng] + " d:" + d);
-                            }
-                            if (!isNaN(latLng[0])) {
-                                if (!(latLng in coords2data)) {
-                                    coords2data["" + latLng] = []
-                                } else {
-                                    console.log("...");
-                                }
-                                coords2data["" + latLng].push(d) // CAPTCHA
-                            }
 
-                        }
-                        console.log("add markers");
-                        for (latLng in coords2data) {
-                            addDataMarker(coords2data[latLng])
-                        }
-                        console.log("done");
-                    },
-                    error: function (e) {
-                        console.error(e);
-                    },
-                });
+
+
+                var oReq = new XMLHttpRequest();
+                oReq.open("GET", path, true);
+                oReq.responseType = "arraybuffer";
+
+                oReq.onload = function (oEvent) {
+                    var arrayBuffer = oReq.response;
+
+                    // if you want to access the bytes:
+                    var byteArray = new Uint8Array(arrayBuffer);
+                    inflatedUint8array= pako.inflate(byteArray);
+                    gunziped =new TextDecoder("utf-8").decode(inflatedUint8array)
+                    console.log("gunziped type",typeof gunziped)
+                    console.log("gunziped",gunziped)
+                    processTile(gunziped.split("\n"))
+                    // If you want to use the image in your DOM:
+                    //var blob = new Blob([arrayBuffer], {type: "image/png"});
+                    //var url = URL.createObjectURL(blob);
+                    //someImageElement.src = url;
+
+                    // whatever...
+                };
+
+                oReq.send();
+
+
+
+
+
+
+
+
+
+
+/*
+
+                $.get(path, function (data) {
+                    console.log("yx" + yx + " " + typeof data); // string
+                    console.log(btoa(data))
+
+
+                    for (var i = 0; i < 32; i++)
+                        console.log(data.get(i).toString(16))
+
+
+                    gunziped = pako.inflate(data, { raw: true });
+                    processTile(gunziped.split("\n"))
+
+                }).fail(function (e) {
+                    console.log("error", e);
+                })
+*/
             }
-        }
 
+        }
+        
+
+
+        function processTile(lines) {
+            console.log("regroup");
+
+            var coords2data = new Object()
+            for (var j = 0; j < lines.length; j++) { 
+                var line=lines[j]
+                var d = line.split(";")
+                var latLng = [parseFloat(d[4]), parseFloat(d[5])]
+                if (d[3] == 24762270.185411237) {
+                    console.log("more!" + coords2data[latLng] + " d:" + d);
+                }
+                if (!isNaN(latLng[0])) {
+                    if (!(latLng in coords2data)) {
+                        coords2data["" + latLng] = []
+                    } else {
+                        console.log("...");
+                    }
+                    coords2data["" + latLng].push(d) // CAPTCHA
+                }
+
+            }
+            console.log("add markers");
+            for (latLng in coords2data) {
+                addDataMarker(coords2data[latLng])
+            }
+            console.log("done");
+        }
         function coordsOnLoad() {
             console.log("coordsOnLoad()")
             $("#locateBtn").click(function () { getLocation(); });
+            $("#polygonBtn").click(function () { savePoly(); });
+            $("#gotoCoordsBtn").click(function () { gotoCoords(); });
 
 
 
         }
 
+
+        function gotoCoords() {
+            var latLon = prompt("go to lat,lon? (e.g 50.1,14.2)", "");
+
+            if (latLon != null) {
+                var tokens = latLon.split(",")
+                if (tokens.length == 1)
+                    tokens = latLon.split(";")
+
+
+
+                updatePos(tokens[0], tokens[1]);
+            }
+        }
+        function savePoly() {
+
+            var bb = myMap.getBounds();
+
+
+            var r =
+                '{"type": "Feature","geometry": { "type": "Polygon", "coordinates": [[' +
+                "\n[" + bb.getNorthEast().lng + "," + bb.getNorthEast().lat + "]," +
+                "\n[" + bb.getSouthWest().lng + "," + bb.getNorthEast().lat + "]," +
+                "\n[" + bb.getSouthWest().lng + "," + bb.getSouthWest().lat + "]," +
+                "\n[" + bb.getNorthEast().lng + "," + bb.getSouthWest().lat + "]," +
+                "\n[" + bb.getNorthEast().lng + "," + bb.getNorthEast().lat + "]" +
+                '\n]]}, "properties": {}}';
+
+
+            var blob = new Blob([r], { type: "text/plain;charset=utf-8" });
+            saveAs(blob, "ice2web.poly.json");
+
+
+        }
         // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
         function lon2tile(lon, zoom) { return (Math.floor((lon + 180) / 360 * Math.pow(2, zoom))); }
         function lat2tile(lat, zoom) { return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom))); }
