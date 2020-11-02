@@ -31,6 +31,7 @@
   "dependencies": {
     "jquery": "^3.5.1",
     "leaflet": "^1.7.1",
+    "leaflet-minimap": "^3.6.1",
     "leaflet.pancontrol": "^1.0.0",
     "pako": "^1.0.11"
   }

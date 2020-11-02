@@ -10,7 +10,7 @@ the source of data is:
 
 == Steps to download data for a particular date & track ==
 go to
-https://openaltimetry.org/data/icesat2/
+[https://openaltimetry.org/data/icesat2/]
 
 click on a track, choose a date with data
 click on a point find the time
@@ -52,3 +52,8 @@ aws s3 sync /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/i
 # links
 https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html
 http://icesat2webview.s3-website.eu-central-1.amazonaws.com/
+
+
+# downloading from bbox
+./nsidc-download.py 2018-10-14 2020-10-05 11.997070209314064,48.25759809740135,18.967895404626564,51.275662028484476
+

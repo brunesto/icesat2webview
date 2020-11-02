@@ -5,3 +5,48 @@ body,
     margin: 0px;
     padding: 0px;
 }
+
+#alertInfo,
+#btnBar {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#btnBar {
+    position: absolute;
+    right: 100px;
+
+    z-index: 3000;
+    padding: 10px;
+    margin: 10px;
+
+}
+
+#btnBar button {
+    border: 2px solid gray;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+#alertInfo {
+    position: absolute;
+    padding: 10px;
+    background-color: lightyellow;
+    border: 2px dashed red;
+    border-radius: 5px;
+}
+
+
+#alertInfoWrap {
+    float: left;
+    position: relative;
+    left: 50%;
+    padding-left: 20px;
+    z-index: 3000;
+}
+
+#alertInfo {
+    float: left;
+    position: relative;
+    left: -50%;
+    top: 100px;
+}

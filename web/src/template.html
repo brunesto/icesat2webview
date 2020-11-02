@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
 
-    <!--link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+
+  <!--link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
@@ -17,14 +18,28 @@
     </script>
     <script src="https://kartena.github.io/Leaflet.Pancontrol/lib/Leaflet.Pancontrol/src/L.Control.Pan.js"></script-->
 
-    <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
+  <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
 
-  <body>
-    <div id="root">
-      <div id="mapContainer">
-        <div id="map"></div>
+<body>
+  <div id="root">
+    <div id="btnBar">
+      <button type="button" class="btn btn-primary" id="locateBtn" title="center the map around your position">Find
+        me</button>
+      <button type="button" class="btn btn-primary" id="polygonBtn"
+        title="download the visible map bbox in poly json format">Poly</button>
+      <button type="button" class="btn btn-primary" id="gotoCoordsBtn"
+        title="center the map around given coordinates">Goto</button>
     </div>
+    <div id="alertInfoWrap">
+      <div id="alertInfo" class="alert alert-info" role="alert"></div>
     </div>
-  </body>
+
+
+    <div id="mapContainer">
+      <div id="map"></div>
+    </div>
+  </div>
+</body>
+
 </html>

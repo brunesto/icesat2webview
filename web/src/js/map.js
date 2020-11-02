@@ -3,6 +3,9 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet.pancontrol/src/L.Control.Pan.css'
 // CAPTCHA : import leaflet is not required as it is transitively loaded from leaflet.pancontrol
 import 'leaflet.pancontrol'
+import 'leaflet-minimap'
+import 'leaflet-minimap/dist/Control.MiniMap.min.css';
+
 
 import '../styles/map.css'
 
@@ -92,9 +95,11 @@ export function initMap(config) {
     L.control.pan().addTo(myMap);
 
     // add the OpenStreetMap tiles
-    var osmTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    const osmAttribution='&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+    var osmTileLayer = L.tileLayer(osmUrl, {
         maxZoom: 19,
-        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+        attribution: osmAttribution
     })
 
 
@@ -132,6 +137,10 @@ export function initMap(config) {
 
     myMap.on('zoomend', function() { showHideMarkerGroup() })
     myMap.on('moveend', config.maybeLoadTiles) // CAPTCHA do not call, just pass ref
+
+
+    var osm2 = new L.TileLayer(osmUrl, {minZoom: 0, maxZoom: 13, attribution: osmAttribution});
+    var miniMap = new L.Control.MiniMap(osm2).addTo(myMap);
 
    // maybeLoadTiles()
     showHideMarkerGroup()

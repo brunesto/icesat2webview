@@ -38,3 +38,11 @@ webpack/babel setup following https://github.com/taniarascia/webpack-boilerplate
 
 for KML:
 https://www.npmjs.com/package/leaflet-plugins
+
+
+TODO:
+minimap:
+sattelite view button:
+database boundary?
+link to photon data
+geoid elevation

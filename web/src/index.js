@@ -40,8 +40,8 @@ $(document).ready(function () {
     console.log("yay")
     maybeLoadTiles(myMap,myRenderer,myMarkersGroup)
   }
-
   });
+  maybeLoadTiles(myMap,myRenderer,myMarkersGroup)
 
 });
 
