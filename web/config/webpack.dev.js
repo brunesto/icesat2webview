@@ -1,5 +1,5 @@
 const paths = require('./paths')
-
+const path = require('path')
 const webpack = require('webpack')
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common.js')
@@ -13,12 +13,17 @@ module.exports = merge(common, {
 
   // Spin up a server for quick development
   devServer: {
-    historyApiFallback: true,
-    contentBase: paths.build,
+    //historyApiFallback: true,
+   // contentBase: [ path.join(__dirname,"tiles")],
+    publicPath: "/",
     open: true,
     compress: true,
     hot: true,
     port: 8080,
+    serveIndex:true,
+
+    contentBase: [ path.join(__dirname+"/..", 'tiles')],
+    contentBasePublicPath: [ '/tiles'],
   },
 
   plugins: [

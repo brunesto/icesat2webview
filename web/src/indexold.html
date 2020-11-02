@@ -321,48 +321,6 @@
 
 
 
-
-        // https://www.w3schools.com/html/html5_geolocation.asp
-
-        function getLocation() {
-            try {
-                if (navigator.geolocation) {
-
-                    $("#coordsWarn").hide();
-
-
-                } else {
-                    $("#coordsWarn").show();
-                }
-            } catch (e) {
-                console.error(e);
-            }
-
-        }
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, function (error) {
-                    handleError('getCurrentPosition Error code: ' + error.code);
-                    // error.code can be:
-                    //   0: unknown error
-                    //   1: permission denied
-                    //   2: position unavailable (error response from locaton provider)
-                    //   3: timed out
-                });
-            } else {
-                handleError("Geolocation is not supported by this browser.");
-            }
-        }
-
-
-
-        function showPosition(position) {
-            console.log("showPosition(" + new Date().toLocaleTimeString() + ")")
-            updatePos(position.coords.latitude, position.coords.longitude);
-        }
-
-
         function addTileMarker(yx) {
             var bounds =
                 [[tile2lat(yx[0], TILE_DEF_ZL), tile2long(yx[1], TILE_DEF_ZL)],
@@ -629,9 +587,6 @@
             $("#locateBtn").click(function () { getLocation(); });
             $("#polygonBtn").click(function () { savePoly(); });
             $("#gotoCoordsBtn").click(function () { gotoCoords(); });
-
-
-
         }
 
 

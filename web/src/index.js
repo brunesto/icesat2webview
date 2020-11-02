@@ -1,20 +1,52 @@
-// Test import of a JavaScript function
-//import {example} from './js/example'
+import './styles/body.css';
+import {initMap,myMap,myRenderer,myMarkersGroup} from './js/map.js';
+import {maybeLoadTiles} from './js/tiles.js';
+
+// icesat data tile level - this cannot be changed without recompiling the data
+global.TILE_DEF_ZL = 11
+
+    // tiles will be loaded from zoomlevel
+    global.TILE_LOAD_FROM_ZL = 9
+    // tiles will be shown from zoomlevel
+    global.TILE_SHOW_FROM_ZL = 9
+
+jQuery.fn.display = function (b) {
+  if (b)
+      return this.show();
+  else
+      return this.hide();
+};
+
+'use strict';
+
+class Mediator {
+ handleError(error) {
+  console.error('Error: ', error);
 
 
-// Test import of an asset
-//import webpackLogo from './images/webpack-logo.svg'
+}
+ alertInfo(msg) {
+  $('#alertInfo').display(msg != "")
+  $('#alertInfo').html(msg)
+}
+}
+var mediator = new Mediator();
+global.mediator=mediator
 
-// Test import of styles
-//import './styles/index.scss'
 
-// Appending to the DOM
-//const logo = document.createElement('img')
-//logo.src = webpackLogo
+$(document).ready(function () {
+  console.log("initMap=",initMap)
+  initMap({maybeLoadTiles:()=>{
+    console.log("yay")
+    maybeLoadTiles(myMap,myRenderer,myMarkersGroup)
+  }
 
-const heading = document.createElement('h1')
-heading.textContent = '1232'
-console.log('123 2soleil')
+  });
 
-const app = document.querySelector('#root')
-app.append(heading)
+});
+
+
+
+
+
+

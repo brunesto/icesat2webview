@@ -1,4 +1,6 @@
+const webpack = require('webpack');
 const paths = require('./paths')
+const path = require('path');
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -7,6 +9,20 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 module.exports = {
   // Where webpack looks to start building the bundle
   entry: [paths.src + '/index.js'],
+
+
+    // In my case the problem was that webpack loads a seperate version (and hence instance :/ )  of leaflet because the plugin had a dependency to an older leaflet version.
+    // So to prevent webpack from loading different versions of leaflet    
+    resolve: {
+        alias: {
+            'leaflet': path.join(__dirname, '../node_modules/leaflet'),
+        }
+    },
+ 
+
+
+
+
 
   // Where webpack outputs the assets and bundles
   output: {
@@ -41,6 +57,12 @@ module.exports = {
       template: paths.src + '/template.html', // template file
       filename: 'index.html', // output file
     }),
+
+   new webpack.ProvidePlugin({ L: 'leaflet', 'window.L': 'leaflet', }) ,
+   new webpack.ProvidePlugin({
+    $: 'jquery',
+    jQuery: 'jquery'
+  }),
   ],
 
   // Determine how modules within the project are treated
