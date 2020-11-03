@@ -47,6 +47,15 @@ module.exports = merge(common, {
     runtimeChunk: {
       name: 'runtime',
     },
+  /*  splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+        },
+     
+      }
+    },*/
   },
   performance: {
     hints: false,

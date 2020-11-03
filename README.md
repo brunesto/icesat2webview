@@ -57,3 +57,5 @@ http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile
 curl -o /tmp/11185.png https://b.basemaps.cartocdn.com/dark_all/15/17658/11112.png
 
 convert  /tmp/11185.png-crop 100x100+156+156 dark.png
+
+
