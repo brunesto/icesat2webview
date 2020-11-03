@@ -1,0 +1,39 @@
+
+#btnBar {
+    position: absolute;
+    right: 10px;
+
+    z-index: 3000;
+    margin-top: 10px;
+
+}
+
+#btnBar button {
+    border: 2px solid gray;
+    background-color: #fff;
+    color:black;
+    border-radius: 5px;
+}
+
+
+#btnBar button:hover {
+    background-color: #ddd;    
+}
+
+#switchLayerBtn {
+    width:50px;
+    height:50px;
+}
+
+#switchLayerBtn.nextIs-map{
+    background-image: url("../images/map.png");
+}
+
+#switchLayerBtn.nextIs-aerial {
+    background-image: url("../images/aerial.png");
+}
+
+
+#switchLayerBtn.nextIs-dark {
+    background-image: url("../images/dark.png");
+}

@@ -1,15 +1,14 @@
-
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.pancontrol/src/L.Control.Pan.css'
 // CAPTCHA : import leaflet is not required as it is transitively loaded from leaflet.pancontrol
 import 'leaflet.pancontrol'
 import 'leaflet-minimap'
 import 'leaflet-minimap/dist/Control.MiniMap.min.css';
-
+import Cookies from 'js-cookie'
 
 import '../styles/map.css'
 
-/*
+
 // according to https://github.com/btpschroeder/leaflet-webpack/blob/master/src/index.js
 // This code is needed to properly load the images in the Leaflet CSS 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -18,7 +17,7 @@ L.Icon.Default.mergeOptions({
     iconUrl: require('leaflet/dist/images/marker-icon.png'),
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
-*/
+
 
 
 
@@ -30,58 +29,35 @@ L.Icon.Default.mergeOptions({
 export var myMap;
 export var myRenderer;
 export var myMarkersGroup;
-var marker;
+// var marker;
 
 
-function updatePos(lat, lon) {
+export function updatePos(lat, lon,zoom) {
     console.log("updatePos(" + lat + " , " + lon + ")")
-    if (marker != undefined)
-        myMap.removeLayer(marker)
-    marker = L.marker([lat, lon]);
-    marker.addTo(myMap)
-    myMap.setView([lat, lon], 18)
+    // if (marker != undefined)
+    //     myMap.removeLayer(marker)
+    // marker = L.marker([lat, lon]);
+    // marker.addTo(myMap)
+    if (zoom)
+        myMap.setView([lat, lon], zoom)
+
+    persistCoords()
+        
+    
 }
 
 function showHideMarkerGroup() {
     if (myMap.getZoom() < TILE_SHOW_FROM_ZL) {
-        alertInfo("&#9888; Zoom in to display data")
+        mediator.alertInfo("&#9888; Zoom in to display data")
         myMap.removeLayer(myMarkersGroup);
     } else {
-        mediator. alertInfo("")
+        mediator.alertInfo("")
         myMap.addLayer(myMarkersGroup);
     }
 }
 
 
-
-
-
-        // https://www.w3schools.com/html/html5_geolocation.asp
-
-        function getLocation() {
-            try {
-                if (navigator.geolocation) {
-
-                    $("#coordsWarn").hide();
-
-
-                } else {
-                    $("#coordsWarn").show();
-                }
-            } catch (e) {
-                console.error(e);
-            }
-
-        }
-
-        
-
-
-
-        function showPosition(position) {
-            console.log("showPosition(" + new Date().toLocaleTimeString() + ")")
-            updatePos(position.coords.latitude, position.coords.longitude);
-        }
+var tileLayers = {}
 
 
 
@@ -95,13 +71,13 @@ export function initMap(config) {
     L.control.pan().addTo(myMap);
 
     // add the OpenStreetMap tiles
-    const osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-    const osmAttribution='&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+    const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    const osmAttribution = '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
     var osmTileLayer = L.tileLayer(osmUrl, {
         maxZoom: 19,
         attribution: osmAttribution
     })
-
+    tileLayers["osm"] = osmTileLayer;
 
 
 
@@ -114,7 +90,8 @@ export function initMap(config) {
         tileSize: 512,
         zoomOffset: -1
     })
-    mapBoxTileLayer.addTo(myMap)
+    tileLayers["map"] = mapBoxTileLayer;
+    //  mapBoxTileLayer.addTo(myMap)
 
 
     var mapLink =
@@ -126,62 +103,75 @@ export function initMap(config) {
             attribution: '&copy; ' + mapLink + ', ' + wholink,
             maxZoom: 18,
         })
+    tileLayers["aerial"] = esriTileLayer;
+
+
+    var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+    });
+    tileLayers["dark"] = CartoDB_DarkMatter;
+
+
+
+
+
+
+
+
+
 
 
     //var esriTileLayer=L.tileLayer.provider('Stamen.Watercolor')               
-    var switchBtn = L.control.layers({ "mapbox": mapBoxTileLayer, "satellite": esriTileLayer, "osm": osmTileLayer })
-    switchBtn.addTo(myMap);
+    //var switchBtn = L.control.layers({ "mapbox": mapBoxTileLayer, "satellite": esriTileLayer, "osm": osmTileLayer })
+    //switchBtn.addTo(myMap);
 
     myMarkersGroup = new L.FeatureGroup();
     myMap.addLayer(myMarkersGroup);
 
-    myMap.on('zoomend', function() { showHideMarkerGroup() })
-    myMap.on('moveend', config.maybeLoadTiles) // CAPTCHA do not call, just pass ref
+    myMap.on('zoomend', function() {
+        persistCoords();
+        showHideMarkerGroup() })
+    myMap.on('moveend', ()=>{
+       
+        persistCoords();
+        config.maybeLoadTiles();})
 
 
-    var osm2 = new L.TileLayer(osmUrl, {minZoom: 0, maxZoom: 13, attribution: osmAttribution});
+    var osm2 = new L.TileLayer(osmUrl, { minZoom: 0, maxZoom: 13, attribution: osmAttribution });
     var miniMap = new L.Control.MiniMap(osm2).addTo(myMap);
 
-   // maybeLoadTiles()
+    // maybeLoadTiles()
     showHideMarkerGroup()
 
-    $("#locateBtn").click(function () { getLocation(); });
-    $("#polygonBtn").click(function () { savePoly(); });
-    $("#gotoCoordsBtn").click(function () { gotoCoords(); });
-}
 
 
-function gotoCoords() {
-    var latLon = prompt("go to lat,lon? (e.g 50.1,14.2)", "");
-
-    if (latLon != null) {
-        var tokens = latLon.split(",")
-        if (tokens.length == 1)
-            tokens = latLon.split(";")
-
-
-
-        updatePos(tokens[0], tokens[1]);
+    var prevLat=Cookies.get('lat')
+    if (prevLat){
+        var prevLon=Cookies.get('lon')
+        var prevZoom=Cookies.get('zoom')
+       updatePos(prevLat,prevLon,prevZoom)
     }
+
 }
-function savePoly() {
 
-    var bb = myMap.getBounds();
+function persistCoords(){
+    var coords=myMap.getCenter()
+    Cookies.set('lat', coords.lat);
+    Cookies.set('lon', coords.lng);
+    Cookies.set('zoom', myMap.getZoom());
+}
 
+var currentTileLayer=null
+export function switchLayer(layerName) {
+    console.log("switchLayer "+layerName)
+    if (currentTileLayer != null)
+        myMap.removeLayer(tileLayers[currentTileLayer]);
 
-    var r =
-        '{"type": "Feature","geometry": { "type": "Polygon", "coordinates": [[' +
-        "\n[" + bb.getNorthEast().lng + "," + bb.getNorthEast().lat + "]," +
-        "\n[" + bb.getSouthWest().lng + "," + bb.getNorthEast().lat + "]," +
-        "\n[" + bb.getSouthWest().lng + "," + bb.getSouthWest().lat + "]," +
-        "\n[" + bb.getNorthEast().lng + "," + bb.getSouthWest().lat + "]," +
-        "\n[" + bb.getNorthEast().lng + "," + bb.getNorthEast().lat + "]" +
-        '\n]]}, "properties": {}}';
-
-
-    var blob = new Blob([r], { type: "text/plain;charset=utf-8" });
-    saveAs(blob, "ice2web.poly.json");
-
-
+    if (layerName != null) {
+        currentTileLayer = layerName
+        myMap.addLayer(tileLayers[layerName]);
+    }
 }
 

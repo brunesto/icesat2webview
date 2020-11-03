@@ -41,8 +41,19 @@ https://www.npmjs.com/package/leaflet-plugins
 
 
 TODO:
-minimap:
+minimap: DONE
 sattelite view button:
 database boundary?
 link to photon data
-geoid elevation
+geoid elevation DONE
+publish . webpack + amazon
+
+
+
+
+# nice sample tiles
+https://a.tile.openstreetmap.org/15/17748/11185.png
+http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/11185/17748
+curl -o /tmp/11185.png https://b.basemaps.cartocdn.com/dark_all/15/17658/11112.png
+
+convert  /tmp/11185.png-crop 100x100+156+156 dark.png

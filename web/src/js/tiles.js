@@ -1,7 +1,6 @@
  
  import pako from 'pako'
-
-
+ import * as egm96 from 'egm96-universal'
 
 // TODO use CircleMarker, it will be faster
 const CircleMarkerWithZoom = L.Circle.extend({
@@ -58,14 +57,16 @@ const CircleMarkerWithZoom = L.Circle.extend({
 
 
             var date = new Date(1000 * (315964800 + 1198800000 + time))
-            // console.log("record2string:" + date)
+           // console.log("record2string:" + date)
 
-           // const egm96Alt = ellipsoidToEgm96(lat, lon, amsl)
+            const egm96Alt = egm96.ellipsoidToEgm96(lat, lon, amsl)
 
             var r =
                 '<tr><th>Track id:</th><td>' + rgt + "</td></tr>" +
                 "<tr><th>Lat,Lon:</th><td>" + lat + "," + lon + "</td></tr>" +
-                '<tr><th>Elevation:</th><td>elipsoid' + amsl + "m " + "</td></tr>" +
+                '<tr><th>Elevation:</th><td>' + amsl + "m (wgs84)" +
+                '</br>' + egm96Alt.round(1) + "m (egm96)" +
+                "</td></tr>" +
                 "<tr><th>Time:</th><td>" + date.toISOString() + "</td></tr>" +
 
                 "<tr><th>Beam:</th><td>gt" + channel + " "+direction+"</td></tr>" +
