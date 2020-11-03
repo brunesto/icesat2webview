@@ -23,19 +23,27 @@
 
 <body>
   <div id="root">
-    <div id="btnBar">
-      <button type="button" class="btn btn-primary" id="locateBtn" title="center the map around your position">Find
-        me</button>
-      <button type="button" class="btn btn-primary" id="polygonBtn"
-        title="download the visible map bbox in poly json format">Bbox</button>
-      <button type="button" class="btn btn-primary" id="gotoCoordsBtn"
-        title="center the map around given coordinates">Goto</button>
-      <button type="button" class="btn btn-primary" id="switchLayerBtn"
-        title="switch map layer"></button>
-    </div>
     <div id="alertInfoWrap">
       <div id="alertInfo" class="alert alert-info" role="alert"></div>
     </div>
+    <div id="btnBar">
+      <button type="button" class="btn btn-primary" id="switchLayerBtn"
+        title="switch map layer">
+      <div id="switchLayerBtnLabel">Change map</div>
+      <div id="switchLayerBtnPreview"></div>
+      </button>
+
+      <button type="button" class="btn btn-primary" id="locateBtn" title="center the map around your position">Find
+        me</button>
+      
+      <button type="button" class="btn btn-primary" id="gotoCoordsBtn"
+        title="center the map around given coordinates">Goto</button>
+      
+        <button type="button" class="btn btn-primary" id="polygonBtn"
+        title="download the visible map bbox in poly json format">Bbox</button>
+
+    </div>
+   
 
 
     <div id="mapContainer">

@@ -1,6 +1,10 @@
  import pako from 'pako'
  //import * as egm96 from 'egm96-universal'
 
+
+ 
+ 
+ 
  // TODO use CircleMarker, it will be faster
  const CircleMarkerWithZoom = L.Circle.extend({
 
@@ -51,7 +55,7 @@
      return info;
  }
 
- function record2string(d, useEgm96) {
+ function record2string(d, ellipsoidToEgm96) {
 
      var src = d[0]
      var channel = d[1]
@@ -72,10 +76,8 @@
 
 
      var egmInfo = "..."
-     if (useEgm96) {
-         const egm96Alt = 0; //egm96.ellipsoidToEgm96(lat, lon, amsl)
-         egmInfo = egm96Alt.round(1)
-     }
+     if (ellipsoidToEgm96) 
+         egmInfo=ellipsoidToEgm96(lat, lon, amsl).round(1)
 
      var r =
          '<tr><th>Track id:</th><td>' + rgt + "</td></tr>" +
@@ -169,9 +171,14 @@
              .openOn(myMap);
 
 
+             import('egm96-universal').then((egm96) => {
+                popup.setContent(records2string(ds, egm96.ellipsoidToEgm96))
+              }).catch(error => 'An error occurred while loading the component')
+
+
          // if (popup.isOpen()){
          //popup.closePopup();
-         popup.setContent(records2string(ds, true))
+        
              //popup.openOn(myMap);
              //  }    
 
@@ -207,11 +214,7 @@
 
  function loadTile(yx, myMap, myRenderer, myMarkersGroup) {
 
-     //var prefix = "https://d3863ripe95iiz.cloudfront.net/tiles/"
-
-     var prefix="http://icesat2webview.s3-website.eu-central-1.amazonaws.com/tiles/"
-     //prefix="tiles"
-     var path = prefix + TILE_DEF_ZL + "/" + yx[1] + "/" + yx[0] + ".csv.gz"
+     var path =  TILES_ROOT + TILE_DEF_ZL + "/" + yx[1] + "/" + yx[0] + ".csv.gz"
 
      // path = "tiles/11/1101/678.csv.gz"
      //console.log("loadTile " + path);

@@ -2,6 +2,10 @@ const webpack = require('webpack');
 const paths = require('./paths')
 const path = require('path');
 
+const DEVELOPMENT=process.env.NODE_ENV==='development'
+console.log('DEVELOPMENT=' + DEVELOPMENT)
+
+
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -76,7 +80,7 @@ module.exports = {
         test: /\.css$/,
         use: [
           'style-loader',
-          {loader: 'css-loader', options: {sourceMap: true, importLoaders: 1}},
+          {loader: 'css-loader', options: {sourceMap: DEVELOPMENT, importLoaders: 1}},
          
         ],
       },

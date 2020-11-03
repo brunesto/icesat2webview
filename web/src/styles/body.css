@@ -33,7 +33,10 @@ body {
     position: relative;
     left: -50%;
     top: 100px;
+    text-align: center;
+    z-index: 799;
 }
+
 
 .leaflet-touch .leaflet-control-pan div,
 #btnBar button, 

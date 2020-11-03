@@ -49,6 +49,9 @@ geoid elevation DONE
 publish . webpack + amazon
 
 
+# upload to aws
+aws s3 sync --no-follow-symlinks /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist  s3://icesat2webview/
+
 
 
 # nice sample tiles

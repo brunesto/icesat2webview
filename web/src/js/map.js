@@ -48,7 +48,7 @@ export function updatePos(lat, lon,zoom) {
 
 function showHideMarkerGroup() {
     if (myMap.getZoom() < TILE_SHOW_FROM_ZL) {
-        mediator.alertInfo("&#9888; Zoom in to display data")
+        mediator.alertInfo("Zoom in to display <br/> Icesat2 data")
         myMap.removeLayer(myMarkersGroup);
     } else {
         mediator.alertInfo("")

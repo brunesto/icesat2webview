@@ -13,27 +13,40 @@
     background-color: #fff;
     color:black;
     border-radius: 5px;
+    display:block;
+    min-width:90px;
+    min-height:30px;
+    margin-top:5px;
 }
 
 
-#btnBar button:hover {
-    background-color: #ddd;    
+#btnBar button:hover{
+     background-color: #ddd;    
 }
 
-#switchLayerBtn {
-    width:50px;
-    height:50px;
+
+XXswitchLayerBtn:hover #switchLayerBtnLabel ,
+XXXswitchLayerBtnLabel{
+    background-color: white;
 }
 
-#switchLayerBtn.nextIs-map{
+#switchLayerBtn{
+    background-position: 0px 20px;
+    background-repeat: no-repeat;
+}
+#switchLayerBtnPreview{
+    height:30px;
+}
+
+.nextIs-map{
     background-image: url("../images/map.png");
 }
 
-#switchLayerBtn.nextIs-aerial {
+.nextIs-aerial {
     background-image: url("../images/aerial.png");
 }
 
 
-#switchLayerBtn.nextIs-dark {
+.nextIs-dark {
     background-image: url("../images/dark.png");
 }
