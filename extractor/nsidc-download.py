@@ -186,6 +186,7 @@ def cmr_download(urls):
     credentials = None
 
     for index, url in enumerate(urls, start=1):
+        print(url) 
         if not credentials and urlparse(url).scheme == 'https':
             credentials = get_credentials(url)
 

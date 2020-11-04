@@ -7,13 +7,16 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const TerserPlugin = require('terser-webpack-plugin');
 
+const { WebpackConfigDumpPlugin } = require("webpack-config-dump-plugin");
+
 module.exports = merge(common, {
   mode: 'production',
   devtool: false,
   output: {
     path: paths.build,
     publicPath: '/',
-    filename: 'js/[name].[contenthash].bundle.js',
+    filename: 'site/js/[name].[contenthash].bundle.js',
+    assetModuleFilename:'site/images/[hash][ext][query]',
   },
   plugins: [
     /* Extracts CSS into separate files
@@ -23,6 +26,7 @@ module.exports = merge(common, {
       chunkFilename: '[id].css',
     }),*/
   //  new BundleAnalyzerPlugin(),
+  new WebpackConfigDumpPlugin(),
   ],
   module: {
     rules: [
