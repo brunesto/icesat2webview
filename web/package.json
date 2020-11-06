@@ -2,7 +2,9 @@
   "name": "icesat2webview",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack serve --config config/webpack.dev.js",
-    "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.js && ln -s ../tiles dist/tiles && http-server -p8443 dist -S -C cert.pem"
+    "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.js ",
+    "serve-dist":  "ln -s ../tiles dist/tiles && http-server -p8443 dist -S -C cert.pem"
+    
   },
   "devDependencies": {
     "@babel/core": "^7.12.1",
@@ -26,7 +28,7 @@
     "webpack-merge": "^5.2.0"
   },
   "dependencies": {
-    "egm96-universal": "^1.0.2",
+    "egm96-universal": "^1.0.2",    
     "jquery": "^3.5.1",
     "js-cookie": "^2.2.1",
     "leaflet": "^1.7.1",

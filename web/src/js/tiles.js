@@ -1,10 +1,8 @@
  import pako from 'pako'
  //import * as egm96 from 'egm96-universal'
+ import {TextDecoder} from "./textdecoder.js"
 
 
- 
- 
- 
  // TODO use CircleMarker, it will be faster
  const CircleMarkerWithZoom = L.Circle.extend({
 
@@ -76,8 +74,8 @@
 
 
      var egmInfo = "<span class=\"waiting\"></span>"
-     if (ellipsoidToEgm96) 
-         egmInfo=ellipsoidToEgm96(lat, lon, amsl).round(1)
+     if (ellipsoidToEgm96)
+         egmInfo = ellipsoidToEgm96(lat, lon, amsl).round(1)
 
      var r =
          '<tr><th>Track id:</th><td>' + rgt + "</td></tr>" +
@@ -171,16 +169,16 @@
              .openOn(myMap);
 
 
-             import('egm96-universal').then((egm96) => {
-                popup.setContent(records2string(ds, egm96.ellipsoidToEgm96))
-              }).catch(error => 'An error occurred while loading the component')
+         import ('egm96-universal').then((egm96) => {
+             popup.setContent(records2string(ds, egm96.ellipsoidToEgm96))
+         }).catch(error => 'An error occurred while loading the component')
 
 
          // if (popup.isOpen()){
          //popup.closePopup();
-        
-             //popup.openOn(myMap);
-             //  }    
+
+         //popup.openOn(myMap);
+         //  }    
 
      }
      polyline.on('click', f)
@@ -214,13 +212,13 @@
 
  function loadTile(yx, myMap, myRenderer, myMarkersGroup) {
 
-     var path =  TILES_ROOT + TILE_DEF_ZL + "/" + yx[1] + "/" + yx[0] + ".csv.gz"
+     var path = TILES_ROOT + TILE_DEF_ZL + "/" + yx[1] + "/" + yx[0] + ".csv.gz"
 
      // path = "tiles/11/1101/678.csv.gz"
      //console.log("loadTile " + path);
 
-     if (DEV){
-        addTileMarker(yx, myRenderer, myMarkersGroup)
+     if (DEV) {
+         addTileMarker(yx, myRenderer, myMarkersGroup)
      }
 
 
@@ -236,31 +234,35 @@
          oReq.responseType = "arraybuffer";
 
          oReq.onload = function(oEvent) {
-            console.log("got response "+oReq.status+" "+path)
-            
-            
-             try {
-                var arrayBuffer = oReq.response;
+             console.log("got response " + oReq.status + " " + path)
 
-                  // if you want to access the bytes:
-                var byteArray = new Uint8Array(arrayBuffer);
-                var inflatedUint8array = pako.inflate(byteArray);
-                var gunziped = new TextDecoder("utf-8").decode(inflatedUint8array)
-                 //console.log("gunziped type",typeof gunziped)
-                 //console.log("gunziped",gunziped)
-                 processTile(gunziped.split("\n"), myMap, myRenderer, myMarkersGroup)
-             } catch (error) {
-                 //console.log(""+path,error)
-                 tiles[yx] = 'e'
+             if (oReq.status == 200 || oReq.status == 304) {
+
+                 try {
+                     var arrayBuffer = oReq.response;
+
+                     // if you want to access the bytes:
+                     var byteArray = new Uint8Array(arrayBuffer);
+                     var inflatedUint8array = pako.inflate(byteArray);
+                     var gunziped = new TextDecoder().decode(inflatedUint8array)
+                         //console.log("gunziped type",typeof gunziped)
+                         //console.log("gunziped",gunziped)
+                     processTile(gunziped.split("\n"), myMap, myRenderer, myMarkersGroup)
+                 } catch (error) {
+                     console.log("" + path + " exception:", error)
+                     tiles[yx] = 'e'
+                 }
+                 //var blob = new Blob([arrayBuffer], {type: "image/png"});
+                 //var url = URL.createObjectURL(blob);
+                 //someImageElement.src = url;
+
+                 // whatever...
+                 tiles[yx] = 'ok'
              }
-             //var blob = new Blob([arrayBuffer], {type: "image/png"});
-             //var url = URL.createObjectURL(blob);
-             //someImageElement.src = url;
-
-             // whatever...
-             tiles[yx] = 'ok'
+             tiles[yx] = 'status ' + oReq.status
          };
          oReq.onerror = function(oEvent) {
+             console.log("" + path + " req.onerror:", oEvent)
              tiles[yx] = 'x'
          }
          oReq.send();
