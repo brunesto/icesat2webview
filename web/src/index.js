@@ -3,13 +3,21 @@ import { initMap, myMap, myRenderer, myMarkersGroup, updatePos, switchLayer } fr
 import { initButtons } from './js/buttons.js';
 import { maybeLoadTiles } from './js/tiles.js';
 
+import urlParse from 'url-parse';
+
+//import 'url-search-params-polyfill';
+
+
+global.DEV=window.location.toString().indexOf("DEV=true")!=-1
+console.log("DEV:"+DEV)
+
 // icesat data tile level - this cannot be changed without recompiling the data
 global.TILE_DEF_ZL = 11
 
 // tiles will be loaded from zoomlevel
-global.TILE_LOAD_FROM_ZL = 12
+global.TILE_LOAD_FROM_ZL = 14
     // tiles will be shown from zoomlevel
-global.TILE_SHOW_FROM_ZL = 12
+global.TILE_SHOW_FROM_ZL = 14
     //var prefix = "https://d3863ripe95iiz.cloudfront.net/tiles/"
     //  global.TILES_ROOT="http://icesat2webview.s3-website.eu-central-1.amazonaws.com/tiles/"
      global.TILES_ROOT="tiles/"

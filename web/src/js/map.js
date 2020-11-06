@@ -29,21 +29,24 @@ L.Icon.Default.mergeOptions({
 export var myMap;
 export var myRenderer;
 export var myMarkersGroup;
-// var marker;
+var marker;
 
 
-export function updatePos(lat, lon,zoom) {
-    console.log("updatePos(" + lat + " , " + lon + ")")
-    // if (marker != undefined)
-    //     myMap.removeLayer(marker)
-    // marker = L.marker([lat, lon]);
-    // marker.addTo(myMap)
-    if (zoom)
-        myMap.setView([lat, lon], zoom)
+export function updatePos(lat, lon, zoom, mark) {
+    console.log("updatePos(" + lat + " , " + lon + "," + zoom + "," + mark + ")")
+    if (mark) {
+        if (marker != undefined)
+            myMap.removeLayer(marker)
+        marker = L.marker([lat, lon]);
+        marker.addTo(myMap)
+        marker.on("click", () => { myMap.removeLayer(marker) })
+    }
+
+    myMap.setView([lat, lon], zoom)
 
     persistCoords()
-        
-    
+
+
 }
 
 function showHideMarkerGroup() {
@@ -106,14 +109,20 @@ export function initMap(config) {
     tileLayers["aerial"] = esriTileLayer;
 
 
+    var CartoDB_LightMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+    });
+    tileLayers["light"] = CartoDB_LightMatter;
+
+
     var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19
     });
     tileLayers["dark"] = CartoDB_DarkMatter;
-
-
 
 
 
@@ -132,11 +141,13 @@ export function initMap(config) {
 
     myMap.on('zoomend', function() {
         persistCoords();
-        showHideMarkerGroup() })
-    myMap.on('moveend', ()=>{
-       
+        showHideMarkerGroup()
+    })
+    myMap.on('moveend', () => {
+
         persistCoords();
-        config.maybeLoadTiles();})
+        config.maybeLoadTiles();
+    })
 
 
     var osm2 = new L.TileLayer(osmUrl, { minZoom: 0, maxZoom: 13, attribution: osmAttribution });
@@ -147,25 +158,25 @@ export function initMap(config) {
 
 
 
-    var prevLat=Cookies.get('lat')
-    if (prevLat){
-        var prevLon=Cookies.get('lon')
-        var prevZoom=Cookies.get('zoom')
-       updatePos(prevLat,prevLon,prevZoom)
+    var prevLat = Cookies.get('lat')
+    if (prevLat) {
+        var prevLon = Cookies.get('lon')
+        var prevZoom = Cookies.get('zoom')
+        updatePos(prevLat, prevLon, prevZoom, false)
     }
 
 }
 
-function persistCoords(){
-    var coords=myMap.getCenter()
+function persistCoords() {
+    var coords = myMap.getCenter()
     Cookies.set('lat', coords.lat);
     Cookies.set('lon', coords.lng);
     Cookies.set('zoom', myMap.getZoom());
 }
 
-var currentTileLayer=null
+var currentTileLayer = null
 export function switchLayer(layerName) {
-    console.log("switchLayer "+layerName)
+    console.log("switchLayer " + layerName)
     if (currentTileLayer != null)
         myMap.removeLayer(tileLayers[currentTileLayer]);
 
@@ -174,4 +185,3 @@ export function switchLayer(layerName) {
         myMap.addLayer(tileLayers[layerName]);
     }
 }
-

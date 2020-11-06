@@ -75,15 +75,15 @@
 
 
 
-     var egmInfo = "..."
+     var egmInfo = "<span class=\"waiting\"></span>"
      if (ellipsoidToEgm96) 
          egmInfo=ellipsoidToEgm96(lat, lon, amsl).round(1)
 
      var r =
          '<tr><th>Track id:</th><td>' + rgt + "</td></tr>" +
          "<tr><th>Lat,Lon:</th><td>" + lat + "," + lon + "</td></tr>" +
-         '<tr><th>Elevation:</th><td>' + amsl + "m (wgs84)" +
-         '</br>' + egmInfo + "m (egm96)" +
+         '<tr><th>Elevation:</th><td>' + amsl + " m (wgs84)" +
+         '</br>' + egmInfo + " m (egm96)" +
          "</td></tr>" +
          "<tr><th>Time:</th><td>" + date.toISOString() + "</td></tr>" +
 
@@ -219,8 +219,9 @@
      // path = "tiles/11/1101/678.csv.gz"
      //console.log("loadTile " + path);
 
-
-     addTileMarker(yx, myRenderer, myMarkersGroup)
+     if (DEV){
+        addTileMarker(yx, myRenderer, myMarkersGroup)
+     }
 
 
      if (filterTile(yx)) {

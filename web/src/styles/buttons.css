@@ -50,3 +50,7 @@ XXXswitchLayerBtnLabel{
 .nextIs-dark {
     background-image: url("../images/dark.png");
 }
+
+.nextIs-light {
+    background-image: url("../images/light.png");
+}

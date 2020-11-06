@@ -23,13 +23,15 @@ link to photon data
 
 # upload to aws
 npm run build
-aws s3 sync --no-follow-symlinks /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist  s3://icesat2webview/
+aws s3 cp /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/index.html  s3://icesat2webview/
+aws s3 sync --no-follow-symlinks /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/site  s3://icesat2webview/site
 
 
 browse directly thru s3 (so cloudfront is not required?)
 https://icesat2webview.s3.eu-central-1.amazonaws.com/index.html
 
 
+https://d3863ripe95iiz.cloudfront.net/index.html
 
 
 Notes:
@@ -47,6 +49,6 @@ http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile
 
 # extract bottom 100x100px:
 curl -o /tmp/11185.png https://b.basemaps.cartocdn.com/dark_all/15/17658/11112.png
-convert  /tmp/11185.png-crop 100x100+156+156 dark.png
+convert  /tmp/11185.png -crop 100x100+156+156 light.png
 
 

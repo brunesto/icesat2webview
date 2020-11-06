@@ -16,10 +16,11 @@ module.exports = merge(common, {
     //historyApiFallback: true,
    // contentBase: [ path.join(__dirname,"tiles")],
     publicPath: "/",
+    https:true,
     open: false,
     compress: true,
     hot: true,
-    port: 8080,
+    port: 8443,
     serveIndex:true,
 
     contentBase: [ path.join(__dirname+"/..", 'tiles')],

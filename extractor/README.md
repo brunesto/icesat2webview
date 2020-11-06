@@ -46,7 +46,7 @@ extractor/extractor.py ~/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/di
 
 
 # uploading to aws
-aws s3 sync /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/icesat-tiles s3://icesat2webview/tiles/
+aws s3 sync --no-follow-symlinks /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/tiles s3://icesat2webview/
 
 
 # links

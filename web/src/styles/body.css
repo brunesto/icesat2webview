@@ -10,7 +10,6 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-
 #alertInfo {
     position: absolute;
     padding: 10px;
@@ -18,7 +17,6 @@ body {
     border: 2px dashed red;
     border-radius: 5px;
 }
-
 
 #alertInfoWrap {
     float: left;
@@ -37,11 +35,20 @@ body {
     z-index: 799;
 }
 
-
 .leaflet-touch .leaflet-control-pan div,
-#btnBar button, 
-.leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar,
-.leaflet-control-minimap{
-    border:2px solid darkgray !important;
+#btnBar button,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar,
+.leaflet-control-minimap {
+    border: 2px solid darkgray !important;
     border-radius: 6px !important;
+}
+
+.waiting {
+    display: inline-block;
+    width:1em;
+    min-height:1em;
+    background-size: 50px 50px;    
+    background-position: center center;
+    background-image: url("../images/waiting-icon-gif-25.jpg");
 }
