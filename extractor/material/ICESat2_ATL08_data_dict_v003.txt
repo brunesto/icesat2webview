@@ -1,0 +1,1186 @@
+ATL08 Product Data Dictionary
+Date Generated : 2020-02-03T22:48:08
+
+Group: /
+
+Conventions                        (Attribute)   CF-1.6
+
+citation                           (Attribute)   SET_BY_META
+
+contributor_name                   (Attribute)   Thomas E Neumann (thomas.neumann@nasa.gov), Thorsten Markus (thorsten.markus@nasa.gov),
+                                                 Suneel Bhardwaj (suneel.bhardwaj@nasa.gov) David W Hancock III (david.w.hancock@nasa.gov)
+
+contributor_role                   (Attribute)   Instrument Engineer, Investigator, Principle Investigator, Data Producer, Data Producer
+
+creator_name                       (Attribute)   SET_BY_META
+
+date_created                       (Attribute)   SET_BY_PGE
+
+date_type                          (Attribute)   UTC
+
+description                        (Attribute)   This data set (ATL08) contains along-track heights above the WGS84 ellipsoid (ITRF2014 reference
+                                                 frame) for the ground and canopy surfaces. The canopy and ground surfaces are processed in fixed 100
+                                                 m data segments, which typically contain more than 100 sig
+
+featureType                        (Attribute)   trajectory
+
+geospatial_lat_max                 (Attribute)   0.0
+
+geospatial_lat_min                 (Attribute)   0.0
+
+geospatial_lat_units               (Attribute)   degrees_north
+
+geospatial_lon_max                 (Attribute)   0.0
+
+geospatial_lon_min                 (Attribute)   0.0
+
+geospatial_lon_units               (Attribute)   degrees_east
+
+granule_type                       (Attribute)   ATL08
+
+hdfversion                         (Attribute)   SET_BY_PGE
+
+history                            (Attribute)   SET_BY_PGE
+
+identifier_file_uuid               (Attribute)   SET_BY_PGE
+
+identifier_product_doi             (Attribute)   10.5067/ATLAS/ATL08.001
+
+identifier_product_doi_authority   (Attribute)   http://dx.doi.org
+
+identifier_product_format_version (Attribute)    SET_BY_PGE
+
+identifier_product_type            (Attribute)   ATL08
+
+institution                        (Attribute)   SET_BY_META
+
+instrument                         (Attribute)   SET_BY_META
+
+keywords                           (Attribute)   SET_BY_META
+
+keywords_vocabulary                (Attribute)   SET_BY_META
+
+level                              (Attribute)   L3A
+
+license                            (Attribute)   Data may not be reproduced or distributed without including the citation for this product included in this
+                                                 metadata. Data may not be distributed in an altered form without the written permission of the ICESat-2
+                                                 Science Project Office at NASA/GSFC.
+
+naming_authority                   (Attribute)   http://dx.doi.org
+
+platform                           (Attribute)   SET_BY_META
+
+processing_level                   (Attribute)   L3A
+
+project                            (Attribute)   SET_BY_META
+
+publisher_email                    (Attribute)   SET_BY_META
+publisher_name             (Attribute)   SET_BY_META
+
+publisher_url              (Attribute)   SET_BY_META
+
+references                 (Attribute)   SET_BY_META
+
+short_name                 (Attribute)   ATL08
+
+source                     (Attribute)   SET_BY_META
+
+spatial_coverage_type      (Attribute)   Horizontal
+
+standard_name_vocabulary   (Attribute)   CF-1.6
+
+summary                    (Attribute)   SET_BY_META
+
+time_coverage_duration     (Attribute)   SET_BY_PGE
+
+time_coverage_end          (Attribute)   SET_BY_PGE
+
+time_coverage_start        (Attribute)   SET_BY_PGE
+
+time_type                  (Attribute)   CCSDS UTC-A
+
+title                      (Attribute)   SET_BY_META
+
+Label                      Datatype     long_name              units                     description
+(Layout)                   (Dimensions) (standard_name)        source
+
+ds_metrics                 INTEGER_1     Metrics               1                         Dimension scale for metrics.
+CONTIGUOUS                 (9)
+                                                                                         Flag Values: ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+                                                                                         Flag Meanings: ['metrics1', 'metrics2', 'metrics3', 'metrics4',
+                                                                                         'metrics5', 'metrics6', 'metrics7', 'metrics8', 'metrics9']
+
+ds_surf_type               INTEGER       Surface Type          1                         Dimension scale indexing the surface type array. Index=1
+COMPACT                    (5)           Dimension Scale                                 corresponds to Land; index = 2 corresponds to Ocean; Index
+                                                                                         = 3 corresponds to SeaIce; Index=4 corresponds to LandIce;
+                                                                                         Index=5 corresponds to InlandWater
+
+                                                                                         Flag Values: ['1', '2', '3', '4', '5']
+                                                                                         Flag Meanings: ['land', 'ocean', 'seaice', 'landice',
+                                                                                         'inland_water']
+
+Group: /ancillary_data
+
+Description                (Attribute)   Contains information ancillary to the data product. This may include product characteristics, instrument
+                                         characteristics and/or processing constants.
+
+data_rate                  (Attribute)   Data within this group pertain to the granule in its entirety.
+
+Label                      Datatype     long_name              units                     description
+(Layout)                   (Dimensions) (standard_name)        source
+
+atlas_sdp_gps_epoch        DOUBLE        ATLAS Epoch           seconds since 1980-       Number of GPS seconds between the GPS epoch (1980-01-
+COMPACT                    (1)           Offset                01-                       06T00:00:00.000000Z UTC) and the ATLAS Standard Data
+                                                               06T00:00:00.000000Z       Product (SDP) epoch (2018-01-01:T00.00.00.000000 UTC).
+                                                               Operations                Add this value to delta time parameters to compute full
+                                                                                         gps_seconds (relative to the GPS epoch) for each data point.
+
+control                    STRING        Control File          1                         PGE-specific control file used to generate this granule. To re-
+CONTIGUOUS                 (1)                                 Operations                use, replace breaks (BR) with linefeeds.
+
+data_end_utc               STRING        End UTC Time of       1                         UTC (in CCSDS-A format) of the last data point within the
+COMPACT                    (1)           Granule (CCSDS-       Derived                   granule.
+                                         A, Actual)
+
+data_start_utc             STRING        Start UTC Time of     1                         UTC (in CCSDS-A format) of the first data point within the
+COMPACT                    (1)           Granule (CCSDS-       Derived                   granule.
+                                         A, Actual)
+
+end_cycle                  INTEGER       Ending Cycle          1                         The ending cycle number associated with the data contained
+COMPACT                    (1)                                 Derived                   within this granule. The cycle number is the counter of the
+                                                                                         number of 91-day repeat cycles completed by the mission.
+
+end_delta_time             DOUBLE        ATLAS End Time        seconds since 2018-       Number of GPS seconds since the ATLAS SDP epoch at the
+COMPACT                    (1)           (Actual)              01-01                     last data point in the file. The ATLAS Standard Data
+                                         time                  Derived                   Products (SDP) epoch offset is defined within
+                                                                        /ancillary_data/atlas_sdp_gps_epoch as the number of GPS
+                                                                        seconds between the GPS epoch (1980-01-
+                                                                        06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By
+                                                                        adding the offset contained within atlas_sdp_gps_epoch to
+                                                                        delta time parameters, the time in gps_seconds relative to
+                                                                        the GPS epoch can be computed.
+
+end_geoseg          INTEGER   Ending              1                     The ending geolocation segment number associated with the
+COMPACT             (1)       Geolocation         Derived               data contained within this granule. ICESat granule
+                              Segment                                   geographic regions are further refined by geolocation
+                                                                        segments. During the geolocation process, a geolocation
+                                                                        segment is created approximately every 20m from the start
+                                                                        of the orbit to the end. The geolocation segments help align
+                                                                        the ATLAS strong a weak beams and provide a common
+                                                                        segment length for the L2 and higher products. The
+                                                                        geolocation segment indices differ slightly from orbit-to-orbit
+                                                                        because of the irregular shape of the Earth. The geolocation
+                                                                        segment indices on ATL01 and ATL02 are only approximate
+                                                                        because beams have not been aligned at the time of their
+                                                                        creation.
+
+end_gpssow          DOUBLE    Ending GPS SOW seconds                    GPS seconds-of-week of the last data point in the granule.
+COMPACT             (1)       of Granule     Derived
+                              (Actual)
+
+end_gpsweek         INTEGER   Ending GPSWeek      weeks from 1980-01-   GPS week number of the last data point in the granule.
+COMPACT             (1)       of Granule          06
+                              (Actual)            Derived
+
+end_orbit           INTEGER   Ending Orbit        1                     The ending orbit number associated with the data contained
+COMPACT             (1)       Number              Derived               within this granule. The orbit number increments each time
+                                                                        the spacecraft completes a full orbit of the Earth.
+
+end_region          INTEGER   Ending Region       1                     The ending product-specific region number associated with
+COMPACT             (1)                           Derived               the data contained within this granule. ICESat-2 data
+                                                                        products are separated by geographic regions. The data
+                                                                        contained within a specific region are the same for ATL01
+                                                                        and ATL02. ATL03 regions differ slightly because of different
+                                                                        geolocation segment locations caused by the irregular shape
+                                                                        of the Earth. The region indices for other products are
+                                                                        completely independent.
+
+end_rgt             INTEGER   Ending Reference    1                     The ending reference groundtrack (RGT) number associated
+COMPACT             (1)       Groundtrack         Derived               with the data contained within this granule. There are 1387
+                                                                        reference groundtrack in the ICESat-2 repeat orbit. The
+                                                                        reference groundtrack increments each time the spacecraft
+                                                                        completes a full orbit of the Earth and resets to 1 each time
+                                                                        the spacecraft completes a full cycle.
+
+granule_end_utc     STRING    End UTC Time of     1                     Requested end time (in UTC CCSDS-A) of this granule.
+COMPACT             (1)       Granule (CCSDS-     Derived
+                              A, Requested)
+
+granule_start_utc   STRING    Start UTC Time of   1                     Requested start time (in UTC CCSDS-A) of this granule.
+COMPACT             (1)       Granule (CCSDS-     Derived
+                              A, Requested)
+
+qa_at_interval      DOUBLE    QA Along-Track      1                     Statistics time interval for along-track QA data.
+COMPACT             (1)       Interval            control
+
+release             STRING    Release Number      1                     Release number of the granule. The release number is
+COMPACT             (1)                           Operations            incremented when the software or ancillary data used to
+                                                                        create the granule has been changed.
+
+start_cycle         INTEGER   Starting Cycle      1                     The starting cycle number associated with the data
+COMPACT             (1)                           Derived               contained within this granule. The cycle number is the
+                                                                        counter of the number of 91-day repeat cycles completed by
+                                                                        the mission.
+
+start_delta_time    DOUBLE    ATLAS Start Time    seconds since 2018-   Number of GPS seconds since the ATLAS SDP epoch at the
+COMPACT             (1)       (Actual)            01-01                 first data point in the file. The ATLAS Standard Data
+                              time                Derived               Products (SDP) epoch offset is defined within
+                                                                        /ancillary_data/atlas_sdp_gps_epoch as the number of GPS
+                                                                                       seconds between the GPS epoch (1980-01-
+                                                                                       06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By
+                                                                                       adding the offset contained within atlas_sdp_gps_epoch to
+                                                                                       delta time parameters, the time in gps_seconds relative to
+                                                                                       the GPS epoch can be computed.
+
+start_geoseg                  INTEGER       Starting             1                     The starting geolocation segment number associated with
+COMPACT                       (1)           Geolocation          Derived               the data contained within this granule. ICESat granule
+                                            Segment                                    geographic regions are further refined by geolocation
+                                                                                       segments. During the geolocation process, a geolocation
+                                                                                       segment is created approximately every 20m from the start
+                                                                                       of the orbit to the end. The geolocation segments help align
+                                                                                       the ATLAS strong a weak beams and provide a common
+                                                                                       segment length for the L2 and higher products. The
+                                                                                       geolocation segment indices differ slightly from orbit-to-orbit
+                                                                                       because of the irregular shape of the Earth. The geolocation
+                                                                                       segment indices on ATL01 and ATL02 are only approximate
+                                                                                       because beams have not been aligned at the time of their
+                                                                                       creation.
+
+start_gpssow                  DOUBLE        Start GPS SOW        seconds               GPS seconds-of-week of the first data point in the granule.
+COMPACT                       (1)           of Granule           Derived
+                                            (Actual)
+
+start_gpsweek                 INTEGER       Start GPSWeek of weeks from 1980-01-       GPS week number of the first data point in the granule.
+COMPACT                       (1)           Granule (Actual) 06
+                                                             Derived
+
+start_orbit                   INTEGER       Starting Orbit       1                     The starting orbit number associated with the data contained
+COMPACT                       (1)           Number               Derived               within this granule. The orbit number increments each time
+                                                                                       the spacecraft completes a full orbit of the Earth.
+
+start_region                  INTEGER       Starting Region      1                     The starting product-specific region number associated with
+COMPACT                       (1)                                Derived               the data contained within this granule. ICESat-2 data
+                                                                                       products are separated by geographic regions. The data
+                                                                                       contained within a specific region are the same for ATL01
+                                                                                       and ATL02. ATL03 regions differ slightly because of different
+                                                                                       geolocation segment locations caused by the irregular shape
+                                                                                       of the Earth. The region indices for other products are
+                                                                                       completely independent.
+
+start_rgt                     INTEGER       Starting             1                     The starting reference groundtrack (RGT) number
+COMPACT                       (1)           Reference            Derived               associated with the data contained within this granule. There
+                                            Groundtrack                                are 1387 reference groundtrack in the ICESat-2 repeat orbit.
+                                                                                       The reference groundtrack increments each time the
+                                                                                       spacecraft completes a full orbit of the Earth and resets to 1
+                                                                                       each time the spacecraft completes a full cycle.
+
+version                       STRING        Version              1                     Version number of this granule within the release. It is a
+COMPACT                       (1)                                Operations            sequential number corresponding to the number of times the
+                                                                                       granule has been reprocessed for the current release.
+
+Group: /ancillary_data/land
+
+Description                   (Attribute)   Constants used in the land_vegetation ATBD
+
+Label                         Datatype     long_name             units                 description
+(Layout)                      (Dimensions) (standard_name)       source
+
+atl08_region                  INTEGER       atl08 region         1                     ATL08 region(s) encompassed by ATL03 granule being
+CHUNKED                       (:)           atl08_region         Land ATBD             processed
+                                                                 29March2019, Table
+                                                                 2.4
+
+bin_size_h                    FLOAT         neighbor             1                     Histogram bin size for the alternative DRAGANN algorithm.
+COMPACT                       (1)           histogram bin size   ATBD (section 4.2.1   (Default = 1.0)
+                                                                 step 3)
+
+bin_size_n                    INTEGER       neighbor             1                     Size of neighbor histogram bins in number of neighbors in
+COMPACT                       (1)           histogram bin size   ATBD (section 4.2     DRAGANN. (Default = 1)
+                                                                 step 4)
+
+bright_thresh                 FLOAT         brightness flag      1                     Threshold to set brightness_flag, average ground photons
+COMPACT                       (1)           average ph per       ATBD section 2.4.21   per shot. (Default = 3.0)
+                                      shot
+
+ca_class                    INTEGER   Canopy class          1                     Canopy classification flag value. (Default = 2)
+COMPACT                     (1)       value                 ATBD section 4.12
+                                                            step 1
+
+can_noise_thresh            INTEGER   Threshold for         1                     Threshold, as a number of canopy photons in the
+COMPACT                     (1)       reclassification of   ATBD section 4.11     CAN_FILT_SEG, used for the reclassification of canopy
+                                      canopy as noise       step 6                signal photons. (Default = 75)
+
+can_stat_thresh             FLOAT     Threshold for         1                     Minimum percentage of canopy photons to compute
+COMPACT                     (1)       canopy statistics     ATBD section 4.14.1   statistics upon. (Default =0.05)
+                                                            step 1
+
+canopy_flag_switch          INTEGER   canopy_flag           1                     Controls entrance to the canopy flag subroutine . (Default =
+COMPACT                     (1)       switch                ATBD section 4.3      1)
+
+canopy_seg                  INTEGER   segment size in       1                     Segment in number of signal photons for filtering sparse
+COMPACT                     (1)       canopy filter         ATBD section 4.11     canopy cover. (Default = 500)
+                                                            step 6
+
+class_thresh                INTEGER   Threshold flag        1                     Threshold flag value for classification of photons as signal
+COMPACT                     (1)       value for             ATBD section 4.2      via input from ATL03. (Default =3)
+                                      classification of     step 17
+                                      photons as signal
+                                      via input from
+                                      ATL03
+
+cloud_filter_switch         INTEGER   cloud_filter switch   1                     Controls entrance to the cloud_filter subroutine. (Default = 0)
+COMPACT                     (1)                             ATBD section 4.1.1
+
+del_amp                     FLOAT     Step Gaussian         1                     Step size for optimizing the amplitude variable of Gaussian
+COMPACT                     (1)       Amplitude             ATBD section 4.2      function. (Default = 1.0)
+                                      optimization          step 7
+
+del_mu                      FLOAT     Step size for         1                     Step size for optimizing the mean parameter of Gaussian
+COMPACT                     (1)       optimizing the        ATBD section 4.2      function. (Default = 0.2)
+                                      mean parameter        step 7
+                                      of Gaussian
+                                      function.
+
+del_sigma                   FLOAT     Step size for      1                        Step size for optimizing the standard deviation parameter of
+COMPACT                     (1)       optimizing the     ATBD section 4.2         Gaussian function. (Default = 0.5)
+                                      standard deviation step 7
+                                      parameter of
+                                      Gaussian
+                                      function.
+
+dem_filter_switch           INTEGER   dem_filter switch     1                     Controls filtering based on DEM. (Default = 1)
+COMPACT                     (1)                             ATBD section 4.5
+                                                            step 5
+
+dem_removal_percent_limit   FLOAT     dem_removal_flag percent                    Percent of photons in land segment failing DEM test to set
+COMPACT                     (1)       set threshold    ATBD section 2.4.11        dem_removal_flag. (default = 20.0)
+
+dragann_switch              INTEGER   DRAGANN switch        1                     Controls entrance to the DRAGANN subroutine. (Default =1)
+COMPACT                     (1)                             ATBD section 4.2
+
+dseg                        INTEGER   DRAGANN               1                     DRAGANN segment length in 20m geolocated segments
+COMPACT                     (1)       segment size          ATBD section 4.2.1    along ground track. (Default=170)
+                                                            step 1
+
+dseg_buf                    INTEGER   DRAGANN               1                     DRAGANN segment buffer length in 20m geolocated
+COMPACT                     (1)       segment buffer        ATBD section 4.2.1    segments along ground track. (Default=10)
+                                      size                  step 1
+
+fnlgnd_filter_switch        INTEGER   finalground filter    1                     Controls filtering based on FINALGROUND. (Default = 1)
+COMPACT                     (1)       switch                ATBD section 4.13
+                                                            step 2
+
+gnd_stat_thresh             FLOAT     Threshold for         1                     Minimum percentage of terrain photons to compute statistics
+COMPACT                     (1)       terrain statistics    ATBD section 4.13     upon. (Default =0.05)
+                                                            step 2
+
+gthresh_factor              FLOAT     threshold for         1                     Controls threshold for Gaussian Elimination. (Default = 0.1)
+COMPACT                     (1)       Gaussian              ATBD sGaussian
+                           Elimination           Rejection section of
+                                                 Appendix A
+
+h_canopy_perc    FLOAT     h_canopy              1                      Percentile component of h_canopy parameter. (Default
+COMPACT          (1)       percentile            ATBD section 2.2.3     =0.95)
+
+iter_gnd         INTEGER   Iterations of      1                         Iterations of smoothing of interpolated ground surface for
+COMPACT          (1)       smoothing of       ATBD section 4.10         refinement. (Default = 10)
+                           interpolated       step 1
+                           ground surface for
+                           ground estimate.
+
+iter_max         INTEGER   Maximum number        1                      Maximum number of iterations for optimizing the Gaussian
+COMPACT          (1)       of iterations for     ATBD section 4.2       parameters for fitting of histogram. (Default = 10)
+                           optimizing the        step 7
+                           Gaussian
+                           parameters for
+                           fitting of
+                           histogram.
+
+lseg             INTEGER   Long segment          1                      Long segment size in number of 20 meter segments along
+COMPACT          (1)       size                  ATBD section 4.1       ground track. (Default=500)
+                                                 step 1
+
+lseg_buf         INTEGER   Long segment          1                      Overlapping long segment buffer size in 20m geosegments
+COMPACT          (1)       buffer size           ATBD section 4.1       along ground track. (Default=10)
+                                                 step 2
+
+lw_filt_bnd      INTEGER   Proportionality      1                       Lower bound of the filter window size function. (Default = 5)
+COMPACT          (1)       coefficient for      ATBD section 4.4
+                           controlling the      step 2
+                           bounds of the filter
+                           window size as a
+                           function of
+                           number of signal
+                           photons.
+
+lw_gnd_bnd       FLOAT     Lower bound           meters                 Lower bound restricting the search of a ground surface in
+COMPACT          (1)       restricting the       ATBD section 4.7       canopy cases. (Default = -4.0)
+                           search of a           step 3
+                           ground surface in
+                           canopy cases.
+
+lw_toc_bnd       FLOAT     Lower bound           meters                 Lower bound restricting the search of a top of canopy
+COMPACT          (1)       restricting the       section 4.7 step 3     surface. (Default = -4.0)
+                           search of a top of    entered from section
+                           canopy surface.       4.8
+
+lw_toc_cut       FLOAT     Lower cutoff for      meters                 Lower cutoff for top of canopy surface. (Default = 2.0)
+COMPACT          (1)       top of canopy         ATBD section 4.8
+                                                 step 10
+
+max_atl03files   INTEGER   Maximum number        1                      Maximum number of input ATL03 files. (Default = 200)
+COMPACT          (1)       of input ATL03s       Operations
+
+max_atl09files   INTEGER   Maximum number        1                      Maximum number of input ATL09 files. (Default = 200)
+COMPACT          (1)       of input ATL09s       Operations
+
+max_peaks        INTEGER   Maximum number        1                      Maximum number of Gaussian peaks to fit in the data set in
+COMPACT          (1)       of Gaussian           ATBD section 4.2       DRAGANN. (Default =10)
+                           peaks to fit in the   step 9
+                           data set
+
+max_try          INTEGER   Maximum try           1                      Maximum number of tries to compute a P value in alternative
+COMPACT          (1)       count                 ATBD section 4.2.1     DRAGANN
+                                                 step 17
+
+min_nphs         INTEGER   Minimum input         1                      Minimum number of input photons from ATL03 to process.
+COMPACT          (1)       photons               Operations             (default=1)
+
+n_dec_mode       INTEGER   Mode decimal          1                      Number of decimal places to consider in mode computation.
+COMPACT          (1)       parameter             ATBD needed for        (Default =1)
+                                                 section 4.13 step
+                                                 3(h_te_mode)
+night_thresh               FLOAT     Threshold for        1                      Solar elevation threshold for determining night time
+COMPACT                    (1)       night                ATBD section 2.4.9     conditions. (Default =0.0)
+
+noise_class                INTEGER   Noise class value    1                      Noise classification flag value. (Default = 0)
+COMPACT                    (1)                            ATBD section 4.12
+                                                          step 1
+
+outlier_filter_switch      INTEGER   outlier_filter switch 1                     Controls entrance to the outlier filter subroutine. (Default = 1)
+COMPACT                    (1)                             ATBD section 4.6
+
+p_static                   FLOAT     Dragann              1                      Parameter for controlling the search radius in nearest
+COMPACT                    (1)       Parameter            ATBD section 4.2       neighbor search in DRAGANN. (Default = 20)
+                                                          step 1
+
+ph_removal_percent_limit   FLOAT     ph_removal_flag      percent                Percent of photons in land segment removed to set
+COMPACT                    (1)       set threshold        ATBD section 4.13      ph_removal_flag. (default = 50.0)
+                                                          step 4
+
+proc_geoseg                INTEGER   Geosegment           1                      Geosegment process interval length. This controls the
+COMPACT                    (1)       process interval     Operations             amount read from ATL03 and ATL09 at a time. (Default =
+                                     length                                      500000).
+
+psf                        FLOAT     Point Spread         meters                 Parameter controlling identification of photons around an
+COMPACT                    (1)       Function             ATBD section 4.7       interpolated surface. (Default = 0.5)
+                                                          step 12
+
+ref_dem_limit              FLOAT     DEM threshold        meters                 Reference DEM limit used to reclassify signal as noise.
+COMPACT                    (1)                            ATBD section 4.5       (default = 120.0)
+                                                          step 4
+
+ref_finalground_limit      FLOAT     finalground          meters                 Reference finalground limit used to reclassify signal as noise.
+COMPACT                    (1)       threshold            ATBD section 4.13      (default = 150.0)
+                                                          step 2
+
+relief_hbot                FLOAT     lower relief         meters                 The approximate relief of the L-km segment uses the
+COMPACT                    (1)       percentile           ATBD (section 4.5      percentile height values, relief_htop and relief_hbot.
+                                                          step 6)                (Default=0.05)
+
+relief_htop                FLOAT     Upper relief         meters                 The approximate relief of the L-km segment uses the
+COMPACT                    (1)       percentile           ATBD (section 4.5      percentile height values, relief_htop and relief_hbot.
+                                                          step 6)                (Default=0.95)
+
+shp_param                  FLOAT     Exponential          1                      Exponential coefficient of the filter window size as a function.
+COMPACT                    (1)       coefficient for      ATBD section 4.4       (Default = 21.0E-06)
+                                     controlling the      step 2
+                                     exponential decay
+                                     of the filter
+                                     window size as a
+                                     function of
+                                     number of signal
+                                     photons.
+
+sig_rsq_search             FLOAT     Square Radius of     meters^2               Top of canopy refinement square search radius. (Default =
+COMPACT                    (1)       filter for canopy    ATBD section 4.8       225.0)
+                                                          step 6
+
+sseg                       FLOAT     Short Segment        meters                 Short segment length in meters. (Default = 100.0)
+COMPACT                    (1)       Length               ATBD section 4.13
+                                                          step 1
+
+stat_thresh                INTEGER   Threshold for land   1                      Minimum number of photons to compute statistics upon.
+COMPACT                    (1)       statistics           ATBD section 2 intro   (Default =50)
+                                                          paragraph
+
+tc_thresh                  FLOAT     Canopy Flag          1                      Percentage threshold for average L-km segment tree cover
+COMPACT                    (1)       threshold            ATBD section 4.3       to be considered canopy. (Default = 5.0)
+                                                          steps 6 and 7
+
+te_class                   INTEGER   Terrain class        1                      Terrain classification flag value. (Default = 1)
+COMPACT                    (1)       value                ATBD section 4.12
+                                                          step 1
+
+toc_class                  INTEGER   Top of canopy        1                      Top of canopy classification flag value. (Default = 3)
+COMPACT                    (1)       class value          ATBD section 4.12
+                                                          step 1
+up_filt_bnd                 INTEGER       Proportionality      1                        Lower bound of the filter window size function. (Default = 46)
+COMPACT                     (1)           coefficient for      ATBD section 4.4
+                                          controlling the      step 2
+                                          bounds of the filter
+                                          window size as a
+                                          function of
+                                          number of signal
+                                          photons.
+
+up_gnd_bnd                  FLOAT         Upper bound          meters                   Upper bound restricting the search of a ground surface in
+COMPACT                     (1)           restricting the      ATBD (section 4.7        canopy cases. (Default = 1.0)
+                                          search of a          step 3)
+                                          ground surface in
+                                          canopy cases.
+
+up_toc_bnd                  FLOAT         Upper bound          meters                   Upper bound restricting the search of a top of canopy
+COMPACT                     (1)           restricting the      ATBD section 4.7         surface. (Default=1.0)
+                                          search of a top of   step 3 entered from
+                                          canopy surface.      section 4.8
+
+up_toc_cut                  FLOAT         upper cutoff of top meters                    Upper cutoff for top of canopy surface. (Default = 150.0)
+COMPACT                     (1)           of canopy surface. ATBD section 4.8
+                                                              step 10
+
+Group: /gtx
+
+Description                 (Attribute)   Each group contains the segments for one Ground Track. As ICESat-2 orbits the earth, sequential
+                                          transmit pulses illuminate six ground tracks on the surface of the earth. The track width is approximately
+                                          14m. Each ground track is numbered, according to the laser spot number that generates a given ground
+                                          track. Ground tracks are numbered from the left to the right in the direction of spacecraft travel as: 1L, 1R
+                                          in the left-most pair of beams; 2L, 2R for the center pair of beams; and 3L, 3R for the right-most pair of
+                                          beams.
+
+Group: /gtx/land_segments
+
+Description                 (Attribute)   Contains data categorized as land at 100 meter intervals.
+
+data_rate                   (Attribute)   Data are stored as aggregates of 100 meters.
+
+Label                       Datatype     long_name             units                    description
+(Layout)                    (Dimensions) (standard_name)       source
+
+asr                         FLOAT         apparent surface     1                        Apparent surface reflectance
+CHUNKED                     (:)           reflectance          ATL09
+
+atlas_pa                    FLOAT         atlas pointing       radians                  Off nadir pointing angle (in radians) of the satellite to
+CHUNKED                     (:)           angle                ATL03                    increase spatial sampling in the non-polar regions.
+                                                                                        ATLAS_PA =90degs-beam_coelev.
+
+beam_azimuth                FLOAT         beam azimuth         radians                  Azimuth(in radians) of the unit pointing vector for the
+CHUNKED                     (:)                                ATL03                    reference photon in the local ENU frame in radians. The
+                                                                                        angle is measured from north and positive towards East.
+
+beam_coelev                 FLOAT         beam co-elevation radians                     Co-elevation (CE) is direction from vertical of the laser beam
+CHUNKED                     (:)                             ATL03                       as seen by an observer located at the laser ground spot.
+
+brightness_flag             INTEGER_1     brightness flag      1                        Flag indicating that the ground surface is bright (e.g. snow-
+CHUNKED                     (:)                                Land ATBD section        covered or other bright surfaces)
+                                                               2.4.21
+                                                                                        Flag Values: ['0', '1']
+                                                                                        Flag Meanings: ['not_bright_surface', 'bright_surface']
+
+cloud_flag_atm              INTEGER_1     cloud flag atm       1                        Cloud confidence flag from ATL09 that indicates the number
+CHUNKED                     (:)                                ATL09                    of cloud or aerosol layers identified in each 25Hz
+                                                                                        atmospheric profile. If the flag is greater than 0, aerosols or
+                                                                                        clouds could be present. Valid range is 0 - 10.
+
+cloud_fold_flag             INTEGER_1     cloud folding flag                            Flag that indicates this profile likely contains cloud signal
+CHUNKED                     (:)                                ATL09                    folded down from above 15 km to the last 2-3 km of the
+                                                                                        profile. See ATL09 ATBD Table 3.9 for detailed flag value
+                                                                                        meanings.
+
+                                                                                        Flag Values: ['0', '1', '2', '3']
+                                                                                        Flag Meanings: ['no_folding', 'goes5_indicates',
+                                                                                        'profile_indicates', 'both_indicate']
+delta_time         DOUBLE      mean_pass_time     seconds since 2018-   Mean time for the segment in number of GPS seconds since
+CHUNKED            (:)         time               01-01                 the ATLAS SDP epoch. The ATLAS Standard Data Products
+                                                  Land ATBD section     (SDP) epoch offset is defined within
+                                                  2.4                   /ancillary_data/atlas_sdp_gps_epoch as the number of GPS
+                                                                        seconds between the GPS epoch (1980-01-
+                                                                        06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By
+                                                                        adding the offset contained within atlas_sdp_gps_epoch to
+                                                                        delta time parameters, the time in gps_seconds relative to
+                                                                        the GPS epoch can be computed.
+
+delta_time_beg     DOUBLE      delta time begin   seconds since 2018-   Time of the first photon contained within the data segment, in
+CHUNKED            (:)                            01-01                 seconds since the ATLAS SDP GPS Epoch. The ATLAS
+                                                  Derived               Standard Data Products (SDP) epoch offset is defined within
+                                                  (gps_seconds-         /ancillary_data/atlas_sdp_gps_epoch as the number of GPS
+                                                  gps_sec_offset)       seconds between the GPS epoch (1980-01-
+                                                                        06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By
+                                                                        adding the offset contained within atlas_sdp_gps_epoch to
+                                                                        delta time parameters, the time in gps_seconds relative to
+                                                                        the GPS epoch can be computed.
+
+delta_time_end     DOUBLE      delta time end     seconds since 2018-   Time of the last photon contained within the data segment, in
+CHUNKED            (:)                            01-01                 seconds since the ATLAS SDP epoch. The ATLAS Standard
+                                                  Derived               Data Products (SDP) epoch offset is defined within
+                                                  (gps_seconds-         /ancillary_data/atlas_sdp_gps_epoch as the number of GPS
+                                                  gps_sec_offset)       seconds between the GPS epoch (1980-01-
+                                                                        06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By
+                                                                        adding the offset contained within atlas_sdp_gps_epoch to
+                                                                        delta time parameters, the time in gps_seconds relative to
+                                                                        the GPS epoch can be computed.
+
+dem_flag           INTEGER_1   dem source flag    1                     Indicates source of the DEM height. Values: 0=None,
+CHUNKED            (:)                            Atmosphere ATBD       1=Arctic, 2=GMTED, 3=MSS, 4=Antarctic.
+
+                                                                        Flag Values: ['0', '1', '2', '3', '4']
+                                                                        Flag Meanings: ['none', 'arctic', 'gmted', 'mss', 'antarctic']
+
+dem_h              FLOAT       dem height         meters                Best available DEM (in priority of
+CHUNKED            (:)                            GIMP, GMTED,MSS       Arctic/Antarctic/GMTED/MSS) value at the geolocation point.
+                                                                        Height is in meters above the WGS84 Ellipsoid.
+
+dem_removal_flag   INTEGER_1   dem removal flag   1                     Flag indicating more than dem_removal_percent_limit
+CHUNKED            (:)                            ATBD section 2.4.11   (default 20.0) removed from land segment due to failing
+                                                                        DEM-QA tests
+
+                                                                        Flag Values: ['0', '1']
+                                                                        Flag Meanings: ['below_threshold', 'above_threshold']
+
+h_dif_ref          FLOAT       h dif from         meters                Difference between h_te_median and ref_DEM
+CHUNKED            (:)         reference          Land ATBD section
+                                                  2.4
+
+last_seg_extend    FLOAT       last segment       kilometers            The distance (km) that the last ATL08 processing segment in
+CHUNKED            (:)         extended           Land ATBD             a file is either extended or overlapped with the previous
+                               last_seg_extend    13March2019,          ATL08 processing segment.
+                                                  Section 2.4.20
+
+latitude           FLOAT       latitude           degrees               Latitude of the center-most signal photon within each
+CHUNKED            (:)         latitude           Land ATBD section     segment.
+                                                  2.4
+
+layer_flag         INTEGER_1   consolidated                             This flag is a combination of multiple flags (cloud_flag_atm,
+CHUNKED            (:)         cloud flag         ATL09                 cloud_flag_asr, and bsnow_con) and takes
+                                                                        daytime/nighttime into consideration. A value of 1 means
+                                                                        clouds or blowing snow are likely present. A value of 0
+                                                                        indicates the likely absence of clouds or blowing snow.
+
+                                                                        Flag Values: ['0', '1']
+                                                                        Flag Meanings: ['likely_clear', 'likely_cloudy']
+
+longitude          FLOAT       longitude          degrees               Longitude of the center-most signal photon within each
+CHUNKED            (:)         longitude          Land ATBD section     segment.
+                                                  2.4
+msw_flag            INTEGER_1   multiple scattering   1                     Multiple Scattering warning flag. The multiple scattering
+CHUNKED             (:)         warning flag          ATL09                 warning flag (ATL09 parameter msw_flag) has values from
+                                                                            -1 to 5 where zero means no multiple scattering and 5 the
+                                                                            greatest. If no layers were detected, then msw_flag = 0. If
+                                                                            blowing snow is detected and its estimated optical depth is
+                                                                            greater than or equal to 0.5, then msw_flag = 5. If the
+                                                                            blowing snow optical depth is less than 0.5, then msw_flag =
+                                                                            4. If no blowing snow is detected but there are cloud or
+                                                                            aerosol layers detected, the msw_flag assumes values of 1
+                                                                            to 3 based on the height of the bottom of the lowest layer: <
+                                                                            1 km, msw_flag = 3; 1-3 km, msw_flag = 2; > 3km, msw_flag
+                                                                            = 1. A value of -1 indicates that the signal to noise of the
+                                                                            data was too low to reliably ascertain the presence of cloud
+                                                                            or blowing snow. We expect values of -1 to occur only during
+                                                                            daylight.
+
+                                                                            Flag Values: ['-1', '0', '1', '2', '3', '4', '5']
+                                                                            Flag Meanings: ['cannot_determine', 'no_layers',
+                                                                            'layer_gt_3km', 'layer_between_1_and_3_km', 'layer_lt_1km',
+                                                                            'blow_snow_od_lt_0.5', 'blow_snow_od_gt_0.5']
+
+n_seg_ph            INTEGER     number of             1                     Number of photons within each land segment.
+CHUNKED             (:)         photons               Derived
+
+night_flag          INTEGER     night flag            1                     Flag indicating the data were acquired in night conditions:
+CHUNKED             (:)                               Land ATBD section     0=day, 1=night. Flag is derived from solar elevation at the
+                                                      2.4.8                 geolocated segment. IF solar elevation is above threshold it
+                                                                            is day, if not then it is night. Threshold is set in
+                                                                            atlas_l3a_const_mod.
+
+                                                                            Flag Values: ['0', '1']
+                                                                            Flag Meanings: ['day', 'night']
+
+ph_ndx_beg          INTEGER_8   photon index          1                     Index (1-based) within the photon-rate data
+CHUNKED             (:)         begin                 Derived               (/land_segments/photons) of the first photon within this each
+                                                                            land segment.
+
+ph_removal_flag     INTEGER_1   ph removal flag       1                     Flag indicating more than ph_removal_percent_limit (default
+CHUNKED             (:)                               ATBD section 4.13     50.0) removed from land segment due to failing QA tests
+
+                                                                            Flag Values: ['0', '1']
+                                                                            Flag Meanings: ['below_threshold', 'above_threshold']
+
+psf_flag            INTEGER_1   point spread          1                     Flag is set to 1 if the point spread function (computed as
+CHUNKED             (:)         function flag         Land/Veg ATBD         sigma_atlas_land) has exceeded the threshold (1 m)
+
+                                                                            Flag Values: ['0', '1']
+                                                                            Flag Meanings: ['below_threshold', 'above_threshold']
+
+rgt                 INTEGER_2   reference ground      1                     The reference ground track (RGT) is the track on the earth at
+CHUNKED             (:)         track                 Operations            which a specified unit vector within the observatory is
+                                                                            pointed. Under nominal operating conditions, there will be no
+                                                                            data collected along the RGT, as the RGT is spanned by
+                                                                            GT3 and GT4. During slews or off-pointing, it is possible that
+                                                                            ground tracks may intersect the RGT. The ICESat-2 mission
+                                                                            has 1387 RGTs.
+
+segment_id_beg      INTEGER     begin geolocation     1                     Geolocation segment number of the first photon in the land
+CHUNKED             (:)         segment bin           ATL03                 segment.
+
+segment_id_end      INTEGER     end geolocation       1                     Geolocation segment number of the last photon in the land
+CHUNKED             (:)         segment bin           ATL03                 segment.
+
+segment_landcover   INTEGER     segment               1                     IGBP Land Cover Surface type classification as reference
+CHUNKED             (:)         landcover             ATBD section 2.4.14   from MODIS Land Cover(ANC18) at the 0.5 arcsecond
+                                                                            resolution.
+
+                                                                            Flag Values: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
+                                                                            '13', '14', '15', '16']
+                                                                            Flag Meanings: ['Water', 'Evergreen_Needleleaf_Forest',
+                                                                            'Evergreen_Broadleaf_Forest',
+                                                                            'Deciduous_Needleleaf_Forest',
+                                                                            'Deciduous_Broadleaf_Forest', 'Mixed_Forest',
+                                                                            'Closed_Shrublands', 'Open_Shrubland', 'Woody_Savanna',
+                                                                            'Savanna', 'Grassland', 'Wetland', 'Croplands', 'Urban',
+                                                                            'Crop_Mosaic', 'Permanent_Snow', 'Barren']
+
+segment_snowcover   INTEGER_1   segment              1                      Daily snow/ice cover from ATL09 at the 25 Hz rate(275m)
+CHUNKED             (:)         snowcover            ATBD section 4.2.16    indicating likely presence of snow and ice within each
+                                                                            segment. 0=ice free water; 1=snow free land; 2=snow; 3=ice.
+
+                                                                            Flag Values: ['0', '1', '2', '3']
+                                                                            Flag Meanings: ['ice_free_water', 'snow_free_land', 'snow',
+                                                                            'ice']
+
+segment_watermask   INTEGER     segment              1                      Water mask(i.e. flag) indicating inland water as referenced
+CHUNKED             (:)         watermask            ATBD section 2.4.15    from the Global Raster Water Mask(ANC33) at 250 m spatial
+                                                                            resolution.
+
+                                                                            Flag Values: ['0', '1']
+                                                                            Flag Meanings: ['no_water', 'water']
+
+sigma_across        FLOAT       sigma atlas y        1                      Total cross-track uncertainty due to PPD and POD
+CHUNKED             (:)                              ATL03                  knowledge. Read from ATL03 product
+                                                                            gtx/geolocation/sigma_across. Sigma_atlas_y is reported on
+                                                                            ATL08 as the uncertainty of the center-most reference
+                                                                            photon of the 100m ATL08 segment.
+
+sigma_along         FLOAT       sigma atlas x        1                      Total along-track uncertainty due to PPD and POD
+CHUNKED             (:)                              ATL03                  knowledge. Read from ATL03 product
+                                                                            gtx/geolocation/sigma_along. Sigma_atlas_x is reported on
+                                                                            ATL08 as the uncertainty of the center-most reference
+                                                                            photon of the 100m ATL08 segment.
+
+sigma_atlas_land    FLOAT       sigma atlas land     1                      Total vertical geolocation error due to ranging and local
+CHUNKED             (:)                              Land ATBD section      surface slope. The parameter is computed for ATL08 as
+                                                     2.5.13                 described in equation 1.2.
+
+sigma_h             FLOAT       height uncertainty   1                      Estimated uncertainty for the reference photon bounce point
+CHUNKED             (:)                              ATL03                  ellipsoid height: 1- sigma (m) provided at the geolocation
+                                                                            segment rate on ATL03. Sigma_h is reported on ATL08 as
+                                                                            the uncertainty of the center-most reference photon of the
+                                                                            100m ATL08 segment.
+
+sigma_topo          FLOAT       sigma atlas topo     1                      Total uncertainty that include sigma_h plus geolocation
+CHUNKED             (:)                              Land ATBD section      uncertainty due to local slope (equation 1.3). The local slope
+                                                     2.5.12                 is multiplied by the geolocation uncertainty factor. This will be
+                                                                            used to determine the total vertical geolocation error due to
+                                                                            ranging and local slope.
+
+snr                 FLOAT       signal to noise      1                      The signal to noise ratio of geolocated photons as
+CHUNKED             (:)         ratio                ATBD section 2.5.14    determined by the ratio of the superset of ATL03 signal and
+                                                                            DRAGANN found signal photons used for processing the
+                                                                            ATL08 segments to the background photons (i.e. noise)
+                                                                            within the same ATL08 segments.
+
+solar_azimuth       FLOAT       solar azimuth        degrees_east           The direction, eastwards from north, of the sun vector as
+CHUNKED             (:)                              ATL03g ATBD            seen by an observer at the laser ground spot.
+
+solar_elevation     FLOAT       solar elevation      degrees                Solar Angle above or below the plane tangent to the ellipsoid
+CHUNKED             (:)                              ATL03g ATBD            surface at the laser spot. Positive values mean the sun is
+                                                                            above the horizon, while negative values mean it is below
+                                                                            the horizon. The effect of atmospheric refraction is not
+                                                                            included. This is a low precision value, with approximately
+                                                                            TBD degree accuracy.
+
+surf_type           INTEGER_1   surface type         1                   Flags describing which surface types this interval is
+CHUNKED             (: x 5)                          ATL03 ATBD, Section associated with. 0=not type, 1=is type. Order of array is land,
+                                                     4                   ocean, sea ice, land ice, inland water.
+
+                                                                            Flag Values: ['0', '1']
+                                                                            Flag Meanings: ['not_type', 'is_type']
+
+terrain_flg         INTEGER     terrain flag         1                      Terrain flag quality check to indicate a deviation above a
+CHUNKED             (:)                              Land ATBD section      threshold from the reference DEM height reported on the
+                                                                 2.4.8                 product.
+
+                                                                                       Flag Values: ['0', '1']
+                                                                                       Flag Meanings: ['below_threshold', 'above_threshold']
+
+urban_flag                    INTEGER       segment urban        1                     The urban flag indicates that a segment is likely located over
+CHUNKED                       (:)           flag                 Land ATBD section     an urban area.
+                                                                 2.4.17
+                                                                                       Flag Values: ['0', '1']
+                                                                                       Flag Meanings: ['not_urban', 'urban']
+
+Group: /gtx/land_segments/canopy
+
+Description                   (Attribute)   Contains height parameters based on the land algorithm.
+
+data_rate                     (Attribute)   Data are stored as aggregates of 100 meters.
+
+Label                         Datatype     long_name             units                 description
+(Layout)                      (Dimensions) (standard_name)       source
+
+canopy_flag                   INTEGER       canopy flag          1                     Flag indicating that canopy was detected using the Landsat
+CHUNKED                       (:)                                Land ATBD section     Tree Cover Continuous Fields data product. If percent of
+                                                                 2.2.22                canopy cover along the L-km segment is greater than 5%,
+                                                                                       then canopy is assumed to be present; else, no canopy is
+                                                                                       assumed present.
+
+                                                                                       Flag Values: ['0', '1']
+                                                                                       Flag Meanings: ['no_canopy_present', 'canopy_present']
+
+canopy_h_metrics              FLOAT         canopy height        meters                Height metrics based on the cumulative distribution of
+CHUNKED                       (: x 9)       metrics              Land ATBD section     relative canopy heights above the interpolated ground
+                                                                 2.2.3                 surface. The height metrics are calculated at the following
+                                                                                       percentiles: 25,50,60,70,75,80,85,90,95%.
+
+canopy_h_metrics_abs          FLOAT         canopy absolute      meters                Height metrics based on the cumulative distribution of
+CHUNKED                       (: x 9)       height metrics       Land ATBD section     absolute canopy heights above the WGS84 Ellipsoid. The
+                                                                 2.2.3                 height metrics are calculated at the following percentiles:
+                                                                                       25,50,60,70,75,80,85,90,95%.
+
+canopy_openness               FLOAT         canopy openness      1                     Standard Deviation of all photons classified as canopy
+CHUNKED                       (:)                                Land ATBD section     photons within the segment to provide inference of canopy
+                                                                 4.12                  openness.
+
+canopy_rh_conf                INTEGER_1     canopy relative      1                     Canopy relative height confidence flag based on percentage
+CHUNKED                       (:)           height confidence    Land/Veg ATBD         of ground and canopy photons within a segment: 0 (<5%
+                                                                 13March2019,          canopy), 1 (>5% canopy, <5% ground), 2 (>5% canopy, >5%
+                                                                 Section 2.2.21        ground).
+
+                                                                                       Flag Values: ['0', '1', '2']
+                                                                                       Flag Meanings: ['<5%_canopy',
+                                                                                       '>=5%_canopy_<5%_ground',
+                                                                                       '>=5%_canopy_>=5%_ground']
+
+centroid_height               FLOAT         centroid height      meters                Optical centroid of all photons classified as either canopy or
+CHUNKED                       (:)                                Land ATBD section     ground points within the segment. The heights used in this
+                                                                 2.2.22                calculation are absolute heights above the reference
+                                                                                       ellipsoid. This parameter is equivalent to the centroid height
+                                                                                       produced ICESat GLA14.
+
+h_canopy                      FLOAT         height canopy        meters                98% height of all the individual canopy relative heights for
+CHUNKED                       (:)                                Land ATBD section     the segment above the estimated terrain surface. Relative
+                                                                 4.12                  canopy heights have been computed by differencing the
+                                                                                       canopy photon height from the estimated terrain surface.
+
+h_canopy_abs                  FLOAT         absolute segment     meters                The 98% height of all the absolute individual canopy heights
+CHUNKED                       (:)           canopy height        Land ATBD section     referenced above the WGS84 ellipsoid.
+                                                                 2.2.2
+
+h_canopy_quad                 FLOAT         canopy quadratic     meters                The quadratic mean height of individual classified relative
+CHUNKED                       (:)           mean                 Land ATBD section     canopy photon heights above the estimated terrain surface.
+                                                                 4.12
+
+h_canopy_uncertainty          FLOAT         segment canopy       meters                Uncertainty of the relative canopy heights for the segment.
+CHUNKED                       (:)           height uncertainty   Land ATBD section     Incorporates all systematic uncertainties as well as
+                                                     1.5                 uncertainty from errors of identified photons. See section 1
+                                                                         and equations 1.4 and 1.5 in the Land ATBD
+
+h_dif_canopy          FLOAT       canopy diff to     meters              Difference between h_canopy and h_median_canopy
+CHUNKED               (:)         median height      Land ATBD section
+                                                     4.12
+
+h_max_canopy          FLOAT       maximum canopy     meters              Relative maximum of individual canopy heights within
+CHUNKED               (:)         height             Land ATBD section   segment. Relative canopy heights have been computed by
+                                                     2.2.12              differencing the canopy photon height from the estimated
+                                                                         terrain surface. Should be equivalent to RH100 metric
+                                                                         reported in the literature.
+
+h_max_canopy_abs      FLOAT       absolute           meters              Maximum of individual absolute canopy heights within
+CHUNKED               (:)         maximum canopy     Land ATBD section   segment referenced above the WGS84 ellipsoid.
+                                  height             2.2.11
+
+h_mean_canopy         FLOAT       mean canopy        meters              Mean of individual relative canopy heights within segment.
+CHUNKED               (:)         height             Land ATBD section   Relative canopy heights have been computed by differencing
+                                                     4.12                the canopy photon height from the estimated terrain surface.
+
+h_mean_canopy_abs     FLOAT       absolute mean      meters              Mean of the individual absolute canopy heights within
+CHUNKED               (:)         canopy height      Land ATBD section   segment referenced above the WGS84 Ellipsoid.
+                                                     2.2.4
+
+h_median_canopy       FLOAT       median canopy      meters              The median of individual relative canopy heights within
+CHUNKED               (:)         height             Land ATBD section   segment. Relative canopy heights have been computed by
+                                                     2.2.8               differencing the canopy photon height from the estimated
+                                                                         terrain surface. This parameter should be equivalent to RH50
+                                                                         reported in the literature.
+
+h_median_canopy_abs   FLOAT       absolute segment   meters              The median of individual absolute canopy heights within
+CHUNKED               (:)         median canopy      Land ATBD section   segment referenced above the WGS84 Ellipsoid.
+                                  height             2.2.6
+
+h_min_canopy          FLOAT       minimum canopy     meters              The minimum of relative individual canopy heights within
+CHUNKED               (:)         height             Land ATBD section   segment. Relative canopy heights have been computed by
+                                                     2.2.10              differencing the canopy photon height from the estimated
+                                                                         terrain surface.
+
+h_min_canopy_abs      FLOAT       absolute minimum meters                The minimum of absolute individual canopy heights within
+CHUNKED               (:)         canopy height    Land ATBD section     segment referenced above the WGS84 Ellipsoid.
+                                                   2.2.9
+
+landsat_flag          INTEGER     landsat flag       1                   Flag indicating that more than 50% of the Landsat
+CHUNKED               (:)                            Land ATBD section   Continuous Cover product have values > 100 for the L-Km
+                                                     2.2.25              segment. Canopy is assumed present along the L-km
+                                                                         segment if landsat_flag is 1.
+
+                                                                         Flag Values: ['0', '1']
+                                                                         Flag Meanings: ['canopy_not_assumed_present',
+                                                                         'canopy_assumed_present']
+
+landsat_perc          FLOAT       landsat            1                   Average percentage value of the valid (value <= 100)
+CHUNKED               (:)         percentage         Land ATBD section   Landsat Tree Cover Continuous Fields product for each 100
+                                  canopy             2.2.24              m segment
+
+n_ca_photons          INTEGER     number canopy      1                   The number of photons classified as canopy within the
+CHUNKED               (:)         photons            Land ATBD section   segment.
+                                                     4.12
+
+n_toc_photons         INTEGER     number top of      1                   The number of photons classified as top of canopy within the
+CHUNKED               (:)         canopy photons     Land ATBD section   segment.
+                                                     4.12
+
+subset_can_flag       INTEGER_1   subset canopy      1                   Quality flag indicating the canopy photons populating the 100
+CHUNKED               (: x 5)     flag               Land/Veg ATBD 15    m segment statistics are derived from less than 100 m worth
+                                                     Novemebr 2019,      of photons and/or less than 5 20m ATL03 segments.
+                                                     Section 2.2.25
+                                                                         Flag Values: ['-1', '0', '1']
+                                                                         Flag Meanings: ['no_photon_data_within_geosegment',
+                                                                         'no_canopy_photons_within_geosegment',
+                                                                         'canopy_photons_present_within_geosegment']
+toc_roughness                  FLOAT         top of canopy         meters               Standard deviation of the relative heights of all photons
+CHUNKED                        (:)           roughness             Land ATBD section    classified as top of canopy within the segment
+                                                                   4.12
+
+Group: /gtx/land_segments/terrain
+
+Description                    (Attribute)   Contains terrain parameters at a 100m aggregation.
+
+data_rate                      (Attribute)   Data are stored as aggregates of 100 meters.
+
+Label                          Datatype     long_name              units                description
+(Layout)                       (Dimensions) (standard_name)        source
+
+h_te_best_fit                  FLOAT         segment terrain       meters               The best fit terrain elevation at the the mid-point location of
+CHUNKED                        (:)           height best fit       Land ATBD section    each 100m segment. The mid-segment terrain elevation is
+                                                                   2.1.15               determined by selecting the best of three fits- linear, 3rd
+                                                                                        order and 4th order polynomials - to the terrain photons and
+                                                                                        interpolating the elevation at the mid-point location of the 100
+                                                                                        m segment. For the linear fit, a slope correction and
+                                                                                        weighting is applied to each ground photon based on the
+                                                                                        distance to the slope height at the center of the segment.
+
+h_te_interp                    FLOAT         interpolated          meters               Interpolated terrain surface height above the WGS84
+CHUNKED                        (:)           terrain surface       Land ATBD section    Ellipsoid at the midpoint of the segment.
+                                             height                4.9
+
+h_te_max                       FLOAT         maximum terrain       meters               The maximum of the photon heights above the WGS84
+CHUNKED                        (:)           height                Land ATBD section    Ellipsoid, classified as terrain within the segment.
+                                                                   4.11
+
+h_te_mean                      FLOAT         mean terrain          meters               The mean of the photon heights above the WGS84 Ellipsoid,
+CHUNKED                        (:)           height                Land ATBD section    classified as terrain within the segment.
+                                                                   4.11
+
+h_te_median                    FLOAT         median terrain        meters               The median of the photon heights above the WGS84
+CHUNKED                        (:)           height                Land ATBD section    Ellipsoid, classified as terrain within the segment.
+                                                                   4.11
+
+h_te_min                       FLOAT         minimum terrain       meters               The minimum of the photon heights above the WGS84
+CHUNKED                        (:)           height                Land ATBD section    Ellipsoid, classified as terrain within the segment.
+                                                                   4.11
+
+h_te_mode                      FLOAT         mode of terrain       meters               The mode of the photon heights above the WGS84 Ellipsoid,
+CHUNKED                        (:)           heights               Land ATBD section    classified as terrain within the segment.
+                                                                   4.11
+
+h_te_skew                      FLOAT         skew of terrain       meters               The skewness of the photon heights above the WGS84
+CHUNKED                        (:)           heights               Land ATBD section    Ellipsoid, classified as terrain within the segment.
+                                                                   4.11
+
+h_te_std                       FLOAT         segment terrain       meters               The standard deviation of the photon heights above the
+CHUNKED                        (:)           roughness             Land ATBD section    WGS84 Ellipsoid, classified as terrain within the segment.
+                                                                   4.11
+
+h_te_uncertainty               FLOAT         uncertainty of        meters               Uncertainty of the mean terrain height for the segment. This
+CHUNKED                        (:)           h_te_mean             Land ATBD section    uncertainty incorporates all systematic uncertainties(e.g.
+                                                                   4.11                 timing orbits, geolocation,etc.) as well as uncertainty from
+                                                                                        errors of identified photons. This parameter is described in
+                                                                                        section 1, equation 1.4
+
+n_te_photons                   INTEGER       number of ground      1                    The number of the photons classified as terrain within the
+CHUNKED                        (:)           photons               Land ATBD section    segment.
+                                                                   4.11
+
+subset_te_flag                 INTEGER_1     subset terrain flag   1                    Quality flag indicating the terrain photons populating the 100
+CHUNKED                        (: x 5)                             Land/Veg ATBD 15     m segment statistics are derived from less than 100 m worth
+                                                                   Novemebr 2019,       of photons and/or less than 5 20m ATL03 segments.
+                                                                   Section 2.1.15
+                                                                                        Flag Values: ['-1', '0', '1']
+                                                                                        Flag Meanings: ['no_photon_data_within_geosegment',
+                                                                                        'no_terrain_photons_within_geosegment',
+                                                                                        'terrain_photons_present_within_geosegment']
+
+terrain_slope                  FLOAT         segment terrain       1                    The along-track slope of terrain, within each
+CHUNKED                        (:)           slope                 Land ATBD section    segment;computed by a linear fit of terrain classified
+                                                                4.11                     photons. Slope is in units of delta height over delta along
+                                                                                         track distance.
+
+Group: /gtx/signal_photons
+
+Description                  (Attribute)   Contains parameters related to individual photons.
+
+data_rate                    (Attribute)   Data are stored at the signal-photon classification rate.
+
+Label                        Datatype     long_name             units                    description
+(Layout)                     (Dimensions) (standard_name)       source
+
+classed_pc_flag              INTEGER_1     photon land atbd     1                        Land Vegetation ATBD classification flag for each photon as
+CHUNKED                      (:)           classification       Land ATBD section        either noise, ground, canopy, and top of canopy. 0 = noise, 1
+                                                                4.10                     = ground, 2 = canopy, or 3 = top of canopy.
+
+                                                                                         Flag Values: ['0', '1', '2', '3']
+                                                                                         Flag Meanings: ['noise', 'ground', 'canopy', 'top_of_canopy']
+
+classed_pc_indx              INTEGER       indicies of classed 1                         Index (1-based) of the ATL08 classified signal photon from
+CHUNKED                      (:)           photons             Retained from prior       the start of the ATL03 geolocation segment specified on the
+                                                               a_alt_science_ph          ATL08 product at the photon rate in the corresponding
+                                                               packet                    parameter, ph_segment_id. This index traces back to
+                                                                                         specific photon within a 20m segment_id on ATL03. The
+                                                                                         unique identifier for tracing each ATL08 signal photon to the
+                                                                                         corresponding photon record on ATL03 is the segment_id,
+                                                                                         orbit, cycle, and classed_pc_indx. Orbit and cycle intervals
+                                                                                         for the granule are found in the /ancillary_data. The
+                                                                                         timestamp of each orbit transition is found in the /orbit_info
+                                                                                         group.
+
+d_flag                       INTEGER_1     dragann flag         1                        Flag indicating the labeling of DRAGANN noise filtering for a
+CHUNKED                      (:)                                Land ATBD section        given photon.
+                                                                2.3.5
+                                                                                         Flag Values: ['0', '1']
+                                                                                         Flag Meanings: ['noise', 'signal']
+
+delta_time                   DOUBLE        delta time           seconds since 2018-      Number of GPS seconds since the ATLAS SDP epoch. The
+CHUNKED                      (:)           time                 01-01                    ATLAS Standard Data Products (SDP) epoch offset is
+                                                                ATL03                    defined within /ancillary_data/atlas_sdp_gps_epoch as the
+                                                                                         number of GPS seconds between the GPS epoch (1980-01-
+                                                                                         06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By
+                                                                                         adding the offset contained within atlas_sdp_gps_epoch to
+                                                                                         delta time parameters, the time in gps_seconds relative to
+                                                                                         the GPS epoch can be computed.
+
+ph_segment_id                INTEGER       segment id of        1                        Segment ID of photons tracing back to specific 20m
+CHUNKED                      (:)           photon               Retained from prior      segment_id on ATL03. The unique identifier for tracing each
+                                                                a_alt_science_ph         ATL08 signal photon to the photon on ATL03 is the
+                                                                packet                   segment_id, orbit, and classed_pc_indx. The unique
+                                                                                         identifier for tracing each ATL08 signal photon to the
+                                                                                         corresponding photon record on ATL03 is the segment_id,
+                                                                                         orbit, cycle, and classed_pc_indx. Orbit and cycle intervals
+                                                                                         for the granule are found in the /ancillary_data. The
+                                                                                         timestamp of each orbit transition is found in the /orbit_info
+                                                                                         group.
+
+Group: /orbit_info
+
+Description                  (Attribute)   Contains orbit information.
+
+data_rate                    (Attribute)   Varies. Data are only provided when one of the stored values (besides time) changes.
+
+Label                        Datatype     long_name             units                    description
+(Layout)                     (Dimensions) (standard_name)       source
+
+crossing_time                DOUBLE        Ascending Node       seconds since 2018-      The time, in seconds since the ATLAS SDP GPS Epoch, at
+CHUNKED                      (:)           Crossing Time        01-01                    which the ascending node crosses the equator. The ATLAS
+                                           time                 POD/PPD                  Standard Data Products (SDP) epoch offset is defined within
+                                                                                         /ancillary_data/atlas_sdp_gps_epoch as the number of GPS
+                                                                                         seconds between the GPS epoch (1980-01-
+                                                                                         06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By
+                                                                                         adding the offset contained within atlas_sdp_gps_epoch to
+                                                                                         delta time parameters, the time in gps_seconds relative to
+                                                                                     the GPS epoch can be computed.
+
+cycle_number                 INTEGER_1     Cycle Number       1                      A count of the number of exact repeats of this reference
+CHUNKED                      (:)                              Operations             orbit.
+
+lan                          DOUBLE        Ascending Node     degrees_east           Longitude at the ascending node crossing.
+CHUNKED                      (:)           Longitude          POD/PPD
+
+orbit_number                 UINT_2_LE     Orbit Number       1                      Unique identifying number for each planned ICESat-2 orbit.
+CHUNKED                      (:)                              Operations
+
+rgt                          INTEGER_2     Reference Ground 1                        The reference ground track (RGT) is the track on the earth at
+CHUNKED                      (:)           track            POD/PPD                  which a specified unit vector within the observatory is
+                                                                                     pointed. Under nominal operating conditions, there will be no
+                                                                                     data collected along the RGT, as the RGT is spanned by
+                                                                                     GT3 and GT4. During slews or off-pointing, it is possible that
+                                                                                     ground tracks may intersect the RGT. The ICESat-2 mission
+                                                                                     has 1387 RGTs.
+
+sc_orient                    INTEGER_1     Spacecraft         1                      This parameter tracks the spacecraft orientation between
+CHUNKED                      (:)           Orientation        POD/PPD                forward, backward and transitional flight modes. ICESat-2 is
+                                                                                     considered to be flying forward when the weak beams are
+                                                                                     leading the strong beams; and backward when the strong
+                                                                                     beams are leading the weak beams. ICESat-2 is considered
+                                                                                     to be in transition while it is maneuvering between the two
+                                                                                     orientations. Science quality is potentially degraded while in
+                                                                                     transition mode.
+
+                                                                                     Flag Values: ['0', '1', '2']
+                                                                                     Flag Meanings: ['backward', 'forward', 'transition']
+
+sc_orient_time               DOUBLE        Time of Last       seconds since 2018-    The time of the last spacecraft orientation change between
+CHUNKED                      (:)           Spacecraft         01-01                  forward, backward and transitional flight modes, expressed
+                                           Orientation        POD/PPD                in seconds since the ATLAS SDP GPS Epoch. ICESat-2 is
+                                           Change                                    considered to be flying forward when the weak beams are
+                                           time                                      leading the strong beams; and backward when the strong
+                                                                                     beams are leading the weak beams. ICESat-2 is considered
+                                                                                     to be in transition while it is maneuvering between the two
+                                                                                     orientations. Science quality is potentially degraded while in
+                                                                                     transition mode. The ATLAS Standard Data Products (SDP)
+                                                                                     epoch offset is defined within
+                                                                                     /ancillary_data/atlas_sdp_gps_epoch as the number of GPS
+                                                                                     seconds between the GPS epoch (1980-01-
+                                                                                     06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By
+                                                                                     adding the offset contained within atlas_sdp_gps_epoch to
+                                                                                     delta time parameters, the time in gps_seconds relative to
+                                                                                     the GPS epoch can be computed.
+
+Group: /quality_assessment
+
+Description                  (Attribute)   Contains quality assessment data. This may include QA counters, QA along-track data and/or QA
+                                           summary data.
+
+Label                        Datatype     long_name           units                  description
+(Layout)                     (Dimensions) (standard_name)     source
+
+qa_granule_fail_reason       INTEGER       Granule Failure    1                      Flag indicating granule failure reason. 0=no failure;
+COMPACT                      (1)           Reason             Operations             1=processing error; 2=Insufficient output data was
+                                                                                     generated; 3=TBD Failure; 4=TBD_Failure; 5=other failure.
+
+                                                                                     Flag Values: ['0', '1', '2', '3', '4', '5']
+                                                                                     Flag Meanings: ['no_failure', 'PROCESS_ERROR',
+                                                                                     'INSUFFICIENT_OUTPUT', 'failure_3', 'failure_4',
+                                                                                     'OTHER_FAILURE']
+
+qa_granule_pass_fail         INTEGER       Granule Pass       1                      Flag indicating granule quality. 0=granule passes automatic
+COMPACT                      (1)           Flag               Operations             QA. 1=granule fails automatic QA.
+
+                                                                                     Flag Values: ['0', '1']
+                                                                                     Flag Meanings: ['PASS', 'FAIL']
+

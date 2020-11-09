@@ -1,5 +1,6 @@
+This sub-project retrieves ATL08 granules and convert them into slippy tiles, so that the data is organized geographically.
 
-
+# source
 the source of data is:
 [https://nsidc.org/data/ATL08/versions/3]
 
@@ -8,7 +9,36 @@ the source of data is:
 
 
 
-== Steps to download data for a particular date & track ==
+
+
+==grabbing photon data url==
+
+https://openaltimetry.org/data/icesat2/getPhotonData.jsp?id=17472&product=ATL08&segmentId=277841&trackId=1219&beam=2&fileId=95734&date=2020-06-12&client=portal&action=photon_chart
+
+ 
+
+## downloading from bbox
+./nsidc-download.py 2018-10-14 2020-10-05 11.997070209314064,48.25759809740135,18.967895404626564,51.275662028484476
+
+
+## extracting h5 to tiles (will only process new files)
+extractor/extractor.py ~/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/tiles  /home/bc/Downloads/icesat2/*.h5
+
+
+## uploading to aws
+aws s3 sync --no-follow-symlinks /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/tiles s3://icesat2webview/
+
+the tiles are available at
+http://icesat2webview.s3-website.eu-central-1.amazonaws.com/tiles/
+
+info about serving static site from s3:
+https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html
+
+
+
+
+
+# Steps to download data for a particular date & track 
 go to
 [https://openaltimetry.org/data/icesat2/]
 
@@ -26,34 +56,4 @@ copy the filename and use it again to search by text
 
 click download script
 run script
-
-== to extract all countries polygon ==
-curl https://datahub.io/core/geo-countries/r/geo-countries_zip.zip
-unzip geo-countries_zip.zip
-cd archive
-
-for iso3 in `cat countries.geojson  | grep 'ISO_A3": "[A-Z]*"' -o | cut -c11-13 ` ; do echo $iso3; cat countries.geojson  | grep $iso3 | sed 's/,$//' > $iso3.geojson; done
-
-
-grabbing photon data url>
-
-https://openaltimetry.org/data/icesat2/getPhotonData.jsp?id=17472&product=ATL08&segmentId=277841&trackId=1219&beam=2&fileId=95734&date=2020-06-12&client=portal&action=photon_chart
-
- 
-
-# extracting h5 to tiles (will only process new files)
-extractor/extractor.py ~/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/tiles  /home/bc/Downloads/icesat2/*.h5
-
-
-# uploading to aws
-aws s3 sync --no-follow-symlinks /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/tiles s3://icesat2webview/
-
-
-# links
-https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html
-http://icesat2webview.s3-website.eu-central-1.amazonaws.com/
-
-
-# downloading from bbox
-./nsidc-download.py 2018-10-14 2020-10-05 11.997070209314064,48.25759809740135,18.967895404626564,51.275662028484476
 

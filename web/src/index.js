@@ -15,9 +15,9 @@ console.log("DEV:"+DEV)
 global.TILE_DEF_ZL = 11
 
 // tiles will be loaded from zoomlevel
-global.TILE_LOAD_FROM_ZL = 14
+global.TILE_LOAD_FROM_ZL = 4
     // tiles will be shown from zoomlevel
-global.TILE_SHOW_FROM_ZL = 14
+global.TILE_SHOW_FROM_ZL = 4
     //var prefix = "https://d3863ripe95iiz.cloudfront.net/tiles/"
     //  global.TILES_ROOT="http://icesat2webview.s3-website.eu-central-1.amazonaws.com/tiles/"
      global.TILES_ROOT="tiles/"

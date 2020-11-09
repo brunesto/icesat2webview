@@ -25,6 +25,8 @@ import datetime
 
 import math
 
+CHANNELS = ['1l', '1r','2l', '2r','3l', '3r']
+CHANNELS =['2l']
 
 ZOOM_LEVEL=11
 tilesStore= {}
@@ -42,36 +44,53 @@ def recordPoint(filename,channel,rgt,time,lat,lon,terrain,canopy,direction):
    global coordsCnt
    key=coords2tilexy(lat,lon,ZOOM_LEVEL)
    payload=filename+";"+channel+";"+str(rgt)+";"+str(time)+";"+str(lat)+";"+str(lon)+";"+str(terrain)+";"+str(canopy)+";"+str(direction)
-   # print("=="+payload)
+   print("=="+payload)
    tilesStore.setdefault(key, []).append(payload)
    coordsCnt=coordsCnt+1
 
+def dumpAll(prefix,group,maxRow):
+    for key in group.keys():
+      is_dataset = isinstance(group[key], h5py.Dataset)
+      #print(key+": "+str(is_dataset))
+      if (not is_dataset):
+          dumpAll(prefix+"/"+key,group[key],maxRow)
+      else:
+        for i in range(min(maxRow,len(group[key]))) :
+          print(prefix+"/"+key+"["+str(i)+"]:"+str(group[key][i]))  
+
 
 def processFile(filename,addDebugInfo):
+
+    
+
     print("processFile "+filename)
     f = h5py.File(filename)
+
+    dumpAll("", f,3306)
+    return
+
     #list(f.keys())
     #['METADATA', 'ancillary_data', 'ds_geosegments', 'ds_metrics', 'ds_surf_type', 'gt1l', 'gt1r', 'gt2l', 'gt2r', 'gt3l', 'gt3r', 'orbit_info', 'quality_assessment']
     debugInfo=""
     if (addDebugInfo):
        debugInfo=os.path.basename(filename)
 
-    channels = ['1l', '1r','2l', '2r','3l', '3r']
-
-    #channels =['1r']
-    for channel in channels:
+    
+    for channel in CHANNELS:
 
 
         ancillary_data=f['/ancillary_data']
-
+        orbit_info=f['/orbit_info']
+        dump('/orbit_info',orbit_info,0)
         print(filename+":"+" reading channel:"+channel)
         
 
         land_segments=f['/gt'+channel+'/land_segments']
         terrain=f['/gt'+channel+'/land_segments/terrain']
         canopy=f['/gt'+channel+'/land_segments/canopy']
-
-        ##print("ancillary_data" ,ancillary_data.keys())
+        signal_photons=f['/gt'+channel+'/signal_photons']
+        
+        print("ancillary_data" ,ancillary_data.keys())
         ##start_delta_time=ancillary_data['start_delta_time'][0]
         ##print("start_delta_time:",start_delta_time)
         ##print("land_segments" ,land_segments.keys())
@@ -80,7 +99,7 @@ def processFile(filename,addDebugInfo):
 
         # previous latitude - 999 means uninitialized
         plat=-999
-        for x in list(zip(
+        for i, x in enumerate(zip(
         land_segments['rgt'],  
         land_segments['delta_time'],
         land_segments['latitude'],
@@ -88,10 +107,22 @@ def processFile(filename,addDebugInfo):
         terrain['h_te_best_fit'],
         #canopy['canopy_flag'],
         canopy['h_canopy'],
-        )):
-          if (x[5]<1000):
-            lat=x[2]
+        signal_photons['ph_segment_id'],
+        signal_photons['classed_pc_indx']
 
+        )):
+           
+
+         
+          if (x[5]<1000):
+            print("#"+str(i))
+            lat=x[2]
+            dump("signal_photons",signal_photons,i)
+            dump("land_segments",land_segments,i)
+            dump("canopy",canopy,i)
+            dump("terrain",terrain,i)
+
+            
             #  hacky detection of rgt direction
             if (not (plat == -999) and plat>lat):
               direction='s'
@@ -99,7 +130,9 @@ def processFile(filename,addDebugInfo):
               direction='n'  
 
             recordPoint(debugInfo,channel,x[0],x[1],lat,x[3],x[4],x[5],direction)
-
+            print("ph_segment_id:",str(x[6]))
+            print("classed_pc_indx:",str(x[7]))
+            return
             plat=lat
 
 

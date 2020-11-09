@@ -86,7 +86,7 @@ function getLocation(myMap, updatePos) {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 console.log("geolocation " + new Date().toLocaleTimeString() + "")
-                updatePos(position.coords.latitude, position.coords.longitude,18,true);
+                updatePos(position.coords.latitude, position.coords.longitude,17,true);
             }, (error) => {
                 console.log('getCurrentPosition Error code: ' + error.code);
                 // error.code can be:

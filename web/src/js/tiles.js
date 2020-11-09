@@ -1,6 +1,6 @@
  import pako from 'pako'
  //import * as egm96 from 'egm96-universal'
- import {TextDecoder} from "./textdecoder.js"
+ import { TextDecoder } from "./textdecoder.js"
 
 
  // TODO use CircleMarker, it will be faster
@@ -66,7 +66,7 @@
 
      var lat = parseFloat(d[4])
      var lon = parseFloat(d[5])
-
+     var latLng = [lat, lon]
 
      var date = new Date(1000 * (315964800 + 1198800000 + time))
          // //console.log("record2string:" + date)
@@ -76,6 +76,16 @@
      var egmInfo = "<span class=\"waiting\"></span>"
      if (ellipsoidToEgm96)
          egmInfo = ellipsoidToEgm96(lat, lon, amsl).round(1)
+
+
+     var direction = d[8]
+     var segmentCoords = getSegmentCoords(direction, latLng, 0.9);
+
+     var minx = Math.min(segmentCoords[0][1], segmentCoords[1][1])
+     var maxx = Math.max(segmentCoords[0][1], segmentCoords[1][1])
+     var miny = Math.min(segmentCoords[0][0], segmentCoords[1][0])
+     var maxy = Math.max(segmentCoords[0][0], segmentCoords[1][0])
+
 
      var r =
          '<tr><th>Track id:</th><td>' + rgt + "</td></tr>" +
@@ -87,7 +97,24 @@
 
          "<tr><th>Beam:</th><td>gt" + channel + " " + direction + "</td></tr>" +
 
-         "<tr><th>h_canopy:</th><td>" + canopy + "m" + "</td></tr>" +
+         "<tr><th>h_canopy:</th><td>" + canopy + " m" + "</td></tr>" +
+         "<tr><th></th><td><a target=\"atl08\" href=" +
+         '"'+
+         'https://openaltimetry.org/data/icesat2/elevation' +
+         '?minx=' + minx +
+         '&miny=' + miny +
+         '&maxx=' + maxx +
+         '&maxy=' + maxy +
+         '&zoom_level=16' +
+         '&beams=1,2,3,4,5,6' +
+         '&tracks=' + rgt +
+         '&date=' + date.toISOString().substr(0, 10) +
+         '&product=ATL08' +
+         '&mapType=geographic' +
+         '&tab=photon' +
+         '"'+
+         ">ATL03 Photon Height</a></td></tr>" +
+
          "";
      return r
  }
@@ -100,6 +127,32 @@
  channelColors['1r'] = '#a6d854';
  channelColors['2r'] = '#8da0cb';
  channelColors['3r'] = '#66c2a5';
+
+
+
+ // get the segment delta lat/lon
+ // direction:either 'n' or 's'
+ // latLng:coords of the ATL08 point
+ // ratio:proportional size of segment 1 =100%
+ // NOTE: this is a hacky impl - will probably not work for high lats
+ function getSegmentDLatLon(direction, latLng, ratio) {
+     var dlat = 0.00042 * ratio;
+     var dlatlonratio = 0.0000649 / 0.00044
+     if (direction == 's')
+         dlatlonratio = -dlatlonratio
+     var dlon = dlat * dlatlonratio;
+     return [dlat, dlon]
+ }
+
+ function getSegmentCoords(direction, latLng, ratio) {
+     var dSegmentLatLng = getSegmentDLatLon(direction, latLng, ratio)
+     var segmentCoords = [
+         [latLng[0] + dSegmentLatLng[0], latLng[1] - dSegmentLatLng[1]],
+         [latLng[0] - dSegmentLatLng[0], latLng[1] + dSegmentLatLng[1]]
+     ];
+     return segmentCoords;
+
+ }
 
  function addDataMarker(ds, myMap, myRenderer, myMarkersGroup) {
 
@@ -119,22 +172,12 @@
      if (channelColor == undefined)
          channelColor = "red"
 
-
-     // hack to display the segment - will not work for high lats
      var direction = ds[0][8]
-     var dlat = 0.00040;
-     var dlatlonratio = 0.0000649 / 0.00044
-     if (direction == 's')
-         dlatlonratio = -dlatlonratio
-     var dlon = dlat * dlatlonratio;
+     var segmentCoords = getSegmentCoords(direction, latLng, 0.9);
 
 
-     var latlngs = [
-         [latLng[0] + dlat, latLng[1] - dlon],
-         [latLng[0] - dlat, latLng[1] + dlon]
-     ];
 
-     var polyline = L.polyline(latlngs, {
+     var polyline = L.polyline(segmentCoords, {
          color: channelColor,
          weight: 3
      });
