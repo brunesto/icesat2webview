@@ -3,8 +3,10 @@
 
 """
 
-syntax: db-path [file-1.h5 [file-2.h5 [...]]] 
+syntax: db-path -[fd] [file-1.h5 [file-2.h5 [...]]] 
 
+-f forces
+-d add debug info
 
 the h5 files will be all parsed and the relevant data extracted into tiles at zoomlevel 11,
 the tiles are saved in the db path
@@ -26,7 +28,7 @@ import datetime
 import math
 
 CHANNELS = ['1l', '1r','2l', '2r','3l', '3r']
-CHANNELS =['2l']
+#CHANNELS =['1l']
 
 ZOOM_LEVEL=11
 tilesStore= {}
@@ -43,8 +45,8 @@ def coords2tilexy(lat_deg, lon_deg, zoom):
 def recordPoint(filename,channel,rgt,time,lat,lon,terrain,canopy,direction):
    global coordsCnt
    key=coords2tilexy(lat,lon,ZOOM_LEVEL)
-   payload=filename+";"+channel+";"+str(rgt)+";"+str(time)+";"+str(lat)+";"+str(lon)+";"+str(terrain)+";"+str(canopy)+";"+str(direction)
-   print("=="+payload)
+   payload=filename+";"+channel+";"+str(rgt)+";"+str(round(time,3))+";"+str(lat)+";"+str(lon)+";"+str(terrain)+";"+str(canopy)+";"+str(direction)
+   #print("=="+payload)
    tilesStore.setdefault(key, []).append(payload)
    coordsCnt=coordsCnt+1
 
@@ -66,8 +68,8 @@ def processFile(filename,addDebugInfo):
     print("processFile "+filename)
     f = h5py.File(filename)
 
-    dumpAll("", f,3306)
-    return
+    #dumpAll("", f,3306)
+    #return
 
     #list(f.keys())
     #['METADATA', 'ancillary_data', 'ds_geosegments', 'ds_metrics', 'ds_surf_type', 'gt1l', 'gt1r', 'gt2l', 'gt2r', 'gt3l', 'gt3r', 'orbit_info', 'quality_assessment']
@@ -81,7 +83,7 @@ def processFile(filename,addDebugInfo):
 
         ancillary_data=f['/ancillary_data']
         orbit_info=f['/orbit_info']
-        dump('/orbit_info',orbit_info,0)
+        #dump('/orbit_info',orbit_info,0)
         print(filename+":"+" reading channel:"+channel)
         
 
@@ -90,7 +92,7 @@ def processFile(filename,addDebugInfo):
         canopy=f['/gt'+channel+'/land_segments/canopy']
         signal_photons=f['/gt'+channel+'/signal_photons']
         
-        print("ancillary_data" ,ancillary_data.keys())
+        #print("ancillary_data" ,ancillary_data.keys())
         ##start_delta_time=ancillary_data['start_delta_time'][0]
         ##print("start_delta_time:",start_delta_time)
         ##print("land_segments" ,land_segments.keys())
@@ -115,12 +117,12 @@ def processFile(filename,addDebugInfo):
 
          
           if (x[5]<1000):
-            print("#"+str(i))
+            #print("#"+str(i))
             lat=x[2]
-            dump("signal_photons",signal_photons,i)
-            dump("land_segments",land_segments,i)
-            dump("canopy",canopy,i)
-            dump("terrain",terrain,i)
+            #dump("signal_photons",signal_photons,i)
+            #dump("land_segments",land_segments,i)
+            #dump("canopy",canopy,i)
+            #dump("terrain",terrain,i)
 
             
             #  hacky detection of rgt direction
@@ -130,9 +132,9 @@ def processFile(filename,addDebugInfo):
               direction='n'  
 
             recordPoint(debugInfo,channel,x[0],x[1],lat,x[3],x[4],x[5],direction)
-            print("ph_segment_id:",str(x[6]))
-            print("classed_pc_indx:",str(x[7]))
-            return
+            #print("ph_segment_id:",str(x[6]))
+            #print("classed_pc_indx:",str(x[7]))
+            #return
             plat=lat
 
 
@@ -191,9 +193,12 @@ def saveStore(storePath):
 
 
 #-- main --
-def main(storePath,addDebugInfo,granules):
+def main(storePath,options,granules):
 
   
+  addDebugInfo="d" in options
+  force="f" in options
+
   srcs={}
   
   # open or create src.txt (the list of already processed h5 files)
@@ -212,14 +217,14 @@ def main(storePath,addDebugInfo,granules):
         srcs[tokens[0]]=tokens[1:]
         print(tokens[0]+";"+line)
 
-
+  print("channels:"+str(CHANNELS))
 
   # process each h5 file
 
   for filename in granules:
       if (not os.path.exists(filename)):
         print(filename+": does not exists")
-      elif (os.path.basename(filename) in srcs):
+      elif (not force and os.path.basename(filename) in srcs):
         print(filename+":already loaded")
       else :  
         resetStore()
@@ -232,6 +237,10 @@ def main(storePath,addDebugInfo,granules):
 
 
 
+# main
 
+if (not sys.argv[2].startswith("-")):
+    print ("2nd param must start with dash")
+    exit(1)
 
-main ( storePath=sys.argv[1], addDebugInfo=sys.argv[2],granules=sys.argv[3:])
+main ( storePath=sys.argv[1], options=sys.argv[2],granules=sys.argv[3:])

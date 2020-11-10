@@ -68,7 +68,8 @@
      var lon = parseFloat(d[5])
      var latLng = [lat, lon]
 
-     var date = new Date(1000 * (315964800 + 1198800000 + time))
+     var ms=(315964800 + 1198800000 + time)
+     var date = new Date(1000 * ms)
          // //console.log("record2string:" + date)
 
 
