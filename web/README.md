@@ -15,15 +15,16 @@ minimap: DONE
 nice sattelite view button DONE
 geoid elevation DONE
 publish . webpack + amazon
+link to photon data
 
 TODO:
 database tiles boundary (i.e. just min and max tile)
-link to photon data
+
 
 
 # upload to aws
-npm run build
-aws s3 cp /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/index.html  s3://icesat2webview/
+npm run build && \
+aws s3 cp /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/index.html  s3://icesat2webview/ && \
 aws s3 sync --no-follow-symlinks /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/site  s3://icesat2webview/site
 
 

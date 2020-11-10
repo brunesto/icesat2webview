@@ -1,6 +1,6 @@
 import '../styles/buttons.css'
 
-const layerNames = ["map", "aerial","light", "dark"]
+const layerNames = ["outdoors", "aerial","light"]//, "dark"]
 var currentLayerIdx = -1
 
 

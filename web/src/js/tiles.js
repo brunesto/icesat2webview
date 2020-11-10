@@ -114,6 +114,7 @@
          '&mapType=geographic' +
          '&tab=photon' +
          '"'+
+         'rel="noreferrer noopener"'+ // avoid js error when changing data in photon data
          ">ATL03 Photon Height</a></td></tr>" +
 
          "";

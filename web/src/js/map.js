@@ -82,18 +82,20 @@ export function initMap(config) {
     })
     tileLayers["osm"] = osmTileLayer;
 
-
+    var MAX_ZOOM=19
 
     var mapBoxTileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnJ1bmVzdG8iLCJhIjoiY2lvNGowMmx4MDAycXZ5a3A0aXdqZTZjbCJ9.0kHXvJmsETs_QzfXfQv9mw', {
-        maxZoom: 18,
+        
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
             '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
             'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        id: 'mapbox/streets-v11',
+        id: 'mapbox/outdoors-v11',
         tileSize: 512,
-        zoomOffset: -1
+        zoomOffset: -1,
+        maxNativeZoom: 18,
+        maxZoom: MAX_ZOOM
     })
-    tileLayers["map"] = mapBoxTileLayer;
+    tileLayers["outdoors"] = mapBoxTileLayer;
     //  mapBoxTileLayer.addTo(myMap)
 
 
@@ -104,7 +106,8 @@ export function initMap(config) {
     var esriTileLayer = L.tileLayer(
         'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: '&copy; ' + mapLink + ', ' + wholink,
-            maxZoom: 18,
+            maxNativeZoom: 17,
+            maxZoom: MAX_ZOOM
         })
     tileLayers["aerial"] = esriTileLayer;
 
@@ -112,7 +115,8 @@ export function initMap(config) {
     var CartoDB_LightMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
-        maxZoom: 19
+        maxNativeZoom: 19,
+        maxZoom: MAX_ZOOM
     });
     tileLayers["light"] = CartoDB_LightMatter;
 
@@ -120,7 +124,8 @@ export function initMap(config) {
     var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
-        maxZoom: 19
+        maxNativeZoom: 19,
+        maxZoom: MAX_ZOOM
     });
     tileLayers["dark"] = CartoDB_DarkMatter;
 
