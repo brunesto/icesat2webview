@@ -19,17 +19,19 @@
 
 
 
- function addTileMarker(yx, myRenderer, myMarkersGroup) {
+ function addTileMarker(yx, nodata,myRenderer, myMarkersGroup) {
      var bounds = [
          [tile2lat(yx[0], TILE_DEF_ZL), tile2long(yx[1], TILE_DEF_ZL)],
          [tile2lat(yx[0] + 1, TILE_DEF_ZL), tile2long(yx[1] + 1, TILE_DEF_ZL)]
      ]
+     var center=[tile2lat(yx[0]+0.5, TILE_DEF_ZL), tile2long(yx[1]+0.5, TILE_DEF_ZL)]
      var tileMarker = L.rectangle(bounds, {
          renderer: myRenderer,
-         color: 'blue',
-         fillColor: 'transparent',
+         color: 'white',
+         fillColor: nodata?'white':'transparent',
          weight: 1,
-         opacity: 0.3
+         opacity: 1,
+         fillOpacity:0.6
 
      })
 
@@ -37,8 +39,9 @@
 
      tileMarker.addTo(myMarkersGroup);
 
-     var myIcon = L.divIcon({ className: 'tilePath', html: yx[1] + "/" + yx[0] });
-     L.marker(bounds[0], { icon: myIcon }).addTo(myMarkersGroup);
+     var label=nodata?"no data for this area":(yx[1] + "/" + yx[0])
+     var myIcon = L.divIcon({ className: 'tilePath-'+(nodata?"nodata":"DEV"), html: label });
+     L.marker(center, { icon: myIcon }).addTo(myMarkersGroup);
 
 
  }
@@ -53,6 +56,15 @@
      return info;
  }
 
+ var channel2beam={
+
+    '3r':1,
+    '3l':2,
+    '2r':3,
+    '2l':4,
+    '1r':5,
+    '1l':6
+ }
  function record2string(d, ellipsoidToEgm96) {
 
      var src = d[0]
@@ -263,7 +275,7 @@
      //console.log("loadTile " + path);
 
      if (DEV) {
-         addTileMarker(yx, myRenderer, myMarkersGroup)
+         addTileMarker(yx, false,myRenderer, myMarkersGroup)
      }
 
 
@@ -303,6 +315,8 @@
 
                  // whatever...
                  tiles[yx] = 'ok'
+             } else {
+                addTileMarker(yx,true,myRenderer, myMarkersGroup)
              }
              tiles[yx] = 'status ' + oReq.status
          };
@@ -418,3 +432,28 @@
 
 
  }
+
+
+//  bbox=__non_webpack_require__('tiles/bbox11.json');
+//  console.log("bbox"+bbox)
+ 
+var tilesServerBbox=null
+
+ export function initTiles(ready){
+
+    var oReq = new XMLHttpRequest();
+    oReq.open("GET", "tiles/bbox.json", true);
+    oReq.onload = function(oEvent) {
+        if (oReq.status == 200 || oReq.status == 304) {
+            tilesServerBbox = JSON.parse(this.responseText);
+        }
+        console.log("tilesServerBbox:",tilesServerBbox)
+        ready();
+    };
+    oReq.send();
+}
+
+
+
+
+

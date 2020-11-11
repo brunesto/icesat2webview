@@ -18,8 +18,18 @@
     height: 100;
 }
 
-.tilePath {
+.tilePath-DEV,.tilePath-nodata {
     padding: 10px;
-    color: blue;
+    
+    left:-100px;
+    width:200px !important;
     font-family: 'Courier New', Courier, monospace;
 }
+.tilePath-DEV {
+    color: blue;    
+}
+.tilePath-nodata {
+    color: red;    
+    font-weight: bold;
+}
+
