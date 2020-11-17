@@ -22,9 +22,7 @@ module.exports = merge(common, {
     hot: true,
     port: 8443,
     serveIndex:true,
-
-    contentBase: [ path.join(__dirname+"/..", 'tiles')],
-    contentBasePublicPath: [ '/tiles'],
+    contentBasePublicPath: [ '/'],
   },
 
   plugins: [

@@ -1,5 +1,5 @@
 import { mat4, mat3 } from 'gl-matrix';
-import { initShaderProgram } from './webglutil.js';
+import { initShaderProgram,loadTexture } from './webglutil.js';
 
 
 
@@ -10,32 +10,35 @@ export class Step2 {
 
     vsSource = `
     attribute vec4 aVertexPosition;
-    attribute vec4 aVertexColor;
+    attribute vec2 aTextureCoord;
 
     uniform mat4 uModelMatrix;
     uniform mat4 uViewMatrix;
     uniform mat4 uProjectionMatrix;
 
-    varying lowp vec4 vColor;
+    varying highp vec2 vTextureCoord;
 
     void main(void) {
       gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
-      vColor = aVertexColor;
+      vTextureCoord = aTextureCoord;
     }
   `;
 
     // Fragment shader
     fsSource = `
-    varying lowp vec4 vColor;
+    varying highp vec2 vTextureCoord;
+
+    uniform sampler2D uSampler;
 
     void main(void) {
-      gl_FragColor = vColor;
+      gl_FragColor = texture2D(uSampler, vTextureCoord);
     }
   `;
 
 
     programInfo = null
     buffers = null
+    texture = null
 
     initBuffers() {
 
@@ -92,35 +95,6 @@ export class Step2 {
 
 
 
-        const faceColors = [
-            [1.0, 1.0, 1.0, 1.0], // Front face: white
-            [1.0, 0.0, 0.0, 1.0], // Back face: red
-            [0.0, 1.0, 0.0, 1.0], // Top face: green
-            [0.0, 0.0, 1.0, 1.0], // Bottom face: blue
-            [1.0, 1.0, 0.0, 1.0], // Right face: yellow
-            [1.0, 0.0, 1.0, 1.0], // Left face: purple
-        ];
-
-        // Convert the array of colors into a table for all the vertices.
-
-        var colors = [];
-
-        for (var j = 0; j < faceColors.length; ++j) {
-            const c = faceColors[j];
-
-            // Repeat each color four times for the four vertices of the face
-            colors = colors.concat(c, c, c, c);
-        }
-
-        const colorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-
-
-
-
-
-
 
 
 
@@ -147,11 +121,49 @@ export class Step2 {
             new Uint16Array(indices), gl.STATIC_DRAW);
 
 
+        const textureCoordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+
+        const textureCoordinates = [
+            // Front
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+            // Back
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+            // Top
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+            // Bottom
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+            // Right
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+            // Left
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+        ];
+
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
+            gl.STATIC_DRAW);
 
         return {
             indices: indexBuffer,
             position: positionBuffer,
-            color: colorBuffer,
+            textureCoord: textureCoordBuffer,
         };
     }
 
@@ -161,15 +173,21 @@ export class Step2 {
             program: shaderProgram,
             attribLocations: {
                 vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-                vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
+                textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
             },
             uniformLocations: {
                 projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
                 viewMatrix: gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
                 modelMatrix: gl.getUniformLocation(shaderProgram, 'uModelMatrix'),
+                uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
             },
         }
         console.log("programInfo:", this.programInfo)
+
+        // Load texture
+        this.texture = loadTexture( '/public/ground.png');
+
+
         this.buffers = this.initBuffers()
     }
 
@@ -227,26 +245,6 @@ export class Step2 {
         }
 
 
-        // Tell WebGL how to pull out the colors from the color buffer
-        // into the vertexColor attribute.
-
-        {
-            const numComponents = 4;
-            const type = gl.FLOAT;
-            const normalize = false;
-            const stride = 0;
-            const offset = 0;
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.color);
-            gl.vertexAttribPointer(
-                this.programInfo.attribLocations.vertexColor,
-                numComponents,
-                type,
-                normalize,
-                stride,
-                offset);
-            gl.enableVertexAttribArray(
-                this.programInfo.attribLocations.vertexColor);
-        }
 
 
 
@@ -271,6 +269,32 @@ export class Step2 {
 
         // Tell WebGL which indices to use to index the vertices
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indices);
+
+
+
+
+        // tell webgl how to pull out the texture coordinates from buffer
+        {
+            const num = 2; // every coordinate composed of 2 values
+            const type = gl.FLOAT; // the data in the buffer is 32 bit float
+            const normalize = false; // don't normalize
+            const stride = 0; // how many bytes to get from one set to the next
+            const offset = 0; // how many bytes inside the buffer to start from
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.textureCoord);
+            gl.vertexAttribPointer(this.programInfo.attribLocations.textureCoord, num, type, normalize, stride, offset);
+            gl.enableVertexAttribArray(this.programInfo.attribLocations.textureCoord);
+        }
+
+        // Tell WebGL we want to affect texture unit 0
+        {
+            gl.activeTexture(gl.TEXTURE0);
+
+            // Bind the texture to texture unit 0
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+
+            // Tell the shader we bound the texture to texture unit 0
+            gl.uniform1i(this.programInfo.uniformLocations.uSampler, 0);
+        }
 
 
         {
