@@ -39,5 +39,11 @@
     "pako": "^1.0.11",
     "url-search-params-polyfill": "^8.1.0",
     "webpack-config-dump-plugin": "^3.0.1"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": ["@babel/plugin-proposal-class-properties"]
   }
 }

@@ -2,9 +2,11 @@ import './styles/body.css';
 import { mat4, mat3 } from 'gl-matrix';
 import { Dragger } from './js/dragger.js';
 
-import { initStep2, draw2 } from './js/step2.js';
+import { Step2 } from './js/step2.js';
 
 
+
+const step2=new Step2()
 //
 // start here
 //
@@ -74,11 +76,11 @@ function drawScene(camera) {
 
 
 
-    draw2(projectionMatrix, viewMatrix)
+    step2.draw2(projectionMatrix, viewMatrix)
 }
 initGl()
 
-initStep2()
+step2.initStep2()
 
 
 function redraw() {
