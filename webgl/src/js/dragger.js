@@ -12,21 +12,22 @@ export class Dragger {
 
     }
 
-    _updateFrom(e){
+    _updateFrom(e) {
         this.dragState.deltaLast = [e.clientX - this.dragState.last[0], e.clientY - this.dragState.last[1]];
-        this.dragState.last = [e.clientX, e.clientY];        
+        this.dragState.last = [e.clientX, e.clientY];
         this.dragState.deltaStart = [e.clientX - this.dragState.start[0], e.clientY - this.dragState.start[1]];
-     
+
     }
 
 
     handleMouseDown(e) {
         console.log("mousedown", e)
-        this.dragState = { 
+        this.dragState = {
             start: [e.clientX, e.clientY],
-            last: [e.clientX, e.clientY] ,
-            ctrlKey:e.ctrlKey,
-            shiftKey:e.shiftKey};
+            last: [e.clientX, e.clientY],
+            ctrlKey: e.ctrlKey,
+            shiftKey: e.shiftKey
+        };
         this.callbacks.started?.(this.dragState)
     }
 
