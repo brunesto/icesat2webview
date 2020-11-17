@@ -1,5 +1,5 @@
 import { mat4, mat3 } from 'gl-matrix';
-import { initShaderProgram,loadTexture } from './webglutil.js';
+import { initShaderProgram, loadTexture } from './webglutil.js';
 
 
 
@@ -11,27 +11,43 @@ export class Step2 {
     vsSource = `
     attribute vec4 aVertexPosition;
     attribute vec2 aTextureCoord;
+    attribute vec3 aVertexNormal;
 
+    uniform mat4 uNormalMatrix;
     uniform mat4 uModelMatrix;
     uniform mat4 uViewMatrix;
     uniform mat4 uProjectionMatrix;
 
     varying highp vec2 vTextureCoord;
+    varying highp vec3 vLighting;
 
     void main(void) {
       gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
       vTextureCoord = aTextureCoord;
+
+
+      // Apply lighting effect
+
+      highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
+      highp vec3 directionalLightColor = vec3(1, 1, 1);
+      highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
+
+      highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
+
+      highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
+      vLighting = ambientLight + (directionalLightColor * directional);
     }
   `;
 
     // Fragment shader
     fsSource = `
     varying highp vec2 vTextureCoord;
-
+    varying highp vec3 vLighting;
     uniform sampler2D uSampler;
 
     void main(void) {
-      gl_FragColor = texture2D(uSampler, vTextureCoord);
+        highp vec4 texelColor = texture2D(uSampler, vTextureCoord);
+        gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
     }
   `;
 
@@ -95,6 +111,47 @@ export class Step2 {
 
 
 
+
+        const normalBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+
+        const vertexNormals = [
+            // Front
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0,
+
+            // Back
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+            0.0, 0.0, -1.0,
+
+            // Top
+            0.0, 1.0, 0.0,
+            0.0, 1.0, 0.0,
+            0.0, 1.0, 0.0,
+            0.0, 1.0, 0.0,
+
+            // Bottom
+            0.0, -1.0, 0.0,
+            0.0, -1.0, 0.0,
+            0.0, -1.0, 0.0,
+            0.0, -1.0, 0.0,
+
+            // Right
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+
+            // Left
+            -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0
+        ];
+
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals),
+            gl.STATIC_DRAW);
 
 
 
@@ -160,9 +217,10 @@ export class Step2 {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
             gl.STATIC_DRAW);
 
-        return {
-            indices: indexBuffer,
+        return {            
             position: positionBuffer,
+            normal: normalBuffer,
+            indices: indexBuffer,
             textureCoord: textureCoordBuffer,
         };
     }
@@ -173,19 +231,22 @@ export class Step2 {
             program: shaderProgram,
             attribLocations: {
                 vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+                vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
                 textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
             },
             uniformLocations: {
                 projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
                 viewMatrix: gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
                 modelMatrix: gl.getUniformLocation(shaderProgram, 'uModelMatrix'),
+                normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
                 uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
             },
         }
         console.log("programInfo:", this.programInfo)
 
-        // Load texture
-        this.texture = loadTexture( '/public/ground.png');
+        // Load texture -- copied from http://polyorigami.blogspot.com/2012/02/more-tiles-ground-texture.html -  no copyright info
+
+        this.texture = loadTexture('/public/ground.png');
 
 
         this.buffers = this.initBuffers()
@@ -247,6 +308,35 @@ export class Step2 {
 
 
 
+// Tell WebGL how to pull out the normals from
+  // the normal buffer into the vertexNormal attribute.
+  {
+    const numComponents = 3;
+    const type = gl.FLOAT;
+    const normalize = false;
+    const stride = 0;
+    const offset = 0;
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normal);
+    gl.vertexAttribPointer(
+        this. programInfo.attribLocations.vertexNormal,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset);
+    gl.enableVertexAttribArray(
+        this.programInfo.attribLocations.vertexNormal);
+  }
+
+  const modelViewMatrix = mat4.create();
+  mat4.multiply(modelViewMatrix, viewMatrix,modelMatrix);
+
+
+  // Finally, we need to update the code that builds the uniform matrices to generate and deliver to the shader a normal matrix, 
+  // which is used to transform the normals when dealing with the current orientation of the cube in relation to the light source
+  const normalMatrix = mat4.create();
+  mat4.invert(normalMatrix, modelViewMatrix);
+  mat4.transpose(normalMatrix, normalMatrix);
 
 
 
@@ -266,6 +356,11 @@ export class Step2 {
             this.programInfo.uniformLocations.modelMatrix,
             false,
             modelMatrix);
+
+            gl.uniformMatrix4fv(
+                this.programInfo.uniformLocations.normalMatrix,
+                false,
+                normalMatrix);
 
         // Tell WebGL which indices to use to index the vertices
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indices);
