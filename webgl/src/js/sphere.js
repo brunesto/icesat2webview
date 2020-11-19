@@ -19,10 +19,12 @@ export class Sphere {
 
     // Fragment shader
     fsSource = `
-    uniform lowp vec4 uColor;
+    precision mediump float;
+    //uniform lowp vec4 uColor;
 
     void main(void) {
-      gl_FragColor = uColor;
+      vec3 colorA = vec3(0.149,0.141,0.912);
+      gl_FragColor =vec4(colorA,1.0);
     }
   `;
 
@@ -40,7 +42,7 @@ export class Sphere {
                 projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
                 viewMatrix: gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
                 modelMatrix: gl.getUniformLocation(shaderProgram, 'uModelMatrix') ,              
-                color: gl.getUniformLocation(shaderProgram, 'uColor')                
+                // color: gl.getUniformLocation(shaderProgram, 'uColor')                
             },
         }
         console.log("programInfo:", this.programInfo)
@@ -78,6 +80,40 @@ export class Sphere {
         }
         for(var i in positions)
             console.log("#i"+positions[i])
+
+
+
+
+             positions = [
+                // Front face
+                -1.0, -1.0, 1.0,
+                1.0, -1.0, 1.0,
+                1.0, 1.0, 1.0, -1.0, 1.0, 1.0,
+    
+                // Back face
+                -1.0, -1.0, -1.0, -1.0, 1.0, -1.0,
+                1.0, 1.0, -1.0,
+                1.0, -1.0, -1.0,
+    
+                // Top face
+                -1.0, 1.0, -1.0, -1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0,
+                1.0, 1.0, -1.0,
+    
+                // Bottom face
+                -1.0, -1.0, -1.0,
+                1.0, -1.0, -1.0,
+                1.0, -1.0, 1.0, -1.0, -1.0, 1.0,
+    
+                // Right face
+                1.0, -1.0, -1.0,
+                1.0, 1.0, -1.0,
+                1.0, 1.0, 1.0,
+                1.0, -1.0, 1.0,
+    
+                // Left face
+                -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0,
+            ];
 
         // Create a buffer for the square's positions.
 
@@ -120,6 +156,18 @@ export class Sphere {
         }
         for(var i=0;i<indices.length;i+=3)
             console.log("#i "+indices[i]+","+indices[i+1]+","+indices[i+2])
+
+
+
+            indices = [
+                0, 1, 2, 0, 2, 3, // front
+                4, 5, 6, 4, 6, 7, // back
+                8, 9, 10, 8, 10, 11, // top
+                12, 13, 14, 12, 14, 15, // bottom
+                16, 17, 18, 16, 18, 19, // right
+                20, 21, 22, 20, 22, 23, // left
+            ];
+
 
         const indexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -212,10 +260,10 @@ export class Sphere {
             false,
             modelMatrix);
 
-            gl.uniform4fv(
-                this.programInfo.uniformLocations.color,
+            // gl.uniform4fv(
+            //     this.programInfo.uniformLocations.color,
               
-                [1, 1, 1,1]);
+            //     [1, 1, 1,1]);
     
 
 

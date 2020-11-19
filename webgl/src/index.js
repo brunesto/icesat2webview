@@ -2,6 +2,7 @@ import './styles/body.css';
 import { mat4, mat3 } from 'gl-matrix';
 import { Dragger } from './js/dragger.js';
 
+import { Step1 } from './js/step1.js';
 import { Step2 } from './js/step2.js';
 import { Sphere } from './js/sphere.js';
 
@@ -80,7 +81,8 @@ function drawScene(camera) {
       step2.draw2(projectionMatrix, viewMatrix)
 }
 initGl()
-step2s.push(new Sphere())
+// step2s.push(new Sphere())
+step2s.push(new Step1())
 //step2s.push(new Step2())
 
 
