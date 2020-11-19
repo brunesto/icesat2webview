@@ -225,7 +225,7 @@ export class Step2 {
         };
     }
 
-    initStep2() {
+    constructor() {
         var shaderProgram = initShaderProgram(this.vsSource, this.fsSource);
         this.programInfo = {
             program: shaderProgram,

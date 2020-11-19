@@ -3,10 +3,11 @@ import { mat4, mat3 } from 'gl-matrix';
 import { Dragger } from './js/dragger.js';
 
 import { Step2 } from './js/step2.js';
+import { Sphere } from './js/sphere.js';
 
 
 
-const step2=new Step2()
+const step2s=[]
 //
 // start here
 //
@@ -75,12 +76,12 @@ function drawScene(camera) {
     mat4.multiply(viewMatrix, viewMatrix1, camera.rotationMatrix)
 
 
-
-    step2.draw2(projectionMatrix, viewMatrix)
+    for(var step2 of step2s)
+      step2.draw2(projectionMatrix, viewMatrix)
 }
 initGl()
-
-step2.initStep2()
+step2s.push(new Sphere())
+//step2s.push(new Step2())
 
 
 function redraw() {
