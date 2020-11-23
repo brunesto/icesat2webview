@@ -61,14 +61,36 @@ export class Sphere {
     }
 
 
+
+    // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+    tile2long(x, z) {
+        return (x / Math.pow(2, z) * 360 - 180);
+    }
+    tile2lat(y, z) {
+        var n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
+        return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
+    }
+
+    lon2tile(lon, zoom) { return (Math.floor((lon + 180) / 360 * Math.pow(2, zoom))); }
+
+    lat2tile(lat, zoom) {   return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom)));  }
+
     /**
-     * 
-     * given latitude + longitude
-     * return a 3d coordinates
-     * 
-     * https://math.libretexts.org/Bookshelves/Calculus/Book%3A_Calculus_(OpenStax)/12%3A_Vectors_in_Space/12.7%3A_Cylindrical_and_Spherical_Coordinates
-     * section: 
+     * convert a tile to its noth west 3d point
      */
+    tile23d(x, y, z) {
+            const lat = this.tile2lat(y, z)
+            const lon = this.tile2long(x, z)
+            return this.latlon23d(lat, lon)
+        }
+        /**
+         * 
+         * given latitude + longitude
+         * return a 3d coordinates
+         * 
+         * https://math.libretexts.org/Bookshelves/Calculus/Book%3A_Calculus_(OpenStax)/12%3A_Vectors_in_Space/12.7%3A_Cylindrical_and_Spherical_Coordinates
+         * section: 
+         */
     latlon23d(lat, lon) {
         // TODO
 
@@ -95,15 +117,32 @@ export class Sphere {
     //
     initBuffers() {
 
-        var bbox = { min: [-90, -180], max: [90, 180] }
-        const coordsStep = 10;
+        var bbox = { min: [-80, -170], max: [80, 170] }
+
+        const z =4
+        const tileMin = [this.lon2tile(bbox.min[1], z), this.lat2tile(bbox.max[0], z)]
+        const  tileMax = [this.lon2tile(bbox. max[1], z), this.lat2tile(bbox.min[0], z)]
+        console.log("tileMin:", tileMin)
+        console.log("tileMax:", tileMax)
+
         var positions = [];
-        for (var lat = bbox.min[0]; lat <= bbox.max[0]; lat += coordsStep) {
-            for (var lon = bbox.min[1]; lon <= bbox.max[1]; lon += coordsStep) {
-                var latLng = this.latlon23d(lat, lon)
+
+        for (var y = tileMin[1]; y <= tileMax[1]+1; y++) {
+            for (var x = tileMin[0]; x <= tileMax[0]+1; x++) {
+                var latLng = this.tile23d(x, y, z);
                 positions = positions.concat(latLng)
             }
         }
+
+
+        // const coordsStep = 10;
+        // var positions = [];
+        // for (var lat = bbox.min[0]; lat <= bbox.max[0]; lat += coordsStep) {
+        //     for (var lon = bbox.min[1]; lon <= bbox.max[1]; lon += coordsStep) {
+        //         var latLng = this.latlon23d(lat, lon)
+        //         positions = positions.concat(latLng)
+        //     }
+        // }
 
 
 
@@ -111,7 +150,7 @@ export class Sphere {
 
         if (logFlag)
             for (var i = 0; i < positions.length; i += 3)
-                console.log("[" + i + ",...]=" + positions[i] + "," + positions[i + 1] + "," + positions[i + 2])
+                console.log("[" + i/3 + ",...]=" + positions[i] + "," + positions[i + 1] + "," + positions[i + 2])
 
         // Create a buffer for the cube's vertex positions.
 
@@ -147,25 +186,39 @@ export class Sphere {
             // This array defines each face as two triangles, using the
             // indices into the vertex array to specify each triangle's
             // position.    
-        var lonSize = bbox.max[1] - bbox.min[1]
-        var latSize = bbox.max[0] - bbox.min[0]
+            // var lonSize = bbox.max[1] - bbox.min[1]
+            // var latSize = bbox.max[0] - bbox.min[0]
 
-        var lonSteps = lonSize / coordsStep
-        var latSteps = latSize / coordsStep
+        // var lonSteps = lonSize / coordsStep
+        // var latSteps = latSize / coordsStep
 
-        console.log("lonSize:" + lonSize)
-        console.log("latSize:" + latSize)
-        console.log("lonSteps:" + lonSteps)
-        console.log("latSteps:" + latSteps)
-        for (var dlat = 0; dlat < latSteps; dlat++) {
-            for (var dlon = 0; dlon < lonSteps; dlon++) {
-                indices.push((dlon) + (dlat) * (lonSteps + 1))
-                indices.push((dlon + 1) + (dlat) * (lonSteps + 1))
-                indices.push((dlon) + (dlat + 1) * (lonSteps + 1))
-                indices.push((dlon + 1) + (dlat) * (lonSteps + 1))
-                indices.push((dlon + 1) + (dlat + 1) * (lonSteps + 1))
-                indices.push((dlon) + (dlat + 1) * (lonSteps + 1))
+        // console.log("lonSize:" + lonSize)
+        // console.log("latSize:" + latSize)
+        // console.log("lonSteps:" + lonSteps)
+        // console.log("latSteps:" + latSteps)
+        // for (var dlat = 0; dlat < latSteps; dlat++) {
+        //     for (var dlon = 0; dlon < lonSteps; dlon++) {
+        //         indices.push((dlon) + (dlat) * (lonSteps + 1))
+        //         indices.push((dlon + 1) + (dlat) * (lonSteps + 1))
+        //         indices.push((dlon) + (dlat + 1) * (lonSteps + 1))
+        //         indices.push((dlon + 1) + (dlat) * (lonSteps + 1))
+        //         indices.push((dlon + 1) + (dlat + 1) * (lonSteps + 1))
+        //         indices.push((dlon) + (dlat + 1) * (lonSteps + 1))
 
+        //     }
+        // }
+
+        var xSize = tileMax[0] - tileMin[0]+1
+        var ySize = tileMax[1] - tileMin[1]+1
+
+        for (var y = 0; y < ySize; y++) {
+            for (var x = 0; x < xSize; x++) {
+                indices.push(x + (y) * (xSize + 1))
+                indices.push(x + 1 + (y) * (xSize + 1))
+                indices.push(x + (y + 1) * (xSize + 1))
+                indices.push(x + 1 + (y) * (xSize + 1))
+                indices.push(x + 1 + (y + 1) * (xSize + 1))
+                indices.push(x + (y + 1) * (xSize + 1))
             }
         }
 
