@@ -110,7 +110,7 @@ export class Step2 {
 
 
 
-
+        // -- normals ---
 
         const normalBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
