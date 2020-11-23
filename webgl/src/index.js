@@ -82,8 +82,8 @@ function drawScene(camera) {
       step2.draw2(projectionMatrix, viewMatrix)
 }
 initGl()
-//step2s.push(new Sphere())
-step2s.push(new Mixup())
+step2s.push(new Sphere())
+//step2s.push(new Mixup())
 // step2s.push(new Step1())
 //step2s.push(new Step2())
 

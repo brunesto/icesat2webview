@@ -55,9 +55,9 @@ export class Mixup {
 
 
 
-    degrees2radians(degrees)  {
-      var pi = Math.PI;
-      return degrees * (pi/180);
+    degrees2radians(degrees) {
+        var pi = Math.PI;
+        return degrees * (pi / 180);
     }
 
 
@@ -73,17 +73,17 @@ export class Mixup {
         // TODO
 
         // latitude from the north pole 
-        const lat0=90-lat
+        const lat0 = 90 - lat
 
-        
-        const φ =this.degrees2radians(lat0)
-        const θ=this.degrees2radians(lon)
-        const ρ=0.8;//6378;
-        const x=ρ*Math.sin(φ)*Math.cos(θ) 
-        const z=ρ*Math.sin(φ)*Math.sin(θ)
-        const y=ρ*Math.cos(φ)
 
-        return [x,y,z]
+        const φ = this.degrees2radians(lat0)
+        const θ = this.degrees2radians(lon)
+        const ρ = 0.8; //6378;
+        const x = ρ * Math.sin(φ) * Math.cos(θ)
+        const z = ρ * Math.sin(φ) * Math.sin(θ)
+        const y = ρ * Math.cos(φ)
+
+        return [x, y, z]
     }
 
 
@@ -96,15 +96,15 @@ export class Mixup {
     initBuffers() {
 
         var bbox = { min: [-90, -180], max: [90, 180] }
-        const coordsStep=10;
+        const coordsStep = 10;
         var positions = [];
-        for (var lat = bbox.min[0]; lat <= bbox.max[0]; lat+=coordsStep) {
-            for (var lon = bbox.min[1]; lon <= bbox.max[1]; lon+=coordsStep) {            
+        for (var lat = bbox.min[0]; lat <= bbox.max[0]; lat += coordsStep) {
+            for (var lon = bbox.min[1]; lon <= bbox.max[1]; lon += coordsStep) {
                 var latLng = this.latlon23d(lat, lon)
                 positions = positions.concat(latLng)
             }
         }
-       
+
 
         //  positions = [
         //     // Front face
@@ -139,8 +139,9 @@ export class Mixup {
 
         console.log("positions: " + positions.length)
 
-        if (logFlag) for (var i = 0; i < positions.length; i += 3)
-            console.log("["+i+",...]=" + positions[i] + "," + positions[i + 1] + "," + positions[i + 2])
+        if (logFlag)
+            for (var i = 0; i < positions.length; i += 3)
+                console.log("[" + i + ",...]=" + positions[i] + "," + positions[i + 1] + "," + positions[i + 2])
 
         // Create a buffer for the cube's vertex positions.
 
@@ -171,34 +172,34 @@ export class Mixup {
         // position.
 
 
-        
-    var indices = []
+
+        var indices = []
             // This array defines each face as two triangles, using the
             // indices into the vertex array to specify each triangle's
             // position.    
         var lonSize = bbox.max[1] - bbox.min[1]
         var latSize = bbox.max[0] - bbox.min[0]
 
-        var lonSteps = lonSize/coordsStep
-        var latSteps= latSize/coordsStep
+        var lonSteps = lonSize / coordsStep
+        var latSteps = latSize / coordsStep
 
         console.log("lonSize:" + lonSize)
         console.log("latSize:" + latSize)
         console.log("lonSteps:" + lonSteps)
         console.log("latSteps:" + latSteps)
         for (var dlat = 0; dlat < latSteps; dlat++) {
-            for (var dlon = 0; dlon <lonSteps; dlon++) {
-                indices.push((dlon) + (dlat) * (lonSteps+1 ))
-                indices.push((dlon + 1) + (dlat) * (lonSteps +1))
-                indices.push((dlon) + (dlat + 1) * (lonSteps +1))
-                indices.push((dlon + 1) + (dlat) * (lonSteps +1))
-                indices.push((dlon + 1) + (dlat + 1) * (lonSteps +1))
-                indices.push((dlon) + (dlat + 1) * (lonSteps+1 ))
-                
+            for (var dlon = 0; dlon < lonSteps; dlon++) {
+                indices.push((dlon) + (dlat) * (lonSteps + 1))
+                indices.push((dlon + 1) + (dlat) * (lonSteps + 1))
+                indices.push((dlon) + (dlat + 1) * (lonSteps + 1))
+                indices.push((dlon + 1) + (dlat) * (lonSteps + 1))
+                indices.push((dlon + 1) + (dlat + 1) * (lonSteps + 1))
+                indices.push((dlon) + (dlat + 1) * (lonSteps + 1))
+
             }
         }
 
-        
+
 
         //  indices = [
         //     0, 1, 2, 0, 2, 3, // front
@@ -209,10 +210,11 @@ export class Mixup {
         //     20, 21, 22, 20, 22, 23, // left
         // ];
 
-            console.log("indices: " + indices.length)
-        
-            if (logFlag) for (var i = 0; i < indices.length; i += 3)
-            console.log("["+i+",...]=" + indices[i] + "," + indices[i + 1] + "," + indices[i + 2])
+        console.log("indices: " + indices.length)
+
+        if (logFlag)
+            for (var i = 0; i < indices.length; i += 3)
+                console.log("[" + i + ",...]=" + indices[i] + "," + indices[i + 1] + "," + indices[i + 2])
 
         // Now send the element array to GL
 
@@ -225,7 +227,7 @@ export class Mixup {
         //             // Now set up the colors for the faces. We'll use solid colors
         // // for each face.
 
-      
+
         // // Convert the array of colors into a table for all the vertices.
 
         // var colors = [];
@@ -260,8 +262,8 @@ export class Mixup {
 
         var colors = [];
 
-        for (var i=0;i<positions.length;i++) {
-                colors = colors.concat([Math.random() , Math.random() , Math.random() , 1.0]);
+        for (var i = 0; i < positions.length; i++) {
+            colors = colors.concat([Math.random(), Math.random(), Math.random(), 1.0]);
 
         }
 
@@ -298,18 +300,18 @@ export class Mixup {
 
 
 
-         const colorBuffer = gl.createBuffer();
-         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+        const colorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
 
         return {
-            positionSize : positions.length,
+            positionSize: positions.length,
             position: positionBuffer,
-             color: colorBuffer,
-             colorSize : colors.length,
+            color: colorBuffer,
+            colorSize: colors.length,
             indices: indexBuffer,
-            indicesSize : indices.length
+            indicesSize: indices.length
         };
     }
 
@@ -327,7 +329,7 @@ export class Mixup {
 
         mat4.translate(modelMatrix, // destination matrix
             modelMatrix, // matrix to translate
-            [-0.0, 0.0,0.0]); // amount to translate
+            [-0.0, 0.0, 0.0]); // amount to translate
 
 
         const modelViewMatrix = mat4.create();
@@ -394,10 +396,10 @@ export class Mixup {
             modelViewMatrix);
 
 
-            
+
         {
             const trianglesCount = this.buffers.indicesSize;
-            console.debug("drawElements "+trianglesCount)
+            console.debug("drawElements " + trianglesCount)
             const type = gl.UNSIGNED_SHORT;
             const offset = 0;
             gl.drawElements(gl.TRIANGLES, trianglesCount, type, offset);
