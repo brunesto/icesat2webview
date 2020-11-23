@@ -5,8 +5,9 @@ import { Dragger } from './js/dragger.js';
 import { Step1 } from './js/step1.js';
 import { Step2 } from './js/step2.js';
 import { Sphere } from './js/sphere.js';
+import { Mixup } from './js/mixup.js';
 
-
+global.logFlag=true
 
 const step2s=[]
 //
@@ -81,8 +82,9 @@ function drawScene(camera) {
       step2.draw2(projectionMatrix, viewMatrix)
 }
 initGl()
-// step2s.push(new Sphere())
-step2s.push(new Step1())
+//step2s.push(new Sphere())
+step2s.push(new Mixup())
+// step2s.push(new Step1())
 //step2s.push(new Step2())
 
 
@@ -94,7 +96,8 @@ function redraw() {
 
 
 var camera = {
-    pos: [0.0, 0.0, 0.0],
+    pos: [0.0, 0.0, -3.0],
+    //[0.08,-0.5400000000000003,4.799999999999999],
     rotationMatrix: mat4.create()
 
 }

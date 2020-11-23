@@ -19,7 +19,6 @@ export class Sphere {
 
     // Fragment shader
     fsSource = `
-    precision mediump float;
     //uniform lowp vec4 uColor;
 
     void main(void) {
