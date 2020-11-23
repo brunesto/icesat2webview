@@ -238,7 +238,7 @@ export class Step1Normals {
             position: positionBuffer,
             color: colorBuffer,
             indices: indexBuffer,
-            normal:normalBuffer
+            normals:normalBuffer
         };
     }
 
@@ -295,7 +295,7 @@ export class Step1Normals {
     const normalize = false;
     const stride = 0;
     const offset = 0;
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normal);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normals);
     gl.vertexAttribPointer(
         this. programInfo.attribLocations.vertexNormal,
         numComponents,
@@ -307,7 +307,7 @@ export class Step1Normals {
         this.programInfo.attribLocations.vertexNormal);
   }
 
-
+  
         // Tell WebGL how to pull out the colors from the color buffer
         // into the vertexColor attribute.
         {

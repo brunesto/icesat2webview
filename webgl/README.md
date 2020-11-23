@@ -2,6 +2,9 @@
 TODO:
 add light/texture
 
+compute normal:
+https://stackoverflow.com/questions/13983189/opengl-how-to-calculate-normals-in-a-terrain-height-grid
+
 
 main tutorial
 https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Creating_3D_objects_using_WebGL
