@@ -1,30 +1,49 @@
 import { mat4, mat3 } from 'gl-matrix';
 import { initShaderProgram, loadTexture } from './webglutil.js';
-
+import './geohelper.js'
 export class Sphere {
     // Vertex shader program
 
     vsSource = `
  attribute vec4 aVertexPosition;
  attribute vec4 aVertexColor;
+ attribute vec3 aVertexNormal;
+
+ uniform mat4 uNormalMatrix;
  uniform mat4 uModelViewMatrix;
  uniform mat4 uProjectionMatrix;
+
+ varying highp vec3 vLighting;
  varying lowp vec4 vColor;
  void main(void) {
    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
    vColor = aVertexColor;
+
+   // Apply lighting effect
+
+   highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
+   highp vec3 directionalLightColor = vec3(1, 1, 1);
+   highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
+
+   highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
+
+   highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
+   vLighting = ambientLight + (directionalLightColor * directional);
+
  }
 `;
 
     // Fragment shader program
 
     fsSource = `
- varying lowp vec4 vColor;
- void main(void) {
-   gl_FragColor = vColor;
-  //gl_FragColor=vec4(1.0,0.0,0.0,1.0);
- }
-`;
+    varying lowp vec4 vColor;
+    varying highp vec3 vLighting;
+   
+    void main(void) {
+       gl_FragColor = vec4(vec3(1,0,0) * vLighting,1);
+   //gl_FragColor = vColor;
+    }
+   `;
     programInfo = null
     buffers = null
     constructor() {
@@ -35,10 +54,14 @@ export class Sphere {
             attribLocations: {
                 vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
                 vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
+                vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
+
             },
             uniformLocations: {
                 projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
                 modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+                normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
+
             }
         }
 
@@ -239,6 +262,25 @@ export class Sphere {
 
 
 
+             //-- normals  ---------------------------------------
+        const normalBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+
+        const vertexNormals =  GH.computeVertexNormals(positions, indices)
+
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         // // Convert the array of colors into a table for all the vertices.
@@ -263,7 +305,8 @@ export class Sphere {
             color: colorBuffer,
             colorSize: colors.length,
             indices: indexBuffer,
-            indicesSize: indices.length
+            indicesSize: indices.length,
+            normals:normalBuffer,
         };
     }
 
@@ -329,6 +372,26 @@ export class Sphere {
                 this.programInfo.attribLocations.vertexColor);
         }
 
+         // Tell WebGL how to pull out the normals from
+        // the normal buffer into the vertexNormal attribute.
+        {
+            const numComponents = 3;
+            const type = gl.FLOAT;
+            const normalize = false;
+            const stride = 0;
+            const offset = 0;
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normals);
+            gl.vertexAttribPointer(
+                this.programInfo.attribLocations.vertexNormal,
+                numComponents,
+                type,
+                normalize,
+                stride,
+                offset);
+            gl.enableVertexAttribArray(
+                this.programInfo.attribLocations.vertexNormal);
+        }
+
         // Tell WebGL which indices to use to index the vertices
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indices);
 
@@ -346,6 +409,19 @@ export class Sphere {
             this.programInfo.uniformLocations.modelViewMatrix,
             false,
             modelViewMatrix);
+
+  // Finally, we need to update the code that builds the uniform matrices to generate and deliver to the shader a normal matrix, 
+        // which is used to transform the normals when dealing with the current orientation of the cube in relation to the light source
+        const normalMatrix = mat4.create();
+        mat4.invert(normalMatrix, modelViewMatrix);
+        mat4.transpose(normalMatrix, normalMatrix);
+
+
+        gl.uniformMatrix4fv(
+            this.programInfo.uniformLocations.normalMatrix,
+            false,
+            normalMatrix);
+
 
 
 
