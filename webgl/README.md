@@ -1,6 +1,4 @@
 
-TODO:
-add light/texture
 
 compute normal:
 https://stackoverflow.com/questions/13983189/opengl-how-to-calculate-normals-in-a-terrain-height-grid
@@ -16,3 +14,9 @@ http://www.opengl-tutorial.org/beginners-tutorials/tutorial-8-basic-shading/
 
 common mistakes:
 https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
+
+
+
+* the slippy tiles range is per spec only up to +-85 degrees
+
+
