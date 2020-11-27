@@ -79,12 +79,12 @@ export class GeoHelper {
         // hits === how many triangles a vertex belongs too
         const vertexHits = Array.from({length:vertices}, () => 0)
 
-        console.log("indices:"+ indices.length)
-        console.log("positions:"+ positions.length+" vertices:"+vertices)
+        // console.log("indices:"+ indices.length)
+        // console.log("positions:"+ positions.length+" vertices:"+vertices)
        
         for (var i = 0; i < indices.length; i++) {
 
-            console.log("i:"+i)
+            // console.log("i:"+i)
             // triangle index
             var t = Math.floor(i / 3)
                 // vertex index
@@ -104,9 +104,9 @@ export class GeoHelper {
             vertexNormals.push(normalized[1])
             vertexNormals.push(normalized[2])
         }
-        for (var i=0;i<vertexNormals.length;i+=3){
-            console.log("vertexNormals @"+i +":"+ vertexNormals[i]+","+ vertexNormals[i+1]+","+ vertexNormals[i+2])
-        }
+        // for (var i=0;i<vertexNormals.length;i+=3)
+        //     console.log("vertexNormals @"+i +":"+ vertexNormals[i]+","+ vertexNormals[i+1]+","+ vertexNormals[i+2])
+        
         return vertexNormals
 
 
@@ -117,10 +117,10 @@ export class GeoHelper {
 
         const retVal = []
         console.log("computeVertexNormals ")
-        console.log("positions:", positions)
-        console.log("indices:", indices)
+      //  console.log("positions:", positions)
+//        console.log("indices:", indices)
         for (var i = 0; i < indices.length; i += 3) {
-            console.log("triangle " + (i / 3) + "@" + i)
+  //          console.log("triangle " + (i / 3) + "@" + i)
             const vs = this.getTriangleVertices(positions, indices, i)
             const edges = [
                 this.minus(vs[1], vs[0]),
@@ -128,7 +128,7 @@ export class GeoHelper {
                 this.minus(vs[0], vs[2])
             ]
             const normal1 = this.normal(edges[0], edges[1])
-            console.log("normal1:", normal1)
+    //        console.log("normal1:", normal1)
             retVal.push(normal1)
             
                 // // check that the 2 other normals are the same!

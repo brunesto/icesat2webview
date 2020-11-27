@@ -1,5 +1,5 @@
 import { mat4, mat3 } from 'gl-matrix';
-import { initShaderProgram, loadTexture } from './webglutil.js';
+import { initShaderProgram, loadTexture, gridTexture } from './webglutil.js';
 import './geohelper.js'
 export class Sphere {
     // Vertex shader program
@@ -39,8 +39,8 @@ export class Sphere {
 
     // Fragment shader program
 
-   
-   fsSource = `
+
+    fsSource = `
    varying highp vec2 vTextureCoord;
    varying highp vec3 vLighting;
    uniform sampler2D uSampler;
@@ -59,7 +59,7 @@ export class Sphere {
 
             attribLocations: {
                 vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-               // vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
+                // vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
                 vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
                 textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
 
@@ -67,12 +67,12 @@ export class Sphere {
             uniformLocations: {
                 projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
                 viewMatrix: gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
-                modelMatrix: gl.getUniformLocation(shaderProgram, 'uModelMatrix'),                
+                modelMatrix: gl.getUniformLocation(shaderProgram, 'uModelMatrix'),
                 normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
                 uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
             }
         }
-        this.texture = loadTexture('/public/0.jpeg');
+
 
 
         // Here's where we call the routine that builds all the
@@ -98,20 +98,41 @@ export class Sphere {
         return (x / Math.pow(2, z) * 360 - 180);
     }
     tile2lat(y, z) {
-        var n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
+
+        const tiles = Math.pow(2, z)
+        var n = Math.PI - 2 * Math.PI * y / tiles;
         return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
     }
 
     lon2tile(lon, zoom) { return (Math.floor((lon + 180) / 360 * Math.pow(2, zoom))); }
 
-    lat2tile(lat, zoom) {   return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom)));  }
+    lat2tile(lat, zoom) {
+        if (lat <=-90)// -85.0511) // 85.0511287798066
+            return Math.pow(2, zoom) - 1;
+        else if (lat >= 90)//85.0511)
+            return 0;
+        else
+            return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom)));
+    }
 
     /**
-     * convert a tile to its noth west 3d point
+     * convert a tile to its north west 3d point
      */
     tile23d(x, y, z) {
-            const lat = this.tile2lat(y, z)
-            const lon = this.tile2long(x, z)
+            var lat;
+            var lon;
+            // const n = Math.pow(2, z)
+            // if (y < 0) {
+            //     lat = 90
+            //     lon = 0
+            // } else if (y >= n) {
+            //     lat = -90
+            //     lon = 0
+            // } else {
+                lat = this.tile2lat(y, z)
+                lon = this.tile2long(x, z)
+
+            // }
             return this.latlon23d(lat, lon)
         }
         /**
@@ -136,7 +157,9 @@ export class Sphere {
         const z = ρ * Math.sin(φ) * Math.sin(θ)
         const y = ρ * Math.cos(φ)
 
-        return [x, y, z]
+        const retVal = [x, y, z]
+        console.log(" latlon23d(" + lat + "," + lon + ") = " + retVal)
+        return retVal
     }
 
 
@@ -148,19 +171,37 @@ export class Sphere {
     //
     initBuffers() {
 
-        var bbox = { min: [-80, -170], max: [80, 170] }
 
-        const z =4
+        // zoom level
+        const z = 4
+
+        // number of tiles accross a x or y
+        const n = Math.pow(2, z)
+        console.log(" z:"+ z+" n:"+n)
+
+        this.texture = gridTexture(n,n); //
+        //    loadTexture('/public/0.jpeg');
+
+        // longitude per tile
+        const lonPerTile = 360 / n
+      //  const latPerTile = 180 / n
+
+        // remove 1 'peeling' from earth so that it is not overlapping
+        // this is only required when displaying the full globe
+        var bbox = { min: [-85, -180], max: [90, 180 - lonPerTile] }
+
+        console.log(" bbox:",bbox)
         const tileMin = [this.lon2tile(bbox.min[1], z), this.lat2tile(bbox.max[0], z)]
-        const  tileMax = [this.lon2tile(bbox. max[1], z), this.lat2tile(bbox.min[0], z)]
+        const tileMax = [this.lon2tile(bbox.max[1], z), this.lat2tile(bbox.min[0], z)]
         console.log("tileMin:", tileMin)
         console.log("tileMax:", tileMax)
 
         var positions = [];
 
-        for (var y = tileMin[1]; y <= tileMax[1]+1; y++) {
-            for (var x = tileMin[0]; x <= tileMax[0]+1; x++) {
+        for (var y = tileMin[1]; y <= tileMax[1] + 1; y++) {
+            for (var x = tileMin[0]; x <= tileMax[0] + 1; x++) {
                 var latLng = this.tile23d(x, y, z);
+                console.log("xy:" + x + "," + y + " lll:" + latLng)
                 positions = positions.concat(latLng)
             }
         }
@@ -181,7 +222,7 @@ export class Sphere {
 
         if (logFlag)
             for (var i = 0; i < positions.length; i += 3)
-                console.log("[" + i/3 + ",...]=" + positions[i] + "," + positions[i + 1] + "," + positions[i + 2])
+                console.log("[" + i / 3 + ",...]=" + positions[i] + "," + positions[i + 1] + "," + positions[i + 2])
 
         // Create a buffer for the cube's vertex positions.
 
@@ -239,8 +280,8 @@ export class Sphere {
         //     }
         // }
 
-        var xSize = tileMax[0] - tileMin[0]+1
-        var ySize = tileMax[1] - tileMin[1]+1
+        var xSize = tileMax[0] - tileMin[0] + 1
+        var ySize = tileMax[1] - tileMin[1] + 1
 
         for (var y = 0; y < ySize; y++) {
             for (var x = 0; x < xSize; x++) {
@@ -270,39 +311,39 @@ export class Sphere {
 
 
 
-             //-- normals  ---------------------------------------
+        //-- normals  ---------------------------------------
         const normalBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
 
-        const vertexNormals =  GH.computeVertexNormals(positions, indices)
+        const vertexNormals = GH.computeVertexNormals(positions, indices)
 
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
 
 
 
 
-  // -- texture coords -------------------------------------------
+        // -- texture coords -------------------------------------------
 
 
 
-  const textureCoordBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+        const textureCoordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
 
-  const textureCoordinates = []
-      
-  for (var y = tileMin[1]; y <= tileMax[1]+1; y++) {
-    for (var x = tileMin[0]; x <= tileMax[0]+1; x++) {
-        var latLng = this.tile23d(x, y, z);
-        textureCoordinates.push((x- tileMin[0])/(xSize))
-        textureCoordinates.push((y- tileMin[1])/(ySize))
-    }
-}
-if (logFlag)
-for (var i = 0; i < textureCoordinates.length; i += 2)
-    console.log("textureCoordinates: [" + i + ",...]=" + textureCoordinates[i] + "," + textureCoordinates[i + 1] ) 
+        const textureCoordinates = []
 
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
-      gl.STATIC_DRAW);
+        for (var y = tileMin[1]; y <= tileMax[1] + 1; y++) {
+            for (var x = tileMin[0]; x <= tileMax[0] + 1; x++) {
+               // var latLng = this.tile23d(x, y, z);
+                textureCoordinates.push((tileMax[0]-x) / (xSize))
+                textureCoordinates.push((y - tileMin[1]) / (ySize))
+            }
+        }
+        if (logFlag)
+            for (var i = 0; i < textureCoordinates.length; i += 2)
+                console.log("textureCoordinates: [" + i + ",...]=" + textureCoordinates[i] + "," + textureCoordinates[i + 1])
+
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
+            gl.STATIC_DRAW);
 
 
 
@@ -335,7 +376,7 @@ for (var i = 0; i < textureCoordinates.length; i += 2)
             // colorSize: colors.length,
             indices: indexBuffer,
             indicesSize: indices.length,
-            normals:normalBuffer,
+            normals: normalBuffer,
             textureCoord: textureCoordBuffer,
             textures: textureCoordinates.length,
         };
@@ -403,7 +444,7 @@ for (var i = 0; i < textureCoordinates.length; i += 2)
         //         this.programInfo.attribLocations.vertexColor);
         // }
 
-         // Tell WebGL how to pull out the normals from
+        // Tell WebGL how to pull out the normals from
         // the normal buffer into the vertexNormal attribute.
         {
             const numComponents = 3;
@@ -450,7 +491,7 @@ for (var i = 0; i < textureCoordinates.length; i += 2)
             modelMatrix);
 
 
-  // Finally, we need to update the code that builds the uniform matrices to generate and deliver to the shader a normal matrix, 
+        // Finally, we need to update the code that builds the uniform matrices to generate and deliver to the shader a normal matrix, 
         // which is used to transform the normals when dealing with the current orientation of the cube in relation to the light source
         const normalMatrix = mat4.create();
         mat4.invert(normalMatrix, modelViewMatrix);
@@ -463,7 +504,7 @@ for (var i = 0; i < textureCoordinates.length; i += 2)
             normalMatrix);
 
 
-         // tell webgl how to pull out the texture coordinates from buffer
+        // tell webgl how to pull out the texture coordinates from buffer
         {
             const num = 2; // every coordinate composed of 2 values
             const type = gl.FLOAT; // the data in the buffer is 32 bit float

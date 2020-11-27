@@ -49,11 +49,92 @@ export function loadShader(type, source) {
 }
 
 
+export function gridTexture(x, y) {
+
+
+    const canvas = document.createElement("CANVAS");
+    canvas.width = 1024;
+    canvas.height = 1024;
+    const cw = canvas.width / x
+    const ch = canvas.height / y
+    var ctx = canvas.getContext("2d");
+    ctx.font = "10px Mono";
+    for (var j = 0; j < y; j++) {
+        for (var i = 0; i < x; i++) {
+            // pixel position
+            const px=cw * i;
+            const py=ch * j;
+
+            const colorIdx=((j%2)+i)%2
+            ctx.fillStyle=colorIdx==0? "#eee": "#333"            
+            ctx.fillRect(
+                px,py, cw, ch);
+
+
+            ctx.fillStyle="#0F0"
+            ctx.strokeStyle="yellow"
+            const text=i+","+j;
+            const textWidth=ctx.measureText(text).width
+          
+            ctx.fillText(text, px+cw/2-textWidth/2, py+ch/2-10);
+            ctx.beginPath();
+            ctx.moveTo( px,py)
+            ctx.lineTo(px+cw,py+ch);
+            ctx.moveTo( px+cw,py)
+            ctx.lineTo(px,py+ch);
+            ctx.stroke();
+        }
+    }
+
+    
+
+
+    const imgUrl=canvas.toDataURL()
+
+    // const image = document.createElement("img");
+    // image.src=imgUrl
+    // document.body.appendChild(image)
+    return loadTexture(imgUrl)
+        // var image = new Image();    
+        // image.src = ;
+
+    // const texture = gl.createTexture();
+    // gl.bindTexture(gl.TEXTURE_2D, texture);
+    // canvas2texture(image,texture)
+    // return texture;
+}
 
 
 
+function canvas2texture(image, texture) {
+
+    const level = 0;
+    const internalFormat = gl.RGBA;
+    const width = 1;
+    const height = 1;
+    const border = 0;
+    const srcFormat = gl.RGBA;
+    const srcType = gl.UNSIGNED_BYTE;
 
 
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
+        srcFormat, srcType, image);
+
+    // WebGL1 has different requirements for power of 2 images
+    // vs non power of 2 images so check if the image is a
+    // power of 2 in both dimensions.
+    if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+        // Yes, it's a power of 2. Generate mips.
+        gl.generateMipmap(gl.TEXTURE_2D);
+    } else {
+        // No, it's not a power of 2. Turn off mips and set
+        // wrapping to clamp to edge
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    }
+}
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Using_textures_in_WebGL
 //
@@ -83,23 +164,7 @@ export function loadTexture(url) {
 
     const image = new Image();
     image.onload = function() {
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
-            srcFormat, srcType, image);
-
-        // WebGL1 has different requirements for power of 2 images
-        // vs non power of 2 images so check if the image is a
-        // power of 2 in both dimensions.
-        if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
-            // Yes, it's a power of 2. Generate mips.
-            gl.generateMipmap(gl.TEXTURE_2D);
-        } else {
-            // No, it's not a power of 2. Turn off mips and set
-            // wrapping to clamp to edge
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        }
+        canvas2texture(image, texture)
     };
     image.src = url;
 
