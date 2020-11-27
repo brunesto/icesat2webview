@@ -49,8 +49,9 @@ export function loadShader(type, source) {
 }
 
 
-export function gridTexture(x, y) {
-
+export function gridTexture(x, y,options) {
+    if (options===undefined)
+        options={checkboard:true,label:true}
 
     const canvas = document.createElement("CANVAS");
     canvas.width = 1024;
@@ -66,23 +67,34 @@ export function gridTexture(x, y) {
             const py=ch * j;
 
             const colorIdx=((j%2)+i)%2
-            ctx.fillStyle=colorIdx==0? "#eee": "#333"            
-            ctx.fillRect(
-                px,py, cw, ch);
+            const color=colorIdx==0? "#eee": "#333"            
+            if (options.checkboard){
+                ctx.fillStyle=color
+                ctx.fillRect(px,py, cw, ch);
+            }
 
+            if (options.outline){
+                ctx.strokeStyle= color
+                ctx.strokeRect(px,py, cw, ch);
+            }
 
-            ctx.fillStyle="#0F0"
-            ctx.strokeStyle="yellow"
-            const text=i+","+j;
-            const textWidth=ctx.measureText(text).width
-          
-            ctx.fillText(text, px+cw/2-textWidth/2, py+ch/2-10);
-            ctx.beginPath();
-            ctx.moveTo( px,py)
-            ctx.lineTo(px+cw,py+ch);
-            ctx.moveTo( px+cw,py)
-            ctx.lineTo(px,py+ch);
-            ctx.stroke();
+            // label
+            if (options.label){
+                ctx.fillStyle="#0F0"
+                ctx.strokeStyle="yellow"
+                const text=i+","+j;
+                const textWidth=ctx.measureText(text).width          
+                ctx.fillText(text, px+cw/2-textWidth/2, py+ch/2-10);
+            }
+
+            if (options.cross){
+                ctx.beginPath();
+                ctx.moveTo( px,py)
+                ctx.lineTo(px+cw,py+ch);
+                ctx.moveTo( px+cw,py)
+                ctx.lineTo(px,py+ch);
+                ctx.stroke();
+            }
         }
     }
 
