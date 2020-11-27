@@ -2,10 +2,10 @@ import './styles/body.css';
 import { mat4, mat3 } from 'gl-matrix';
 import { Dragger } from './js/dragger.js';
 
-import { Step1 } from './js/step1.js';
-import { Step2 } from './js/step2.js';
+import { Step1Cube } from './js/step1-cube.js';
+import { Step3Texture } from './js/step3-texture.js';
 import { Sphere } from './js/sphere.js';
-import { Step1Normals } from './js/step1-normals.js';
+import { Step2Normals } from './js/step2-normals.js';
 
 global.logFlag=true
 
@@ -82,10 +82,11 @@ function drawScene(camera) {
       step2.draw2(projectionMatrix, viewMatrix)
 }
 initGl()
+
 step2s.push(new Sphere())
-//step2s.push(new Mixup())
-step2s.push(new Step1Normals())
-//step2s.push(new Step2())
+//step2s.push(new Step1Cube())
+ //step2s.push(new Step2Normals())
+ //step2s.push(new Step3Texture())
 
 
 function redraw() {

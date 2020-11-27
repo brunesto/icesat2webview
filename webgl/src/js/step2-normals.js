@@ -2,7 +2,7 @@ import { mat4, mat3 } from 'gl-matrix';
 import { initShaderProgram, loadTexture } from './webglutil.js';
 import './geohelper.js';
 
-export class Step1Normals {
+export class Step2Normals {
 
 
 

@@ -5,7 +5,7 @@ import { initShaderProgram, loadTexture } from './webglutil.js';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Using_shaders_to_apply_color_in_WebGL
 
-export class Step2 {
+export class Step3Texture {
     // Vertex shader program
 
     vsSource = `
@@ -110,52 +110,10 @@ export class Step2 {
 
 
 
-        // -- normals ---
-
-        const normalBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-
-        const vertexNormals = [
-            // Front
-            0.0, 0.0, 1.0,
-            0.0, 0.0, 1.0,
-            0.0, 0.0, 1.0,
-            0.0, 0.0, 1.0,
-
-            // Back
-            0.0, 0.0, -1.0,
-            0.0, 0.0, -1.0,
-            0.0, 0.0, -1.0,
-            0.0, 0.0, -1.0,
-
-            // Top
-            0.0, 1.0, 0.0,
-            0.0, 1.0, 0.0,
-            0.0, 1.0, 0.0,
-            0.0, 1.0, 0.0,
-
-            // Bottom
-            0.0, -1.0, 0.0,
-            0.0, -1.0, 0.0,
-            0.0, -1.0, 0.0,
-            0.0, -1.0, 0.0,
-
-            // Right
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-
-            // Left
-            -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0
-        ];
-
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals),
-            gl.STATIC_DRAW);
 
 
 
-        // indices
+        // -- indices ------------------------------------------------
         const indexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 
@@ -176,6 +134,20 @@ export class Step2 {
 
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
             new Uint16Array(indices), gl.STATIC_DRAW);
+
+
+        //-- normals  ---------------------------------------
+        const normalBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+
+        const vertexNormals =
+            GH.computeVertexNormals(positions, indices)
+
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
+
+
+        // -- texture coords -------------------------------------------
+
 
 
         const textureCoordBuffer = gl.createBuffer();
@@ -217,7 +189,7 @@ export class Step2 {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
             gl.STATIC_DRAW);
 
-        return {            
+        return {
             position: positionBuffer,
             normal: normalBuffer,
             indices: indexBuffer,
@@ -308,35 +280,35 @@ export class Step2 {
 
 
 
-// Tell WebGL how to pull out the normals from
-  // the normal buffer into the vertexNormal attribute.
-  {
-    const numComponents = 3;
-    const type = gl.FLOAT;
-    const normalize = false;
-    const stride = 0;
-    const offset = 0;
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normal);
-    gl.vertexAttribPointer(
-        this. programInfo.attribLocations.vertexNormal,
-        numComponents,
-        type,
-        normalize,
-        stride,
-        offset);
-    gl.enableVertexAttribArray(
-        this.programInfo.attribLocations.vertexNormal);
-  }
+        // Tell WebGL how to pull out the normals from
+        // the normal buffer into the vertexNormal attribute.
+        {
+            const numComponents = 3;
+            const type = gl.FLOAT;
+            const normalize = false;
+            const stride = 0;
+            const offset = 0;
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normal);
+            gl.vertexAttribPointer(
+                this.programInfo.attribLocations.vertexNormal,
+                numComponents,
+                type,
+                normalize,
+                stride,
+                offset);
+            gl.enableVertexAttribArray(
+                this.programInfo.attribLocations.vertexNormal);
+        }
 
-  const modelViewMatrix = mat4.create();
-  mat4.multiply(modelViewMatrix, viewMatrix,modelMatrix);
+        const modelViewMatrix = mat4.create();
+        mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
 
 
-  // Finally, we need to update the code that builds the uniform matrices to generate and deliver to the shader a normal matrix, 
-  // which is used to transform the normals when dealing with the current orientation of the cube in relation to the light source
-  const normalMatrix = mat4.create();
-  mat4.invert(normalMatrix, modelViewMatrix);
-  mat4.transpose(normalMatrix, normalMatrix);
+        // Finally, we need to update the code that builds the uniform matrices to generate and deliver to the shader a normal matrix, 
+        // which is used to transform the normals when dealing with the current orientation of the cube in relation to the light source
+        const normalMatrix = mat4.create();
+        mat4.invert(normalMatrix, modelViewMatrix);
+        mat4.transpose(normalMatrix, normalMatrix);
 
 
 
@@ -357,10 +329,10 @@ export class Step2 {
             false,
             modelMatrix);
 
-            gl.uniformMatrix4fv(
-                this.programInfo.uniformLocations.normalMatrix,
-                false,
-                normalMatrix);
+        gl.uniformMatrix4fv(
+            this.programInfo.uniformLocations.normalMatrix,
+            false,
+            normalMatrix);
 
         // Tell WebGL which indices to use to index the vertices
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indices);

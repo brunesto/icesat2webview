@@ -1,7 +1,7 @@
 import { mat4, mat3 } from 'gl-matrix';
 import { initShaderProgram, loadTexture } from './webglutil.js';
 
-export class Step1 {
+export class Step1Cube {
     // Vertex shader program
 
     vsSource = `

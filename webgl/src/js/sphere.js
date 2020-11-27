@@ -6,19 +6,23 @@ export class Sphere {
 
     vsSource = `
  attribute vec4 aVertexPosition;
- attribute vec4 aVertexColor;
+ //attribute vec4 aVertexColor;
  attribute vec3 aVertexNormal;
+ attribute vec2 aTextureCoord;
+
 
  uniform mat4 uNormalMatrix;
- uniform mat4 uModelViewMatrix;
+ uniform mat4 uModelMatrix;
+ uniform mat4 uViewMatrix;
  uniform mat4 uProjectionMatrix;
 
  varying highp vec3 vLighting;
- varying lowp vec4 vColor;
+ varying highp vec2 vTextureCoord;
+ //varying lowp vec4 vColor;
  void main(void) {
-   gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-   vColor = aVertexColor;
-
+    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
+  // vColor = aVertexColor;
+   vTextureCoord = aTextureCoord;
    // Apply lighting effect
 
    highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
@@ -35,15 +39,17 @@ export class Sphere {
 
     // Fragment shader program
 
-    fsSource = `
-    varying lowp vec4 vColor;
-    varying highp vec3 vLighting;
    
-    void main(void) {
-       gl_FragColor = vec4(vec3(1,0,0) * vLighting,1);
-   //gl_FragColor = vColor;
-    }
-   `;
+   fsSource = `
+   varying highp vec2 vTextureCoord;
+   varying highp vec3 vLighting;
+   uniform sampler2D uSampler;
+
+   void main(void) {
+       highp vec4 texelColor = texture2D(uSampler, vTextureCoord);
+       gl_FragColor = vec4(texelColor.rgb*vLighting,1);
+   }
+ `;
     programInfo = null
     buffers = null
     constructor() {
@@ -53,18 +59,20 @@ export class Sphere {
 
             attribLocations: {
                 vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-                vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
+               // vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
                 vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
+                textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
 
             },
             uniformLocations: {
                 projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-                modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+                viewMatrix: gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
+                modelMatrix: gl.getUniformLocation(shaderProgram, 'uModelMatrix'),                
                 normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
-
+                uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
             }
         }
-
+        this.texture = loadTexture('/public/0.jpeg');
 
 
         // Here's where we call the routine that builds all the
@@ -273,6 +281,28 @@ export class Sphere {
 
 
 
+  // -- texture coords -------------------------------------------
+
+
+
+  const textureCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+
+  const textureCoordinates = []
+      
+  for (var y = tileMin[1]; y <= tileMax[1]+1; y++) {
+    for (var x = tileMin[0]; x <= tileMax[0]+1; x++) {
+        var latLng = this.tile23d(x, y, z);
+        textureCoordinates.push((x- tileMin[0])/(xSize))
+        textureCoordinates.push((y- tileMin[1])/(ySize))
+    }
+}
+if (logFlag)
+for (var i = 0; i < textureCoordinates.length; i += 2)
+    console.log("textureCoordinates: [" + i + ",...]=" + textureCoordinates[i] + "," + textureCoordinates[i + 1] ) 
+
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
+      gl.STATIC_DRAW);
 
 
 
@@ -282,31 +312,32 @@ export class Sphere {
 
 
 
+        // // // Convert the array of colors into a table for all the vertices.
 
-        // // Convert the array of colors into a table for all the vertices.
+        // var colors = [];
 
-        var colors = [];
+        // for (var i = 0; i < positions.length; i++) {
+        //     colors = colors.concat([Math.random(), Math.random(), Math.random(), 1.0]);
 
-        for (var i = 0; i < positions.length; i++) {
-            colors = colors.concat([Math.random(), Math.random(), Math.random(), 1.0]);
-
-        }
-
+        // }
 
 
-        const colorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+
+        // const colorBuffer = gl.createBuffer();
+        // gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
 
         return {
             positionSize: positions.length,
             position: positionBuffer,
-            color: colorBuffer,
-            colorSize: colors.length,
+            // color: colorBuffer,
+            // colorSize: colors.length,
             indices: indexBuffer,
             indicesSize: indices.length,
             normals:normalBuffer,
+            textureCoord: textureCoordBuffer,
+            textures: textureCoordinates.length,
         };
     }
 
@@ -352,25 +383,25 @@ export class Sphere {
                 this.programInfo.attribLocations.vertexPosition);
         }
 
-        // Tell WebGL how to pull out the colors from the color buffer
-        // into the vertexColor attribute.
-        {
-            const numComponents = 4;
-            const type = gl.FLOAT;
-            const normalize = false;
-            const stride = 0;
-            const offset = 0;
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.color);
-            gl.vertexAttribPointer(
-                this.programInfo.attribLocations.vertexColor,
-                numComponents,
-                type,
-                normalize,
-                stride,
-                offset);
-            gl.enableVertexAttribArray(
-                this.programInfo.attribLocations.vertexColor);
-        }
+        // // Tell WebGL how to pull out the colors from the color buffer
+        // // into the vertexColor attribute.
+        // {
+        //     const numComponents = 4;
+        //     const type = gl.FLOAT;
+        //     const normalize = false;
+        //     const stride = 0;
+        //     const offset = 0;
+        //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.color);
+        //     gl.vertexAttribPointer(
+        //         this.programInfo.attribLocations.vertexColor,
+        //         numComponents,
+        //         type,
+        //         normalize,
+        //         stride,
+        //         offset);
+        //     gl.enableVertexAttribArray(
+        //         this.programInfo.attribLocations.vertexColor);
+        // }
 
          // Tell WebGL how to pull out the normals from
         // the normal buffer into the vertexNormal attribute.
@@ -401,14 +432,23 @@ export class Sphere {
 
         // Set the shader uniforms
 
+
+
         gl.uniformMatrix4fv(
             this.programInfo.uniformLocations.projectionMatrix,
             false,
             projectionMatrix);
+
         gl.uniformMatrix4fv(
-            this.programInfo.uniformLocations.modelViewMatrix,
+            this.programInfo.uniformLocations.viewMatrix,
             false,
-            modelViewMatrix);
+            viewMatrix);
+
+        gl.uniformMatrix4fv(
+            this.programInfo.uniformLocations.modelMatrix,
+            false,
+            modelMatrix);
+
 
   // Finally, we need to update the code that builds the uniform matrices to generate and deliver to the shader a normal matrix, 
         // which is used to transform the normals when dealing with the current orientation of the cube in relation to the light source
@@ -423,6 +463,28 @@ export class Sphere {
             normalMatrix);
 
 
+         // tell webgl how to pull out the texture coordinates from buffer
+        {
+            const num = 2; // every coordinate composed of 2 values
+            const type = gl.FLOAT; // the data in the buffer is 32 bit float
+            const normalize = false; // don't normalize
+            const stride = 0; // how many bytes to get from one set to the next
+            const offset = 0; // how many bytes inside the buffer to start from
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.textureCoord);
+            gl.vertexAttribPointer(this.programInfo.attribLocations.textureCoord, num, type, normalize, stride, offset);
+            gl.enableVertexAttribArray(this.programInfo.attribLocations.textureCoord);
+        }
+
+        // Tell WebGL we want to affect texture unit 0
+        {
+            gl.activeTexture(gl.TEXTURE0);
+
+            // Bind the texture to texture unit 0
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+
+            // Tell the shader we bound the texture to texture unit 0
+            gl.uniform1i(this.programInfo.uniformLocations.uSampler, 0);
+        }
 
 
         {
