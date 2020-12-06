@@ -82,16 +82,7 @@ export class Sphere {
 
     }
 
-
-
-
-
-    degrees2radians(degrees) {
-        var pi = Math.PI;
-        return degrees * (pi / 180);
-    }
-
-
+    
 
     // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
     tile2long(x, z) {
@@ -150,8 +141,8 @@ export class Sphere {
         const lat0 = 90 - lat
 
 
-        const φ = this.degrees2radians(lat0)
-        const θ = this.degrees2radians(lon)
+        const φ = GH.degrees2radians(lat0)
+        const θ = GH.degrees2radians(lon)
         const ρ = 6378;
         const x = ρ * Math.sin(φ) * Math.cos(θ)
         const z = ρ * Math.sin(φ) * Math.sin(θ)
@@ -396,7 +387,7 @@ export class Sphere {
 
         mat4.translate(modelMatrix, // destination matrix
             modelMatrix, // matrix to translate
-            [-0.0, 0.0, 6000.0]); // amount to translate
+            [0.0, 0.0, 0.0]); // amount to translate : earth is the center of (opengl) universe
 
 
         const modelViewMatrix = mat4.create();

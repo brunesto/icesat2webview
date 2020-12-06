@@ -135,8 +135,20 @@ function drawScene(camera) {
     //var lookDirection=GH.plus(camera.pos,camera.front)
     //mat4.lookAt( viewMatrix, camera.pos, lookDirection, camera.up );
 
+
+
+    camera.computeCoords();
+
+
+
+
+
+
     $('#info').html("<pre>" +
         "\n position:" + vec2string(camera.pos) +
+        "\n center earth " + camera.distanceFromEarthCenter.toFixed(2) + "m" +
+        "\n coords: " + camera.lat.toFixed(6) + "," + camera.lon.toFixed(6) + " amsl:" + camera.distanceFromEarthSurface +
+
         "\n projectionMatrix:" + mat2string(projectionMatrix) +
         "\n viewMatrix:" + mat2string(viewMatrix) +
         "</pre>")
@@ -155,9 +167,9 @@ function drawScene(camera) {
 }
 initGl()
 
-// step2s.push(new Sphere())
-//step2s.push(new Step1Cube())
-//step2s.push(new Step2Normals())
+step2s.push(new Sphere())
+    //step2s.push(new Step1Cube())
+    //step2s.push(new Step2Normals())
 step2s.push(new Step3Texture())
 
 
@@ -167,18 +179,53 @@ function redraw() {
 }
 
 
-var camera = {
-    // llz: [0, 0, -10000],
-    pos: [0.0, 0.0, -10, 0],
-    //[0.08,-0.5400000000000003,4.799999999999999],
-    // rotationMatrix: mat4.create(),
-    // front:[0,0,1],
-    // up:[0,1,0],
-    q: quat.create()
+class Camera {
+    pos = [0.0, 0.0, 0, 0]
+    q = quat.create()
+
+    constructor(z) {
+        this.pos[2] = z
+    }
+
+    computeCoords() {
+        this.distanceFromEarthCenter = GH.length(this.pos)
+        this.distanceFromEarthSurface = this.distanceFromEarthCenter - 6378
+
+        this.lat = GH.radians2degrees(Math.asin(-this.pos[1] / this.distanceFromEarthCenter))
 
 
+        const posAtEquator = [this.pos[0], 0, this.pos[2]]
+
+
+        const distanceFromEarthCenterAtEquator = GH.length(posAtEquator)
+        const l90 = GH.radians2degrees(Math.asin(-this.pos[0] / distanceFromEarthCenterAtEquator))
+
+
+        if (this.pos[0] > 0 != this.pos[2] > 0) {
+            if (this.pos[0] > 0) {
+                console.log("c1")
+                this.lon = l90;
+            } else {
+                console.log("c2")
+                this.lon = 180 - l90;
+            }
+        } else {
+            if (this.pos[0] > 0) {
+                console.log("c3")
+                this.lon = -180 - l90;
+            } else {
+                console.log("c4")
+                this.lon = l90;
+            }
+        }
+
+
+    }
 
 }
+
+var camera = new Camera(-6472)
+
 
 function redrawNow() {
     drawScene(camera)
@@ -205,6 +252,22 @@ function movescreen2world(v) {
     camera.pos[2] += dest[2]
 }
 
+
+function rotatescreen2world(euler) {
+    const q = quat.create()
+    quat.fromEuler(q, euler[0], euler[1], euler[2], 0)
+    camera.q = quat.normalize(quat.create(), quat.mul(quat.create(), q, camera.q))
+}
+
+function stepify(v, s) {
+    console.log("stepify:", v, s)
+    if (v > 0)
+        return s
+    if (v < 0)
+        return -s
+    return 0
+}
+
 $(document).ready(function() {
     console.log('process.env.NODE_ENV:' + (process.env.NODE_ENV))
 
@@ -216,11 +279,18 @@ $(document).ready(function() {
         console.log("mouseWheel", e)
         if (e.wheelDelta != 0) {
 
-            // input vector z= zoom difference
-            var v = [0, 0, 0, 0]
-            const step = camera.pos[2] / 100;
-            v[2] = e.wheelDelta < 0 ? step : -step
-            movescreen2world(v)
+            if (e.shiftKey) {
+                const euler = [0, 0, stepify(e.wheelDelta, 1)]
+                rotatescreen2world(euler)
+            } else {
+
+
+                // input vector z= zoom difference
+                var v = [0, 0, 0, 0]
+                const step = camera.distanceFromEarthSurface / 20;
+                v[2] = stepify(e.wheelDelta, step)
+                movescreen2world(v)
+            }
 
 
 
@@ -234,13 +304,15 @@ $(document).ready(function() {
 
 
             console.log("deltaLast:", s.deltaLast)
-            if (s.ctrlKey || s.shiftKey) {
+            if (s.shiftKey) {
 
-                const q = quat.create()
-                quat.fromEuler(q, s.deltaLast[1] / 3.0, s.deltaLast[0] / 3.0, 0)
 
-                camera.q = quat.normalize(quat.create(), quat.mul(quat.create(), q, camera.q))
+                const euler = [stepify(s.deltaLast[1], 1), stepify(s.deltaLast[0], 1), 0]
+                rotatescreen2world(euler)
 
+                // const q = quat.create()
+                // quat.fromEuler(q, euler[0],euler[1],euler[2], 0)
+                // camera.q = quat.normalize(quat.create(), quat.mul(quat.create(), q, camera.q))
 
 
                 // var newRotationMatrix1 = mat4.create();
@@ -251,13 +323,13 @@ $(document).ready(function() {
 
 
             } else {
-                const step = -camera.pos[2] / 100;
-                var v = [0, 0, 0, 0]
+                const step = camera.distanceFromEarthSurface / 100;
+                var v = [stepify(s.deltaLast[0], step), stepify(s.deltaLast[1], -step), 0, 0]
 
-                if (s.deltaLast[0] != 0)
-                    v[0] = -s.deltaLast[0] < 0 ? step : -step
-                if (s.deltaLast[1] != 0)
-                    v[1] = s.deltaLast[1] < 0 ? step : -step
+                // if (s.deltaLast[0] != 0)
+                //     v[0] = -s.deltaLast[0] < 0 ? step : -step
+                // if (s.deltaLast[1] != 0)
+                //     v[1] = s.deltaLast[1] < 0 ? step : -step
 
                 movescreen2world(v)
 
@@ -271,22 +343,48 @@ $(document).ready(function() {
     canvas.addEventListener('keydown', function(e) {
         console.log('key', e);
         const v = [0, 0, 0, 0]
-        const step = 0.1
-        if (e.key == 'ArrowUp')
-            v[1] = -step
-        if (e.key == 'ArrowDown')
-            v[1] = +step
-        if (e.key == 'ArrowRight')
-            v[0] = -step
-        if (e.key == 'ArrowLeft')
-            v[0] = step
-        if (e.key == 'PageUp')
-            v[2] = step
-        if (e.key == 'PageDown')
-            v[2] = -step
 
-        movescreen2world(v)  
-        redraw()  
+        if (e.shiftKey) {
+            const step = 3
+
+            if (e.key == 'ArrowUp')
+                v[0] = step
+            else if (e.key == 'ArrowDown')
+                v[0] = -step
+            else if (e.key == 'ArrowRight')
+                v[1] = +step
+            else if (e.key == 'ArrowLeft')
+                v[1] = -step
+            else if (e.key == 'PageUp')
+                v[2] = step
+            else if (e.key == 'PageDown')
+                v[2] = -step
+            else
+                return
+            rotatescreen2world(v)
+            redraw()
+        } else {
+            const step = camera.distanceFromEarthSurface / 50
+            if (e.key == 'ArrowUp')
+                v[1] = -step
+            else if (e.key == 'ArrowDown')
+                v[1] = +step
+            else if (e.key == 'ArrowRight')
+                v[0] = -step
+            else if (e.key == 'ArrowLeft')
+                v[0] = step
+            else if (e.key == 'PageUp')
+                v[2] = step
+            else if (e.key == 'PageDown')
+                v[2] = -step
+            else
+                return
+
+
+
+                movescreen2world(v)
+            redraw()
+        }
 
     }, false);
 
