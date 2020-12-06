@@ -1,12 +1,12 @@
 import './styles/body.css';
-import { mat4, mat3, str,quat } from 'gl-matrix';
+import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
 import { Dragger } from './js/dragger.js';
 
 import { Step1Cube } from './js/step1-cube.js';
 import { Step3Texture } from './js/step3-texture.js';
 import { Sphere } from './js/sphere.js';
 import { Step2Normals } from './js/step2-normals.js';
-import { GeoHelper }  from './js/geohelper.js';
+import { GeoHelper } from './js/geohelper.js';
 
 global.logFlag = true
 
@@ -25,6 +25,17 @@ function isSquare(n) {
     return (rs * rs == n)
 }
 
+function vec2string(a, formatter) {
+    if (formatter == undefined)
+        formatter = f2string
+    var retVal = ""
+
+    for (var i = 0; i < a.length; i++)
+        retVal += formatter(a[i]) + ", "
+    return retVal
+
+}
+
 function mat2string(a, formatter) {
     console.log("dedieu...")
     if (formatter == undefined)
@@ -36,13 +47,13 @@ function mat2string(a, formatter) {
         retVal += "\n"
         for (var j = 0; j < l; j++) {
             for (var i = 0; i < l; i++)
-                retVal += formatter(a[i + j * 4]) + ", "
+                retVal += formatter(a[i + j * l]) + ", "
 
 
             retVal += "\n"
         }
     } else {
-        retVal = "" + a
+        retVal = vec2string(a, formatter)
     }
     return retVal
 }
@@ -105,19 +116,30 @@ function drawScene(camera) {
         zFar);
 
 
-        
 
 
     var viewMatrix = mat4.create();
-    mat4.fromRotationTranslation(viewMatrix,  camera.q,  camera.pos)
+
+    //    mat4.fromRotationTranslation(viewMatrix,  camera.q,  camera.pos)
+
+    // steps taken from mat.fromRotationTranslation, except that the last step is reverse order
+    var dest = mat4.create();
+    mat4.translate(dest, mat4.create(), camera.pos);
+    let quatMat = mat4.create();
+    mat4.fromQuat(quatMat, camera.q);
+    mat4.multiply(viewMatrix, quatMat, dest);
+
+    //    viewMatrix = dest;
+
 
     //var lookDirection=GH.plus(camera.pos,camera.front)
     //mat4.lookAt( viewMatrix, camera.pos, lookDirection, camera.up );
 
-    $('#info').html("<pre>"+
-    "\n projectionMatrix:" +mat2string(projectionMatrix) +
-    "\n viewMatrix:" +mat2string(viewMatrix) +
-    "</pre>")
+    $('#info').html("<pre>" +
+        "\n position:" + vec2string(camera.pos) +
+        "\n projectionMatrix:" + mat2string(projectionMatrix) +
+        "\n viewMatrix:" + mat2string(viewMatrix) +
+        "</pre>")
 
     // var viewMatrix1 = mat4.create();
     // mat4.translate(viewMatrix1, // destination matrix
@@ -134,9 +156,9 @@ function drawScene(camera) {
 initGl()
 
 // step2s.push(new Sphere())
-    //step2s.push(new Step1Cube())
-    //step2s.push(new Step2Normals())
-    step2s.push(new Step3Texture())
+//step2s.push(new Step1Cube())
+//step2s.push(new Step2Normals())
+step2s.push(new Step3Texture())
 
 
 function redraw() {
@@ -150,14 +172,37 @@ var camera = {
     pos: [0.0, 0.0, -10, 0],
     //[0.08,-0.5400000000000003,4.799999999999999],
     // rotationMatrix: mat4.create(),
-    front:[0,0,1],
-    up:[0,1,0],
-    q:quat.create()
+    // front:[0,0,1],
+    // up:[0,1,0],
+    q: quat.create()
+
+
 
 }
 
 function redrawNow() {
     drawScene(camera)
+}
+
+function movescreen2world(v) {
+
+    // inverse camera rotation
+    var iq = quat.create()
+    quat.invert(iq, camera.q)
+    let iqm = mat4.create();
+    mat4.fromQuat(iqm, iq);
+
+
+
+
+    var dest = vec4.create()
+    vec4.transformMat4(dest, v, iqm);
+    console.log("movescreen2world " + vec2string(v) + " ->" + vec2string(dest))
+
+    // modify camera position by inversely rotated z
+    camera.pos[0] += dest[0]
+    camera.pos[1] += dest[1]
+    camera.pos[2] += dest[2]
 }
 
 $(document).ready(function() {
@@ -170,8 +215,15 @@ $(document).ready(function() {
 
         console.log("mouseWheel", e)
         if (e.wheelDelta != 0) {
+
+            // input vector z= zoom difference
+            var v = [0, 0, 0, 0]
             const step = camera.pos[2] / 100;
-            camera.pos[2] += e.wheelDelta < 0 ? step : -step
+            v[2] = e.wheelDelta < 0 ? step : -step
+            movescreen2world(v)
+
+
+
             redraw()
         }
     })
@@ -184,12 +236,12 @@ $(document).ready(function() {
             console.log("deltaLast:", s.deltaLast)
             if (s.ctrlKey || s.shiftKey) {
 
-                const q=quat.create()
-                quat.fromEuler(q,s.deltaLast[1] / 3.0,s.deltaLast[0 ] / 3.0,0)
+                const q = quat.create()
+                quat.fromEuler(q, s.deltaLast[1] / 3.0, s.deltaLast[0] / 3.0, 0)
 
-                camera.q=quat.normalize(quat.create(),quat.mul(quat.create(),q,camera.q))
+                camera.q = quat.normalize(quat.create(), quat.mul(quat.create(), q, camera.q))
 
-                
+
 
                 // var newRotationMatrix1 = mat4.create();
                 // mat4.rotateY(newRotationMatrix1, )
@@ -199,15 +251,44 @@ $(document).ready(function() {
 
 
             } else {
-                const step = camera.pos[2] / 100;
-                
+                const step = -camera.pos[2] / 100;
+                var v = [0, 0, 0, 0]
+
                 if (s.deltaLast[0] != 0)
-                    camera.pos[0] -= s.deltaLast[0] < 0 ? step : -step
+                    v[0] = -s.deltaLast[0] < 0 ? step : -step
                 if (s.deltaLast[1] != 0)
-                    camera.pos[1] += s.deltaLast[1] < 0 ? step : -step
+                    v[1] = s.deltaLast[1] < 0 ? step : -step
+
+                movescreen2world(v)
+
             }
             redraw()
         }
 
     })
+
+
+    canvas.addEventListener('keydown', function(e) {
+        console.log('key', e);
+        const v = [0, 0, 0, 0]
+        const step = 0.1
+        if (e.key == 'ArrowUp')
+            v[1] = -step
+        if (e.key == 'ArrowDown')
+            v[1] = +step
+        if (e.key == 'ArrowRight')
+            v[0] = -step
+        if (e.key == 'ArrowLeft')
+            v[0] = step
+        if (e.key == 'PageUp')
+            v[2] = step
+        if (e.key == 'PageDown')
+            v[2] = -step
+
+        movescreen2world(v)  
+        redraw()  
+
+    }, false);
+
+    canvas.focus()
 });
