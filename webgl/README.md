@@ -20,3 +20,4 @@ https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
 * the slippy tiles range is per spec only up to +-85 degrees
 
 
+http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/

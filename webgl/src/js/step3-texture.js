@@ -252,9 +252,9 @@ export class Step3Texture {
         // Now move the drawing position a bit to where we want to
         // start drawing the square.
 
-        mat4.translate(modelMatrix, // destination matrix
-            modelMatrix, // matrix to translate
-            [-0.0, 0.0, -6.0]); // amount to translate
+        // mat4.translate(modelMatrix, // destination matrix
+        //     modelMatrix, // matrix to translate
+        //     [-0.0, 0.0, 0.0]); // amount to translate
 
         // Tell WebGL how to pull out the positions from the position
         // buffer into the vertexPosition attribute.

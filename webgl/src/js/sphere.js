@@ -152,7 +152,7 @@ export class Sphere {
 
         const φ = this.degrees2radians(lat0)
         const θ = this.degrees2radians(lon)
-        const ρ = 0.8; //6378;
+        const ρ = 6378;
         const x = ρ * Math.sin(φ) * Math.cos(θ)
         const z = ρ * Math.sin(φ) * Math.sin(θ)
         const y = ρ * Math.cos(φ)
@@ -396,7 +396,7 @@ export class Sphere {
 
         mat4.translate(modelMatrix, // destination matrix
             modelMatrix, // matrix to translate
-            [-0.0, 0.0, 0.0]); // amount to translate
+            [-0.0, 0.0, 6000.0]); // amount to translate
 
 
         const modelViewMatrix = mat4.create();
