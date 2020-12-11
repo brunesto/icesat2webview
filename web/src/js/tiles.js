@@ -436,13 +436,13 @@
 
 //  bbox=__non_webpack_require__('tiles/bbox11.json');
 //  console.log("bbox"+bbox)
- 
+
 var tilesServerBbox=null
 
- export function initTiles(ready){
+  export function initTiles(ready){
 
     var oReq = new XMLHttpRequest();
-    oReq.open("GET", "tiles/bbox.json", true);
+    oReq.open("GET", global.TILES_ROOT+"bbox.json", true);
     oReq.onload = function(oEvent) {
         if (oReq.status == 200 || oReq.status == 304) {
             tilesServerBbox = JSON.parse(this.responseText);
@@ -450,6 +450,10 @@ var tilesServerBbox=null
         console.log("tilesServerBbox:",tilesServerBbox)
         ready();
     };
+    oReq.onerror= function(oEvent) {
+        console.log("failed to get tilesServerBbox:",oEvent)
+        ready();
+    }
     oReq.send();
 }
 

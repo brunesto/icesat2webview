@@ -53,7 +53,7 @@ TODO:
 38.13469159937026,15.600585937500002
 
 38.1567,15.537877
-bc@hal4:~/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/tiles/11/1113$ head 796.csv 
+.../gitted/brunesto/icesat2webview/web/tiles/11/1113$ head 796.csv 
 ATL08_20190418053048_03050302_003_01.h5;2l;305;40800804.790716276;37.021835;15.674865;33.262695;4.9864864;n
 
 

@@ -84,7 +84,8 @@ export function initMap(config) {
 
     var MAX_ZOOM=19
 
-    var mapBoxTileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnJ1bmVzdG8iLCJhIjoiY2lvNGowMmx4MDAycXZ5a3A0aXdqZTZjbCJ9.0kHXvJmsETs_QzfXfQv9mw', {
+    const mapBoxToken='pk.eyJ1IjoiYnJ1bmVzdG8iLCJhIjoiY2tpanlnNzZiMDRvNjJ5cGtuY3B5MXBmMiJ9.iQiEpqelaEus9zgHxe7xfQ'
+    var mapBoxTileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token='+mapBoxToken, {
         
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
             '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
