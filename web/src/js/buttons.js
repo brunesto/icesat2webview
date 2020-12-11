@@ -51,7 +51,10 @@ export class ButtonsMgr {
     setDisplayAtl08(v){
         this.config.mediator.displayAtl08=v
         $("#atl08Btn").setClass(this.config.mediator.displayAtl08,"toggle-button-on");
-        this.config.tilesMgr.maybeLoadTiles()
+        this.config.mediator.showHideMarkersGroup();
+        if (this.config.mediator.displayAtl08){
+            this.config.tilesMgr.maybeLoadTiles()
+        }
     }
 
     gotoCoords() {

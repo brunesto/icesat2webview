@@ -61,22 +61,17 @@ export class Map {
 
     }
 
-
-    showHideMarkersGroup() {
-        if (this.myMap.getZoom() < TILE_SHOW_FROM_ZL) {
-            this.config.alertInfo("Zoom in to display <br/> Icesat2 data")
-            this.myMap.removeLayer(this.myMarkersGroup);
-        } else {
-            this.config.alertInfo("")
-            this.myMap.addLayer(this.myMarkersGroup);
-        }
+    setAtl08LayerVisible(b) {
+        if (b)
+        this.myMap.addLayer(this.myMarkersGroup);
+        else
+        this.myMap.removeLayer(this.myMarkersGroup);
+        
     }
 
 
 
-
-
-    constructor (config) {
+    constructor(config) {
         this.config = config
         const thisMap = this
         this.myMap = L.map('map', { fadeAnimation: false }).setView([50, 14], 13);
@@ -161,7 +156,7 @@ export class Map {
 
         this.myMap.on('zoomend', function() {
             thisMap.persistCoords();
-            thisMap.showHideMarkersGroup()
+            thisMap.config.mediator.showHideMarkersGroup()
         })
         this.myMap.on('moveend', () => {
             console.log("map:moveend")
@@ -174,7 +169,7 @@ export class Map {
         var miniMap = new L.Control.MiniMap(osm2).addTo(this.myMap);
 
         // maybeLoadTiles()
-        this.showHideMarkersGroup()
+        // this.showHideMarkersGroup()
 
     }
 

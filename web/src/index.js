@@ -53,40 +53,69 @@ global.handleError = (error) => {
 }
 
 
-function alertInfo(msg) {
-    $('#alertInfo').display(msg != "")
-    $('#alertInfo').html(msg)
+
+class Mediator {
+    displayAtl08 = true
+
+
+    alertInfo(msg) {
+        $('#alertInfo').display(msg != "")
+        $('#alertInfo').html(msg)
+    }
+
+    showHideMarkersGroup() {
+        console.log("mediator:showHideMarkersGroup()")
+        if (!this.displayAtl08) {
+            this.alertInfo("")
+            this.map.setAtl08LayerVisible(false)
+        } else if (this.map.myMap.getZoom() < TILE_SHOW_FROM_ZL) {
+            this.alertInfo("Zoom in to display <br/> Icesat2 data")
+            this.map.setAtl08LayerVisible(false)
+        } else {
+            this.alertInfo("")
+            this.map.setAtl08LayerVisible(true)
+        }
+    }
+
+
+
+    launch() {
+        console.log("mediator:launch()")
+        this.tilesMgr.initTiles(() => {
+            this.map.launch()
+            this.buttonsMgr.launch()
+                // tilesMgr.maybeLoadTiles()
+
+        })
+    }
+
 }
 
-var mediator = { displayAtl08: true }
 
-var map = new Map({
+const mediator = new Mediator()
+
+mediator.map = new Map({
     alertInfo: alertInfo,
-    maybeLoadTiles: () => { tilesMgr.maybeLoadTiles() }
+    mediator: mediator,
+    maybeLoadTiles: () => { mediator.tilesMgr.maybeLoadTiles() }
 });
 
-var tilesMgr = new TilesMgr({
+mediator.tilesMgr = new TilesMgr({
     alertInfo: alertInfo,
-    map: map
+    map: mediator.map
 })
-var buttonsMgr = new ButtonsMgr({
+mediator.buttonsMgr = new ButtonsMgr({
     mediator: mediator,
-    tilesMgr:tilesMgr,
-    map: map
+    tilesMgr: mediator.tilesMgr,
+    map: mediator.map
 })
 
 $(document).ready(function() {
     console.log('(process.env.NODE_ENV:' + (process.env.NODE_ENV))
         // mediator.displayAtl08=false
 
+    mediator.launch()
 
-
-    tilesMgr.initTiles(() => {
-        map.launch()
-        buttonsMgr.launch()
-            // tilesMgr.maybeLoadTiles()
-
-    })
 
 
 
