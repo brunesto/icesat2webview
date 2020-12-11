@@ -126,7 +126,7 @@
 
 
          var direction = d[8]
-         var segmentCoords = getSegmentCoords(direction, latLng, 0.9);
+         var segmentCoords = this.getSegmentCoords(direction, latLng, 0.9);
 
          var minx = Math.min(segmentCoords[0][1], segmentCoords[1][1])
          var maxx = Math.max(segmentCoords[0][1], segmentCoords[1][1])
@@ -237,7 +237,7 @@
          }
 
 
-
+         const thisMap=this
          // set popup info and add to map
          // polyline.bindPopup(info);
 
@@ -252,7 +252,8 @@
 
 
              import ('egm96-universal').then((egm96) => {
-                 popup.setContent(this.records2string(ds, egm96.ellipsoidToEgm96))
+                 console.log("egm96-universal ready",egm96.ellipsoidToEgm96)
+                 popup.setContent(thisMap.records2string(ds, egm96.ellipsoidToEgm96))
              }).catch(error => 'An error occurred while loading the component')
 
 
