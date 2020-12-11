@@ -4,7 +4,7 @@ const layerNames = ["outdoors", "aerial","light"]//, "dark"]
 var currentLayerIdx = -1
 
 
-export function initButtons(myMap, updatePos, switchLayer) {
+export function initButtons(myMap, updatePos, switchLayer,maybeLoadTiles) {
     $("#btnBar").show()
     
     $("#locateBtn").click(function() { getLocation(myMap, updatePos); });
@@ -14,7 +14,9 @@ export function initButtons(myMap, updatePos, switchLayer) {
     
     $("#gotoCoordsBtn").click(function() { gotoCoords(myMap, updatePos); });
     $("#switchLayerBtn").click(function() { switchToNextLayer(switchLayer); });
+    // $("#atl08Btn").click(function() { updateDisplayAtl08(maybeLoadTiles,!mediator.displayAtl08); });
 
+    //updateDisplayAtl08(maybeLoadTiles,mediator.displayAtl08);
     switchToNextLayer(switchLayer)
 
 }
@@ -34,6 +36,11 @@ function switchToNextLayer(switchLayer) {
 
 }
 
+// function updateDisplayAtl08(maybeLoadTiles,v){
+//     mediator.displayAtl08=v
+//     $("#atl08Btn").setClass(mediator.displayAtl08,"toggle-button-on");
+//     maybeLoadTiles()
+// }
 
 function gotoCoords(myMap, updatePos) {
     var current = myMap.getCenter()

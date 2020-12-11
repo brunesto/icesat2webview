@@ -5,26 +5,66 @@
 
     z-index: 3000;
     margin-top: 10px;
-
+    
 }
 
-#btnBar button {
+#btnBar .button {
     border: 2px solid gray;
     background-color: #fff;
-    color:black;
+    color:black;    
     border-radius: 5px;
     display:block;
     min-width:90px;
-    min-height:30px;
-    margin-top:5px;
+    XXXmin-height:30px;
+    margin:0.2em;
+    padding:0.2em;
+    clear:left;
+   XXfloat:right;
+   user-select: none;
 }
 
 
-#btnBar button:hover{
-     background-color: #ddd;    
+#btnBar .button:hover{
+     background-color: #ddd;  
+    cursor: pointer;     
 }
 
+.toggle-button-marker{
+    float:right;
+    margin-top:0.3em;
+    width: 0.5em;
+    height: 0.5em;
 
+    border-bottom: 2px solid #ccc;
+    border-right: 2px solid #ccc;
+    border-top: 2px solid #666;
+    border-left: 2px solid #666;
+
+   
+    background-color: gray;
+}
+.toggle-button-on .toggle-button-marker {
+    background-color: greenyellow;
+
+}
+
+#btnBar .toggle-button-on {
+    
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-top: 3px solid #666;
+    border-left: 3px solid #666;
+
+    
+   
+   XXbackground-color: #eee;
+} 
+
+#btnBar .toggle-button-on>div {
+    position: relative;
+    top:0px;
+    left:0px;
+}
 XXswitchLayerBtn:hover #switchLayerBtnLabel ,
 XXXswitchLayerBtnLabel{
     background-color: white;

@@ -20,6 +20,13 @@ jQuery.fn.display = function (b) {
         return this.hide();
 };
 
+jQuery.fn.setClass = function(b,c) {
+    if (b)
+        return this.addClass(c);
+    else
+        return this.removeClass(c);
+};
+
 
 
 global.DEV = window.location.toString().indexOf("DEV=true") != -1
@@ -72,14 +79,18 @@ class Mediator {
 var mediator = new Mediator();
 global.mediator = mediator
 
+const maybeReloadTiles= () => {
+    // if (mediator.displayAtl08)
+        maybeLoadTiles(myMap, myRenderer, myMarkersGroup)
+}
 
 $(document).ready(function () {
     console.log('(process.env.NODE_ENV:' + (process.env.NODE_ENV))
+    // mediator.displayAtl08=false
+
     initTiles(() => {
         initMap({
-            maybeLoadTiles: () => {
-                maybeLoadTiles(myMap, myRenderer, myMarkersGroup)
-            }
+            maybeLoadTiles:maybeReloadTiles
         });
         maybeLoadTiles(myMap, myRenderer, myMarkersGroup)
 
