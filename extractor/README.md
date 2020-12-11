@@ -1,4 +1,7 @@
-This sub-project retrieves ATL08 granules and convert them into slippy tiles, so that the data is organized geographically.
+## IceSat2WebView/Extractor ##
+This sub-project retrieves ATL08 granules and convert them into slippy tiles in order to organize the data geographically.
+<br/><b>Working but not documented :( </b>
+
 
 # source
 the source of data is:

@@ -1,0 +1,50 @@
+
+
+## build and check
+npm run build && npm serve-dist
+
+## AWS
+# build and upload to aws
+npm run build && \
+aws s3 cp /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/index.html  s3://icesat2webview/ && \
+aws s3 sync --no-follow-symlinks /home/bc/bruno/work/rinkai/gitted/brunesto/icesat2webview/web/dist/site  s3://icesat2webview/site
+
+
+browse directly thru s3 (so cloudfront is not required?)
+https://icesat2webview.s3.eu-central-1.amazonaws.com/index.html
+
+
+https://d3863ripe95iiz.cloudfront.net/index.html
+
+
+Notes:
+
+webpack/babel setup following https://github.com/taniarascia/webpack-boilerplate
+
+
+# npm for handling KML:
+https://www.npmjs.com/package/leaflet-plugins
+
+
+# nice sample tiles
+https://a.tile.openstreetmap.org/15/17748/11185.png
+http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/11185/17748
+
+# extract bottom 100x100px:
+curl -o /tmp/11185.png https://b.basemaps.cartocdn.com/dark_all/15/17658/11112.png
+convert  /tmp/11185.png -crop 100x100+156+156 light.png
+
+
+
+
+
+An explanation to clarify the fact that ATL08 canopy height is *aggregated*
+
+https://www.youtube.com/watch?v=TDeVdV7vdog 
+@11'36
+"ATL08 data are beeing reported as aggregated data over a 100-meter segment"
+@16'45
+shows the elevation, but then it shows the photon profile over 100 meters from which elevation & canopy data was computed
+
+
+
