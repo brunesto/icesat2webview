@@ -1,4 +1,5 @@
-
+inspiration:
+https://www.youtube.com/watch?v=OQg5ov6zths
 
 compute normal:
 https://stackoverflow.com/questions/13983189/opengl-how-to-calculate-normals-in-a-terrain-height-grid

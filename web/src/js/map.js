@@ -34,7 +34,7 @@ export varthis. myMarkersGroup;
 
 export class Map {
 
-    markerer = null
+
     currentTileLayer = null
     tileLayers = {}
 
@@ -44,14 +44,21 @@ export class Map {
 
 
 
-    updatePos(lat, lon, zoom, mark) {
-        console.log("updatePos(" + lat + " , " + lon + "," + zoom + "," + mark + ")")
-        if (mark) {
-            if (this.marker != undefined)
-                this.myMap.removeLayer(marker)
-            this.marker = L.marker([lat, lon]);
-            this.marker.addTo(this.myMap)
-            this.marker.on("click", () => { this.myMap.removeLayer(marker) })
+    updatePos(lat, lon, zoom, marker) {
+        if (zoom == null) //   The standard way to catch null and undefined simultaneously
+            zoom = this.myMap.getZoom()
+        console.log("updatePos(" + lat + " , " + lon + "," + zoom + "," + marker + ")")
+        if (marker != null) {
+            var popup = L.popup()
+                .setLatLng([lat, lon])
+                .setContent('<i class="material-icons">' + marker + '</i><br/>' + lat.toFixed(5) + ",<br/>" + lon.toFixed(5))
+                .openOn(this.myMap);
+
+            // if (this.marker != undefined)
+            //     this.myMap.removeLayer(marker)
+            // this.marker = L.marker([lat, lon]);
+            // this.marker.addTo(this.myMap)
+            // this.marker.on("click", () => { this.myMap.removeLayer(marker) })
         }
 
         this.myMap.setView([lat, lon], zoom)
@@ -63,10 +70,10 @@ export class Map {
 
     setAtl08LayerVisible(b) {
         if (b)
-        this.myMap.addLayer(this.myMarkersGroup);
+            this.myMap.addLayer(this.myMarkersGroup);
         else
-        this.myMap.removeLayer(this.myMarkersGroup);
-        
+            this.myMap.removeLayer(this.myMarkersGroup);
+
     }
 
 
@@ -182,7 +189,7 @@ export class Map {
         if (prevLat) {
             var prevLon = Cookies.get('lon')
             var prevZoom = Cookies.get('zoom')
-            this.updatePos(prevLat, prevLon, prevZoom, false)
+            this.updatePos(parseFloat(prevLat), parseFloat(prevLon), parseInt(prevZoom), null)
         }
     }
 

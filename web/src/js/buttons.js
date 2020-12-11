@@ -60,7 +60,7 @@ export class ButtonsMgr {
     gotoCoords() {
         var current = this.config.map.myMap.getCenter()
 
-        var latLon = prompt("go to lat,lon ?", current == undefined ? "" : (current.lat + "," + current.lng));
+        var latLon = prompt("go to lat,lon ?", current == undefined ? "" : (current.lat.toFixed(5) + "," + current.lng.toFixed(5)));
 
         if (latLon != null) {
             var tokens = latLon.split(",")
@@ -69,7 +69,7 @@ export class ButtonsMgr {
 
 
 
-            this.config.map.updatePos(tokens[0], tokens[1]);
+            this.config.map.updatePos(parseFloat(tokens[0]), parseFloat(tokens[1]),null,'location_on');
         }
     }
 
@@ -108,7 +108,7 @@ export class ButtonsMgr {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     console.log("geolocation " + new Date().toLocaleTimeString() + "")
-                    this.config.map.updatePos(position.coords.latitude, position.coords.longitude, 17, true);
+                    this.config.map.updatePos(position.coords.latitude, position.coords.longitude, 17, 'face');
                 }, (error) => {
                     console.log('getCurrentPosition Error code: ' + error.code);
                     // error.code can be:

@@ -7,18 +7,63 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <title>Icesat2Webview Help</title>
 
+    <style>
+        .pngified {
+            vertical-align: text-bottom;
+        }
+    </style>
 </head>
 
 <body>
 
-
+    <h2>Goal</h2>
+    The goal of this project is to access Icesat2's canopy data (ATL08) in a simple way.
     <h2>User Interface</h2>
-
+    The UI is pretty much self-explanatory.
+    To display ATL08 aggregation points, make sure the ATL08 button is switched on and zoom in.
 
     <h2>There is no data in my area?</h2>
-    I have not processed the whole planet. Just drop me an email specifying the location you wish either as
-    coordinates lat.lon with at least one decimal, e.g. not just 50.14 but 50.1,14.4
-    or the city and country name bruno.carle-icesat2 <img url="..." />
+    Only a small part of the planet data has been processed. If you would like to add a location, just drop me an email
+    specifying the location
+    e.g. city and country name , or coordinates at bruno.carle-icesat2<img class="pngified"
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAIAAAD8q9/YAAAD60lEQVRIDeWWS0hyWxiGHUShXdxlIY0qVDI0yzJHCSZKGERQYAU5qCAaBAliBWYaTaKgiMCiSTQRooGKQXcaNMlCK50oUkS6rUmRXeyi+R0662cdCY5/Bw5F/Hsg737X2t96n/3ttZACf9hF+cN44fuBi4qKDg8Pv+y9fxsw5sTia5j/Ad7c3GxoaMjNzaVSqUKhcGZmJhaLfUGI7wEeHh7m8/kWi4UkyWg0enh4qFarpVLp4+MjYvZ6vTU1NTk5OUqlUq1WDw4OIp/JZI6MjJSVldFotO7ubo/HIxaLqVSqUqmMRCJoTnV1NYVCycjIEIvFLpcLmZgTC+SjX5IkVSpVfn4+i8VyOBzIDAQCcrk8Ozuby+UuLy8j8zMBkiu/d3hlZSWZDQ8bDAYEFo/H2Wy2yWSKRCI2my0tLS0ZWCaThcNhv9/PYDC4XO7R0dHNzY1EIpmYmMClACAajZrNZjabHY/HAQBzYoEnv729iUSirq6uq6ur09NTjUYDAPF4vKysTKfT3d7erq2tZWZmut1uAGAymZ8MgOq/A1dUVJyfnwPA0NAQQRAcDqe/v99oNL6+vnI4nEQi4XQ6CwoKUFAAaGxsTAbe3d1FtZqamkwmE9LT09MdHR2YAYuSkhKfz5ca2O125+TkPD8/46cA4ODggCCI19dXZHZ2dmq1WgT8nwJQLi8vJRIJAOzs7AgEgouLC5IkxWKx0WgEAIVCEQwGrVZrZWUlXr6vry8Z2Ov1oqHW1tbZ2Vmk5+bmWlpakDabzRwOJz09nfL3hfLhxmKB69vtdh6Ph2+RsNlsfD4fm2NjY21tbQj4twHwUwBAOTk5aW9vB4CZmRmDwYDGxsfHETCfz395ednf30/R4dTr+Xw+giCcTufT0xMAFBcXb21t/b8dTh0gmfYdmCRJqVQKANvb20KhMBgMhsNhsVis0+lGR0d7enoAIBaLsVgstIftdvuHPZx6PZfLxWAw/H7//f395OQkhUL5N+D6+nq9Xg8AiUQC7+GzszO8h7lc7sDAwO3t7fr6Oo1GQ+cfk8lMHeAjMACUl5cHg0EA0Ol0BEHw+XyNRsNisfR6PWoLABwfH4tEInRKq1Qq/C18Zj2tVkun0wsLC3t7e3k83m+BASAUCjU3N+fl5XE4nNXVVRTa7/fLZLKsrKzS0lKLxYLMzwRIZn4/tJaWluRy+YdDInnSB61QKBYWFj6YP+X21x8PjUZTVVXlcDgikcj19fXGxkZtba3H48EY8/Pze3t7d3d3i4uLVCo1FArhoZ8lfgEDgNVqlUql2dnZdDpdJBJNTU09PDxgmEAgUFdXl5WVJRAINjc3sf/jxF8IsbA/bRWcEgAAAABJRU5ErkJggg==" />
+    it should be ready in a couple of days.
+
+    <h2>Credits</h2>
+
+    <h3>IceSat2 data source:</h3>
+    Neuenschwander, A. L., K. L. Pitts, B. P. Jelley, J. Robbins, B. Klotz,<br />
+    S. C. Popescu, R. F. Nelson, D. Harding, D. Pederson, and R. Sheridan. 2020.<br />
+    ATLAS/ICESat-2 L3A Land and Vegetation Height,Version 3. Boulder, Colorado USA.<br />
+    NASA National Snow and Ice Data Center Distributed Active Archive Center.<br />
+    doi: https://doi.org/10.5067/ATLAS/ATL08.003. Date accessed: 2020-10-13
+
+
+    <h3>Underlying maps:</h3>
+    The attributions are displayed at the bottom of the screen.
+
+    <h3>Most relevant libraries:</h3>
+    <ul>
+        <li>
+            <a href="https://leafletjs.com/">Leaflet (map)</a>
+        </li>
+        <li>
+            <a href="https://github.com/Norkart/Leaflet-MiniMap">Leaflet MiniMap widget</a>
+        </li>
+        <li>
+            <a href="https://kartena.github.io/Leaflet.Pancontrol/">Leaflet Control widget</a>
+        </li>
+        <li>
+            <a href="https://github.com/nicolas-van/egm96-universal">Egm96</a> for adjusting elipsoid altitude to geoid
+
+        </li>
+    </ul>
+
+    for the full list of dependencies see the repository <a
+        href="github.com/brunesto/icesat2webview/web">github.com/brunesto/icesat2webview/web</a>
+
+
+
 
 
 </body>
