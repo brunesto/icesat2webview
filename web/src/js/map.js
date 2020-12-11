@@ -162,7 +162,7 @@ export class Map {
             thisMap.showHideMarkersGroup()
         })
         this.myMap.on('moveend', () => {
-
+            console.log("map:moveend")
             thisMap.persistCoords();
             thisMap.config.maybeLoadTiles();
         })
