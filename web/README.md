@@ -16,12 +16,3 @@ DONE:
 TODO:
 * database tiles boundary (i.e. just min and max tile)
 
-
-BUG?:
-looking @ 50.25283,13.988055, the link to openaltimetry fails, 
-
-https://openaltimetry.org/data/icesat2/elevation?minx=13.98000000000000&miny=50.25245200000000&maxx=13.98900000000000&maxy=50.25320800000000&zoom_level=16&beams=1,2,3,4,5,6&tracks=305&date=2018-10-18&product=ATL08&mapType=geographic&tab=photon
-
-but this one works :... dunno why
-
-https://openaltimetry.org/data/icesat2/elevation?minx=13.98000000000000&miny=50.25245200000000&maxx=13.98900000000000&maxy=50.25310800000000&zoom_level=16&beams=1,2,3,4,5,6&tracks=305&date=2018-10-18&product=ATL08&mapType=geographic&tab=photon
