@@ -25,170 +25,182 @@ L.Icon.Default.mergeOptions({
 
 
 
+/*
+export var this.myMap;
+export var this.myRenderer;
+export varthis. myMarkersGroup;
 
-export var myMap;
-export var myRenderer;
-export var myMarkersGroup;
-var marker;
+*/
+
+export class Map {
+
+    markerer = null
+    currentTileLayer = null
+    tileLayers = {}
+
+    myMap = null
+    myRenderer = null
+    myMarkersGroup = null
+
+    updatePos(lat, lon, zoom, mark) {
+        console.log("updatePos(" + lat + " , " + lon + "," + zoom + "," + mark + ")")
+        if (mark) {
+            if (this.marker != undefined)
+                this.myMap.removeLayer(marker)
+                this.marker = L.marker([lat, lon]);
+                this.marker.addTo(this.myMap)
+                this.marker.on("click", () => { this.myMap.removeLayer(marker) })
+        }
+
+        this.myMap.setView([lat, lon], zoom)
+
+        this.persistCoords()
 
 
-export function updatePos(lat, lon, zoom, mark) {
-    console.log("updatePos(" + lat + " , " + lon + "," + zoom + "," + mark + ")")
-    if (mark) {
-        if (marker != undefined)
-            myMap.removeLayer(marker)
-        marker = L.marker([lat, lon]);
-        marker.addTo(myMap)
-        marker.on("click", () => { myMap.removeLayer(marker) })
     }
 
-    myMap.setView([lat, lon], zoom)
 
-    persistCoords()
-
-
-}
-
-
-function showHideMarkerGroup() {
-    if (myMap.getZoom() < TILE_SHOW_FROM_ZL) {
-        mediator.alertInfo("Zoom in to display <br/> Icesat2 data")
-        myMap.removeLayer(myMarkersGroup);
-    } else {
-        mediator.alertInfo("")
-        myMap.addLayer(myMarkersGroup);
+    showHideMarkersGroup() {
+        if (this.myMap.getZoom() < TILE_SHOW_FROM_ZL) {
+            mediator.alertInfo("Zoom in to display <br/> Icesat2 data")
+            this.myMap.removeLayer(this.myMarkersGroup);
+        } else {
+            mediator.alertInfo("")
+            this.myMap.addLayer(this.myMarkersGroup);
+        }
     }
-}
-
-
-var tileLayers = {}
 
 
 
-export function initMap(config) {
-    myMap = L.map('map', { fadeAnimation: false }).setView([50, 14], 13);
-
-    myRenderer = L.canvas({ padding: 0.5 });
 
 
-    L.control.scale().addTo(myMap);
-    L.control.pan().addTo(myMap);
+    initMap(config) {
+        this.config=config
+        const thisMap=this
+        this.myMap = L.map('map', { fadeAnimation: false }).setView([50, 14], 13);
 
-    // add the OpenStreetMap tiles
-    const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-    const osmAttribution = '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-    var osmTileLayer = L.tileLayer(osmUrl, {
-        maxZoom: 19,
-        attribution: osmAttribution
-    })
-    tileLayers["osm"] = osmTileLayer;
-
-    var MAX_ZOOM=19
-
-    const mapBoxToken='pk.eyJ1IjoiYnJ1bmVzdG8iLCJhIjoiY2tpanlnNzZiMDRvNjJ5cGtuY3B5MXBmMiJ9.iQiEpqelaEus9zgHxe7xfQ'
-    var mapBoxTileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token='+mapBoxToken, {
-        
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-            '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        id: 'mapbox/outdoors-v11',
-        tileSize: 512,
-        zoomOffset: -1,
-        maxNativeZoom: 18,
-        maxZoom: MAX_ZOOM
-    })
-    tileLayers["outdoors"] = mapBoxTileLayer;
-    //  mapBoxTileLayer.addTo(myMap)
+        this.myRenderer = L.canvas({ padding: 0.5 });
 
 
-    var mapLink =
-        '<a href="http://www.esri.com/">Esri</a>';
-    var wholink =
-        'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
-    var esriTileLayer = L.tileLayer(
-        'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: '&copy; ' + mapLink + ', ' + wholink,
-            maxNativeZoom: 17,
+        L.control.scale().addTo(this.myMap);
+        L.control.pan().addTo(this.myMap);
+
+        // add the OpenStreetMap tiles
+        const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        const osmAttribution = '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+        var osmTileLayer = L.tileLayer(osmUrl, {
+            maxZoom: 19,
+            attribution: osmAttribution
+        })
+        this.tileLayers["osm"] = osmTileLayer;
+
+        var MAX_ZOOM = 19
+
+        const mapBoxToken = 'pk.eyJ1IjoiYnJ1bmVzdG8iLCJhIjoiY2tpanlnNzZiMDRvNjJ5cGtuY3B5MXBmMiJ9.iQiEpqelaEus9zgHxe7xfQ'
+        var mapBoxTileLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + mapBoxToken, {
+
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            id: 'mapbox/outdoors-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            maxNativeZoom: 18,
             maxZoom: MAX_ZOOM
         })
-    tileLayers["aerial"] = esriTileLayer;
+        this.tileLayers["outdoors"] = mapBoxTileLayer;
+        //  mapBoxTileLayer.addTo(this.myMap)
 
 
-    var CartoDB_LightMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxNativeZoom: 19,
-        maxZoom: MAX_ZOOM
-    });
-    tileLayers["light"] = CartoDB_LightMatter;
+        var mapLink =
+            '<a href="http://www.esri.com/">Esri</a>';
+        var wholink =
+            'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+        var esriTileLayer = L.tileLayer(
+            'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '&copy; ' + mapLink + ', ' + wholink,
+                maxNativeZoom: 17,
+                maxZoom: MAX_ZOOM
+            })
+        this.tileLayers["aerial"] = esriTileLayer;
 
 
-    var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxNativeZoom: 19,
-        maxZoom: MAX_ZOOM
-    });
-    tileLayers["dark"] = CartoDB_DarkMatter;
+        var CartoDB_LightMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxNativeZoom: 19,
+            maxZoom: MAX_ZOOM
+        });
+        this.tileLayers["light"] = CartoDB_LightMatter;
 
 
-
-
-
-
-
-
-
-    //var esriTileLayer=L.tileLayer.provider('Stamen.Watercolor')               
-    //var switchBtn = L.control.layers({ "mapbox": mapBoxTileLayer, "satellite": esriTileLayer, "osm": osmTileLayer })
-    //switchBtn.addTo(myMap);
-
-    myMarkersGroup = new L.FeatureGroup();
-    myMap.addLayer(myMarkersGroup);
-
-    myMap.on('zoomend', function() {
-        persistCoords();
-        showHideMarkerGroup()
-    })
-    myMap.on('moveend', () => {
-
-        persistCoords();
-        config.maybeLoadTiles();
-    })
-
-
-    var osm2 = new L.TileLayer(osmUrl, { minZoom: 0, maxZoom: 13, attribution: osmAttribution });
-    var miniMap = new L.Control.MiniMap(osm2).addTo(myMap);
-
-    // maybeLoadTiles()
-    showHideMarkerGroup()
+        var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxNativeZoom: 19,
+            maxZoom: MAX_ZOOM
+        });
+        this.tileLayers["dark"] = CartoDB_DarkMatter;
 
 
 
-    var prevLat = Cookies.get('lat')
-    if (prevLat) {
-        var prevLon = Cookies.get('lon')
-        var prevZoom = Cookies.get('zoom')
-        updatePos(prevLat, prevLon, prevZoom, false)
+
+
+
+
+
+
+        //var esriTileLayer=L.tileLayer.provider('Stamen.Watercolor')               
+        //var switchBtn = L.control.layers({ "mapbox": mapBoxTileLayer, "satellite": esriTileLayer, "osm": osmTileLayer })
+        //switchBtn.addTo(this.myMap);
+
+        this.myMarkersGroup = new L.FeatureGroup();
+        this.myMap.addLayer(this.myMarkersGroup);
+
+        this.myMap.on('zoomend', function() {
+            thisMap.persistCoords();
+            thisMap.showHideMarkersGroup()
+        })
+        this.myMap.on('moveend', () => {
+
+            thisMap.persistCoords();
+            thisMap.config.maybeLoadTiles();
+        })
+
+
+        var osm2 = new L.TileLayer(osmUrl, { minZoom: 0, maxZoom: 13, attribution: osmAttribution });
+        var miniMap = new L.Control.MiniMap(osm2).addTo(this.myMap);
+
+        // maybeLoadTiles()
+        this.showHideMarkersGroup()
+
+
+
+        var prevLat = Cookies.get('lat')
+        if (prevLat) {
+            var prevLon = Cookies.get('lon')
+            var prevZoom = Cookies.get('zoom')
+            this.updatePos(prevLat, prevLon, prevZoom, false)
+        }
+
     }
 
-}
+    persistCoords() {
+        var coords = this.myMap.getCenter()
+        Cookies.set('lat', coords.lat);
+        Cookies.set('lon', coords.lng);
+        Cookies.set('zoom', this.myMap.getZoom());
+    }
 
-function persistCoords() {
-    var coords = myMap.getCenter()
-    Cookies.set('lat', coords.lat);
-    Cookies.set('lon', coords.lng);
-    Cookies.set('zoom', myMap.getZoom());
-}
 
-var currentTileLayer = null
-export function switchLayer(layerName) {
-    console.log("switchLayer " + layerName)
-    if (currentTileLayer != null)
-        myMap.removeLayer(tileLayers[currentTileLayer]);
+    switchLayer(layerName) {
+        console.log("switchLayer " + layerName)
+        if (this.currentTileLayer != null)
+            this.myMap.removeLayer(this.tileLayers[this.currentTileLayer]);
 
-    if (layerName != null) {
-        currentTileLayer = layerName
-        myMap.addLayer(tileLayers[layerName]);
+        if (layerName != null) {
+            this.currentTileLayer = layerName
+            this.myMap.addLayer(this.tileLayers[layerName]);
+        }
     }
 }

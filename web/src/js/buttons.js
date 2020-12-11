@@ -4,20 +4,20 @@ const layerNames = ["outdoors", "aerial","light"]//, "dark"]
 var currentLayerIdx = -1
 
 
-export function initButtons(myMap, updatePos, switchLayer,maybeLoadTiles) {
+export function initButtons(map) {
     $("#btnBar").show()
     
-    $("#locateBtn").click(function() { getLocation(myMap, updatePos); });
+    $("#locateBtn").click(function() { getLocation(map); });
     
     $("#polygonBtn").display(DEV)
-    $("#polygonBtn").click(function() { savePoly(myMap); });
+    $("#polygonBtn").click(function() { savePoly(map); });
     
-    $("#gotoCoordsBtn").click(function() { gotoCoords(myMap, updatePos); });
-    $("#switchLayerBtn").click(function() { switchToNextLayer(switchLayer); });
+    $("#gotoCoordsBtn").click(function() { gotoCoords(map); });
+    $("#switchLayerBtn").click(function() { switchToNextLayer(map); });
     // $("#atl08Btn").click(function() { updateDisplayAtl08(maybeLoadTiles,!mediator.displayAtl08); });
 
     //updateDisplayAtl08(maybeLoadTiles,mediator.displayAtl08);
-    switchToNextLayer(switchLayer)
+    switchToNextLayer(map)
 
 }
 
@@ -28,9 +28,9 @@ function getNextLayerIdx() {
     return nextLayer
 }
 
-function switchToNextLayer(switchLayer) {
+function switchToNextLayer(map) {
     currentLayerIdx = getNextLayerIdx()
-    switchLayer(layerNames[currentLayerIdx])
+    map.switchLayer(layerNames[currentLayerIdx])
     $("#switchLayerBtn").removeClass("nextIs-" + layerNames[currentLayerIdx]);
     $("#switchLayerBtn").addClass("nextIs-" + layerNames[getNextLayerIdx()]);
 
@@ -42,8 +42,8 @@ function switchToNextLayer(switchLayer) {
 //     maybeLoadTiles()
 // }
 
-function gotoCoords(myMap, updatePos) {
-    var current = myMap.getCenter()
+function gotoCoords(map) {
+    var current = map.myMap.getCenter()
 
     var latLon = prompt("go to lat,lon ?", current == undefined ? "" : (current.lat + "," + current.lng));
 
@@ -54,13 +54,13 @@ function gotoCoords(myMap, updatePos) {
 
 
 
-        updatePos(tokens[0], tokens[1]);
+            map.updatePos(tokens[0], tokens[1]);
     }
 }
 
 
-function savePoly(myMap) {
-    var bb = myMap.getBounds();
+function savePoly(map) {
+    var bb = map.myMap.getBounds();
     alert("" + bb.getSouthWest().lng.round(4) + "," + bb.getSouthWest().lat.round(4) + "," + bb.getNorthEast().lng.round(4) + "," + bb.getNorthEast().lat.round(4));
 
     /* 
@@ -88,12 +88,12 @@ function savePoly(myMap) {
 
 // https://www.w3schools.com/html/html5_geolocation.asp
 
-function getLocation(myMap, updatePos) {
+function getLocation(map) {
     try {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 console.log("geolocation " + new Date().toLocaleTimeString() + "")
-                updatePos(position.coords.latitude, position.coords.longitude,17,true);
+                map.updatePos(position.coords.latitude, position.coords.longitude,17,true);
             }, (error) => {
                 console.log('getCurrentPosition Error code: ' + error.code);
                 // error.code can be:

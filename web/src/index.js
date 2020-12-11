@@ -1,5 +1,6 @@
 import './styles/body.css';
-import { initMap, myMap, myRenderer, myMarkersGroup, updatePos, switchLayer } from './js/map.js';
+//import { initMap, myMap, myRenderer, myMarkersGroup, updatePos, switchLayer } from './js/map.js';
+import { Map } from './js/map.js';
 import { initButtons } from './js/buttons.js';
 import { maybeLoadTiles, initTiles } from './js/tiles.js';
 
@@ -78,10 +79,10 @@ class Mediator {
 }
 var mediator = new Mediator();
 global.mediator = mediator
-
+var map=new Map()
 const maybeReloadTiles= () => {
     // if (mediator.displayAtl08)
-        maybeLoadTiles(myMap, myRenderer, myMarkersGroup)
+        maybeLoadTiles(map.myMap, map.myRenderer, map.myMarkersGroup)
 }
 
 $(document).ready(function () {
@@ -89,11 +90,13 @@ $(document).ready(function () {
     // mediator.displayAtl08=false
 
     initTiles(() => {
-        initMap({
+
+       
+        map.initMap({
             maybeLoadTiles:maybeReloadTiles
         });
-        maybeLoadTiles(myMap, myRenderer, myMarkersGroup)
+        maybeLoadTiles(map.myMap, map.myRenderer, map.myMarkersGroup)
 
-        initButtons(myMap, updatePos, switchLayer)
+        initButtons(map)
     })
 });
