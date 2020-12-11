@@ -2,7 +2,7 @@ import './styles/body.css';
 import './js/global.js';
 //import { initMap, myMap, myRenderer, myMarkersGroup, updatePos, switchLayer } from './js/map.js';
 import { Map } from './js/map.js';
-import { initButtons } from './js/buttons.js';
+import { ButtonsMgr } from './js/buttons.js';
 // import { maybeLoadTiles, initTiles } from './js/tiles.js';
 import { TilesMgr } from './js/tiles.js';
 
@@ -58,6 +58,7 @@ function alertInfo(msg) {
     $('#alertInfo').html(msg)
 }
 
+var mediator = { displayAtl08: true }
 
 var map = new Map({
     alertInfo: alertInfo,
@@ -68,17 +69,22 @@ var tilesMgr = new TilesMgr({
     alertInfo: alertInfo,
     map: map
 })
-
+var buttonsMgr = new ButtonsMgr({
+    mediator: mediator,
+    tilesMgr:tilesMgr,
+    map: map
+})
 
 $(document).ready(function() {
     console.log('(process.env.NODE_ENV:' + (process.env.NODE_ENV))
         // mediator.displayAtl08=false
 
 
-    initButtons(map)
+
     tilesMgr.initTiles(() => {
         map.launch()
-       // tilesMgr.maybeLoadTiles()
+        buttonsMgr.launch()
+            // tilesMgr.maybeLoadTiles()
 
     })
 

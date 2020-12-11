@@ -87,6 +87,11 @@ XXXswitchLayerBtnLabel{
     background-image: url("../images/map.png");
 }
 
+.nextIs-outdoors{
+    background-image: url("../images/outdoors.png");
+}
+
+
 .nextIs-aerial {
     background-image: url("../images/aerial.png");
 }
