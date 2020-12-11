@@ -7,7 +7,7 @@
  const CircleMarkerWithZoom = L.Circle.extend({
 
      _updateBounds () {
-         console.log("damn")
+
          L.Circle.prototype._updateBounds.call(this)
          if (this._radius < 5) {
              this._radius = 5
@@ -21,7 +21,8 @@
  export class TilesMgr {
 
 
-     constructor() {
+     constructor(config) {
+          this.config=config
          this.tilesServerBbox = null
 
          this.tiles = new Object();
@@ -62,14 +63,14 @@
          }
      }
 
-     addTileMarker(yx, nodata, myRenderer, myMarkersGroup) {
+     addTileMarker(yx, nodata) {
          var bounds = [
              [this.tile2lat(yx[0], TILE_DEF_ZL), this.tile2long(yx[1], TILE_DEF_ZL)],
              [this.tile2lat(yx[0] + 1, TILE_DEF_ZL),this. tile2long(yx[1] + 1, TILE_DEF_ZL)]
          ]
          var center = [this.tile2lat(yx[0] + 0.5, TILE_DEF_ZL), this.tile2long(yx[1] + 0.5, TILE_DEF_ZL)]
          var tileMarker = L.rectangle(bounds, {
-             renderer: myRenderer,
+             renderer:this.config.map.myRenderer,
              color: 'white',
              fillColor: nodata ? 'white' : 'transparent',
              weight: 1,
@@ -80,11 +81,11 @@
 
          //tileMarker.bindTooltip(yx[1]+"/"+yx[0], {permanent: true});
 
-         tileMarker.addTo(myMarkersGroup);
+         tileMarker.addTo(this.config.map.myMarkersGroup);
 
          var label = nodata ? "no data for this area" : (yx[1] + "/" + yx[0])
          var myIcon = L.divIcon({ className: 'tilePath-' + (nodata ? "nodata" : "DEV"), html: label });
-         L.marker(center, { icon: myIcon }).addTo(myMarkersGroup);
+         L.marker(center, { icon: myIcon }).addTo(this.config.map.myMarkersGroup);
 
 
      }
@@ -193,7 +194,7 @@
 
      }
 
-     addDataMarker(ds, myMap, myRenderer, myMarkersGroup) {
+     addDataMarker(ds) {
 
 
          var latLng = [parseFloat(ds[0][4]), parseFloat(ds[0][5])]
@@ -223,7 +224,7 @@
 
 
          var circleMarker = new CircleMarkerWithZoom(latLng, {
-             renderer: myRenderer,
+             renderer:this.config.map.myRenderer,
              color: "black",
              fillColor: channelColor,
              radius: 10,
@@ -248,7 +249,7 @@
              var popup = L.popup()
                  .setLatLng(latLng)
                  .setContent(this.records2string(ds, false))
-                 .openOn(myMap);
+                 .openOn(this.config.map.myMap);
 
 
              import ('egm96-universal').then((egm96) => {
@@ -260,14 +261,14 @@
              // if (popup.isOpen()){
              //popup.closePopup();
 
-             //popup.openOn(myMap);
+             //popup.openOn(this.config.map.myMap);
              //  }    
 
          }
          polyline.on('click', f)
-         polyline.addTo(myMarkersGroup);
+         polyline.addTo(this.config.map.myMarkersGroup);
          circleMarker.on('click', f)
-         circleMarker.addTo(myMarkersGroup);
+         circleMarker.addTo(this.config.map.myMarkersGroup);
 
      }
 
@@ -282,7 +283,7 @@
 
      }
 
-     loadTile(yx, myMap, myRenderer, myMarkersGroup) {
+     loadTile(yx) {
 
          var path = TILES_ROOT + TILE_DEF_ZL + "/" + yx[1] + "/" + yx[0] + ".csv.gz"
 
@@ -290,7 +291,7 @@
          //console.log("loadTile " + path);
 
          if (DEV) {
-            this.addTileMarker(yx, false, myRenderer, myMarkersGroup)
+            this.addTileMarker(yx, false,this.config.map.myRenderer, this.config.map.myMarkersGroup)
          }
 
 
@@ -319,7 +320,7 @@
                          var gunziped = new TextDecoder().decode(inflatedUint8array)
                              //console.log("gunziped type",typeof gunziped)
                              //console.log("gunziped",gunziped)
-                             this.processTile(gunziped.split("\n"), myMap, myRenderer, myMarkersGroup)
+                             this.processTile(gunziped.split("\n"))
                      } catch (error) {
                          console.log("" + path + " exception:", error)
                          this.tiles[yx] = 'e'
@@ -331,7 +332,7 @@
                      // whatever...
                      this.tiles[yx] = 'ok'
                  } else {
-                    this.addTileMarker(yx, true, myRenderer, myMarkersGroup)
+                    this.addTileMarker(yx, true,this.config.map.myRenderer, this.config.map.myMarkersGroup)
                  }
                  this.tiles[yx] = 'status ' + oReq.status
              };
@@ -374,7 +375,7 @@
 
 
 
-     processTile(lines, myMap, myRenderer, myMarkersGroup) {
+     processTile(lines) {
          console.log("processTile");
 
          var coords2data = new Object()
@@ -397,7 +398,7 @@
          }
          console.log("add markers");
          for (latLng in coords2data) {
-            this.addDataMarker(coords2data[latLng], myMap, myRenderer, myMarkersGroup)
+            this.addDataMarker(coords2data[latLng])
          }
          //console.log("done");
      }
@@ -419,21 +420,21 @@
      }
 
 
-     maybeLoadTile(yx, myMap, myRenderer, myMarkersGroup) {
+     maybeLoadTile(yx) {
          const loaded=(yx in this.tiles)
          console.log("maybeLoadTile " + yx[1] + "/" + yx[0]+" already loaded:"+loaded)
          if (!loaded) { // 1048576
             this.tiles[yx] = 'L'
-             this. loadTile(yx, myMap, myRenderer, myMarkersGroup)
+             this. loadTile(yx)
          }
      }
 
-     maybeLoadTiles(myMap, myRenderer, myMarkersGroup) {
-         console.log("maymaybeLoadTiles zl:" + myMap.getZoom(), myMap.getBounds().getSouthWest())
-         if (myMap.getZoom() < TILE_LOAD_FROM_ZL)
+     maybeLoadTiles() {
+         console.log("maymaybeLoadTiles zl:" + this.config.map.myMap.getZoom(), this.config.map.myMap.getBounds().getSouthWest())
+         if (this.config.map.myMap.getZoom() < TILE_LOAD_FROM_ZL)
              return
 
-         var bbox = myMap.getBounds()
+         var bbox = this.config.map.myMap.getBounds()
 
          var minty = this.lat2tile(bbox.getNorthEast().lat, TILE_DEF_ZL)
          var mintx = this.lon2tile(bbox.getSouthWest().lng, TILE_DEF_ZL)
@@ -442,7 +443,7 @@
 
          for (var x = mintx; x <= maxtx; x++)
              for (var y = minty; y <= maxty; y++)
-             this.maybeLoadTile([y, x], myMap, myRenderer, myMarkersGroup)
+             this.maybeLoadTile([y, x])
 
 
 
@@ -454,19 +455,22 @@
 
      initTiles(ready) {
 
-         var oReq = new XMLHttpRequest();
-         oReq.open("GET", global.TILES_ROOT + "bbox.json", true);
-         oReq.onload = (oEvent) =>{
-             if (oReq.status == 200 || oReq.status == 304) {
-                 this.tilesServerBbox = JSON.parse(this.responseText);
-             }
-             console.log("tilesServerBbox:", this.tilesServerBbox)
-             ready();
-         };
-         oReq.onerror = (oEvent) =>{
-             console.log("failed to get tilesServerBbox:", oEvent)
-             ready();
-         }
-         oReq.send();
+        //  var oReq = new XMLHttpRequest();
+        //  oReq.open("GET", global.TILES_ROOT + "bbox.json", true);
+        //  oReq.onload = (oEvent) =>{
+        //      if (oReq.status == 200 || oReq.status == 304) {
+        //          this.tilesServerBbox = JSON.parse(this.responseText);
+        //      }
+        //      console.log("tilesServerBbox:", this.tilesServerBbox)
+        //      ready();
+        //  };
+        //  oReq.onerror = (oEvent) =>{
+        //      console.log("failed to get tilesServerBbox:", oEvent)
+        //      ready();
+        //  }
+        //  oReq.send();
+
+
+         ready();
      }
  }

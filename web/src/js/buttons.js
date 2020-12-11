@@ -14,6 +14,8 @@ export function initButtons(map) {
     
     $("#gotoCoordsBtn").click(function() { gotoCoords(map); });
     $("#switchLayerBtn").click(function() { switchToNextLayer(map); });
+    
+    $("#helpBtn").click(function() { window.open('site/help.html','is2help');});
     // $("#atl08Btn").click(function() { updateDisplayAtl08(maybeLoadTiles,!mediator.displayAtl08); });
 
     //updateDisplayAtl08(maybeLoadTiles,mediator.displayAtl08);

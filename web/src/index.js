@@ -1,4 +1,5 @@
 import './styles/body.css';
+import './js/global.js';
 //import { initMap, myMap, myRenderer, myMarkersGroup, updatePos, switchLayer } from './js/map.js';
 import { Map } from './js/map.js';
 import { initButtons } from './js/buttons.js';
@@ -6,28 +7,6 @@ import { initButtons } from './js/buttons.js';
 import { TilesMgr } from './js/tiles.js';
 
 import urlParse from 'url-parse';
-
-
-
-Number.prototype.round = function (places) {
-    return +(Math.round(this + "e+" + places) + "e-" + places);
-}
-
-
-
-jQuery.fn.display = function (b) {
-    if (b)
-        return this.show();
-    else
-        return this.hide();
-};
-
-jQuery.fn.setClass = function(b,c) {
-    if (b)
-        return this.addClass(c);
-    else
-        return this.removeClass(c);
-};
 
 
 
@@ -43,14 +22,14 @@ global.TILE_DEF_ZL = 11
 
 // tiles will be loaded from zoomlevel
 global.TILE_LOAD_FROM_ZL = DEV ? 9 : 12
-// tiles will be shown from zoomlevel
+    // tiles will be shown from zoomlevel
 global.TILE_SHOW_FROM_ZL = DEV ? 9 : 12
-//var prefix = "https://d3863ripe95iiz.cloudfront.net/tiles/"
-//  global.TILES_ROOT="http://icesat2webview.s3-website.eu-central-1.amazonaws.com/tiles/"
+    //var prefix = "https://d3863ripe95iiz.cloudfront.net/tiles/"
+    //  global.TILES_ROOT="http://icesat2webview.s3-website.eu-central-1.amazonaws.com/tiles/"
 global.TILES_ROOT = "tiles/"
 
 
-
+/*
 const origin = window.location.origin
 console.log("origin=" + origin);
 if (origin.startsWith) {
@@ -64,42 +43,45 @@ if (origin.startsWith) {
                              
     }
 }
+*/
 
 'use strict';
 
-class Mediator {
-    handleError(error) {
-        console.error('Error: ', error);
 
-
-    }
-    alertInfo(msg) {
-        $('#alertInfo').display(msg != "")
-        $('#alertInfo').html(msg)
-    }
-}
-var mediator = new Mediator();
-global.mediator = mediator
-var map=new Map()
-var tilesMgr=new TilesMgr()
-
-const maybeReloadTiles= () => {
-    // if (mediator.displayAtl08)
-    tilesMgr.maybeLoadTiles(map.myMap, map.myRenderer, map.myMarkersGroup)
+global.handleError = (error) => {
+    console.error('Error: ', error);
 }
 
-$(document).ready(function () {
+
+function alertInfo(msg) {
+    $('#alertInfo').display(msg != "")
+    $('#alertInfo').html(msg)
+}
+
+
+var map = new Map({
+    alertInfo: alertInfo,
+    maybeLoadTiles: () => { tilesMgr.maybeLoadTiles() }
+});
+
+var tilesMgr = new TilesMgr({
+    alertInfo: alertInfo,
+    map: map
+})
+
+
+$(document).ready(function() {
     console.log('(process.env.NODE_ENV:' + (process.env.NODE_ENV))
-    // mediator.displayAtl08=false
+        // mediator.displayAtl08=false
 
+
+    initButtons(map)
     tilesMgr.initTiles(() => {
+        map.launch()
+       // tilesMgr.maybeLoadTiles()
 
-       
-        map.initMap({
-            maybeLoadTiles:maybeReloadTiles
-        });
-        tilesMgr.maybeLoadTiles(map.myMap, map.myRenderer, map.myMarkersGroup)
-
-        initButtons(map)
     })
+
+
+
 });

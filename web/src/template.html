@@ -5,6 +5,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
 
   <!--link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -30,14 +32,16 @@
     </div>
     <div id="btnBar" style="display:none">
       <div class="button" id="switchLayerBtn" title="switch map layer">
-        <div id="switchLayerBtnLabel">Change map</div>
+        <div id="switchLayerBtnLabel"> <i class="material-icons">map</i>Change map</div>
         <div id="switchLayerBtnPreview"></div>
       </div>
 
-      <div class="button" id="locateBtn" title="center the map around your position">Find
+      <div class="button" id="locateBtn" title="center the map around your position">
+        <i class="material-icons">face</i>
+        Find
         me</div>
         <div class="button" id="gotoCoordsBtn"
-        title="center the map around given coordinates">Goto...</div>
+        title="center the map around given coordinates"> <i class="material-icons">location_on</i>Goto...</div>
 
         <div class="button" id="polygonBtn"
         title="download the visible map bbox in poly json format">Bbox</div>
@@ -50,7 +54,7 @@
 
         
         <div class="button btn btn-primary" id="helpBtn"
-        title="Help">Help2
+        title="Help"> <i class="material-icons">help_outline</i>Help
         
     </div>
     </div>

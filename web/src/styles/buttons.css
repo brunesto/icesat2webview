@@ -8,6 +8,10 @@
     
 }
 
+#btnBar .button .material-icons{
+    vertical-align: text-bottom;
+    width:1.2em;
+}
 #btnBar .button {
     border: 2px solid gray;
     background-color: #fff;
@@ -71,8 +75,9 @@ XXXswitchLayerBtnLabel{
 }
 
 #switchLayerBtn{
-    background-position: 0px 20px;
-    background-repeat: no-repeat;
+    background-position: 0px 1.8em;
+    background-repeat: repeat-x;
+  background-size: auto;
 }
 #switchLayerBtnPreview{
     height:30px;

@@ -44,10 +44,7 @@ module.exports = {
         new CopyWebpackPlugin({
             patterns: [{
                 from: paths.public,
-                to: 'site/assets',
-                globOptions: {
-                    ignore: ['*.DS_Store'],
-                },
+                to: 'site/'
             }, ],
         }),
 

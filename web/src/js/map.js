@@ -42,14 +42,16 @@ export class Map {
     myRenderer = null
     myMarkersGroup = null
 
+
+
     updatePos(lat, lon, zoom, mark) {
         console.log("updatePos(" + lat + " , " + lon + "," + zoom + "," + mark + ")")
         if (mark) {
             if (this.marker != undefined)
                 this.myMap.removeLayer(marker)
-                this.marker = L.marker([lat, lon]);
-                this.marker.addTo(this.myMap)
-                this.marker.on("click", () => { this.myMap.removeLayer(marker) })
+            this.marker = L.marker([lat, lon]);
+            this.marker.addTo(this.myMap)
+            this.marker.on("click", () => { this.myMap.removeLayer(marker) })
         }
 
         this.myMap.setView([lat, lon], zoom)
@@ -62,10 +64,10 @@ export class Map {
 
     showHideMarkersGroup() {
         if (this.myMap.getZoom() < TILE_SHOW_FROM_ZL) {
-            mediator.alertInfo("Zoom in to display <br/> Icesat2 data")
+            this.config.alertInfo("Zoom in to display <br/> Icesat2 data")
             this.myMap.removeLayer(this.myMarkersGroup);
         } else {
-            mediator.alertInfo("")
+            this.config.alertInfo("")
             this.myMap.addLayer(this.myMarkersGroup);
         }
     }
@@ -74,9 +76,9 @@ export class Map {
 
 
 
-    initMap(config) {
-        this.config=config
-        const thisMap=this
+    constructor (config) {
+        this.config = config
+        const thisMap = this
         this.myMap = L.map('map', { fadeAnimation: false }).setView([50, 14], 13);
 
         this.myRenderer = L.canvas({ padding: 0.5 });
@@ -174,6 +176,11 @@ export class Map {
         // maybeLoadTiles()
         this.showHideMarkersGroup()
 
+    }
+
+    launch() {
+
+
 
 
         var prevLat = Cookies.get('lat')
@@ -182,7 +189,6 @@ export class Map {
             var prevZoom = Cookies.get('zoom')
             this.updatePos(prevLat, prevLon, prevZoom, false)
         }
-
     }
 
     persistCoords() {
