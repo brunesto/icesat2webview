@@ -7,6 +7,7 @@ import { Step3Texture } from './js/step3-texture.js';
 import { Sphere } from './js/sphere.js';
 import { Step2Normals } from './js/step2-normals.js';
 import { GeoHelper } from './js/geohelper.js';
+import { ProgramPINT } from './js/baseobj';
 
 global.logFlag = true
 
@@ -167,10 +168,14 @@ function drawScene(camera) {
 }
 initGl()
 
-step2s.push(new Sphere())
+const sphereObj=new Sphere("sphere1")
+const pp=new ProgramPINT(sphereObj.name,()=>sphereObj.modelMatrix)
+pp.initBuffers(sphereObj.getParams())
+
+step2s.push(pp)
     //step2s.push(new Step1Cube())
     //step2s.push(new Step2Normals())
-step2s.push(new Step3Texture())
+//step2s.push(new Step3Texture())
 
 
 function redraw() {

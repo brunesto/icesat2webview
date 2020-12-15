@@ -2,17 +2,71 @@ import { mat4, mat3 } from 'gl-matrix';
 import { initShaderProgram, loadTexture, gridTexture } from './webglutil.js';
 
 
+export class BaseProgram {
+    constructor(name) {
+        this.name = name
+    }
+    draw2(projectionMatrix, viewMatrix) {}
+}
+
+export class BaseObj {
+    inited = false
+    constructor(name) {
+        this.name = name
+        this.modelMatrix = mat4.create();
+    }
+    ensureInit() {
+        if (!this.inited) {
+            this.doInit()
+            this.inited = true
+        }
+    }
+
+
+    doInit() {
+            console.log(name + ": init() not implemented")
+        }
+        /**
+         * returns a Drawable
+         */
+    getDrawable(program, getProgramParams) {
+        console.log(name + ": getDrawable() program:" + program.name)
+
+        const thisBaseObj = this
+        const retVal = new Drawable()
+        retVal.name = thisBaseObj.name + "+" + program.name
+        retVal.init = function() {
+            console.log(name + ": init()")
+            thisBaseObj.ensureInit()
+            program.init(getProgramParams(thisBaseObj))
+        }
+        retVal.dispose = function() {
+            console.log(name + ": dispose()")
+            program.dispose()
+        }
+        retVal.draw2 = function(projectionMatrix, viewMatrix) {
+            console.log(name + ": draw2()")
+            program.draw2(projectionMatrix, viewMatrix, thisBaseObj.modelMatrix)
+        }
+        return retVal
+    }
+
+
+
+//draw2(projectionMatrix, viewMatrix) {}
+}
+
+
 
 /**
  * A base class with 
  * -positions & indices
- * -texture
  * -normals
+ * -texture
  */
-export class BaseObj {
+export class ProgramPINT extends BaseProgram {
 
-
-
+    
     // Vertex shader program
 
     vsSource = `
@@ -63,7 +117,11 @@ export class BaseObj {
  `;
     programInfo = null
     buffers = null
-    constructor() {
+    constructor(name,getModelMatrix){
+        super(name+"+"+"PINT")
+        this.getModelMatrix=getModelMatrix
+        
+
         var shaderProgram = initShaderProgram(this.vsSource, this.fsSource);
         this.programInfo = {
             program: shaderProgram,
@@ -88,7 +146,7 @@ export class BaseObj {
 
         // Here's where we call the routine that builds all the
         // objects we'll be drawing.
-        this.buffers = this.initBuffers(gl);
+
 
 
     }
@@ -99,74 +157,76 @@ export class BaseObj {
     // Initialize the buffers we'll need. 
     //
 
-    initBuffers(positions, indices, vertexNormals, textureCoordinates) {
+    initBuffers(params){ // positions, indices, vertexNormals, textureCoordinates) {
 
-        // -- 1 positions
+        // -- 1 params.positions
         // dump...
-        console.log("positions: " + positions.length)
+        console.log("params.positions: " + params.positions.length)
         if (logFlag)
-            for (var i = 0; i < positions.length; i += 3)
-                console.log("[" + i / 3 + ",...]=" + positions[i] + "," + positions[i + 1] + "," + positions[i + 2])
+            for (var i = 0; i < params.positions.length; i += 3)
+                console.log("[" + i / 3 + ",...]=" + params.positions[i] + "," + params.positions[i + 1] + "," + params.positions[i + 2])
 
-        // Create a buffer for the cube's vertex positions.
+        // Create a buffer for the cube's vertex params.positions.
         const positionBuffer = gl.createBuffer();
 
         // Select the positionBuffer as the one to apply buffer
         // operations to from here out.
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-        // Now pass the list of positions into WebGL to build the
+        // Now pass the list of params.positions into WebGL to build the
         // shape. We do this by creating a Float32Array from the
         // JavaScript array, then use it to fill the current buffer.
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(params.positions), gl.STATIC_DRAW);
 
 
-        // -- 2 indices  
-        console.log("indices: " + indices.length)
+        // -- 2 params.indices  
+        console.log("params.indices: " + params.indices.length)
         if (logFlag)
-            for (var i = 0; i < indices.length; i += 3)
-                console.log("[" + i + ",...]=" + indices[i] + "," + indices[i + 1] + "," + indices[i + 2])
+            for (var i = 0; i < params.indices.length; i += 3)
+                console.log("[" + i + ",...]=" + params.indices[i] + "," + params.indices[i + 1] + "," + params.indices[i + 2])
 
         const indexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(params.indices), gl.STATIC_DRAW);
 
         //-- 3 normals
         const normalBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(params.vertexNormals), gl.STATIC_DRAW);
 
         // 4 texture coords
-        console.log("textureCoordinates: " + textureCoordinates.length)
+        console.log("params.textureCoordinates: " + params.textureCoordinates.length)
         if (logFlag)
-            for (var i = 0; i < textureCoordinates.length; i += 2)
-                console.log("textureCoordinates: [" + i + ",...]=" + textureCoordinates[i] + "," + textureCoordinates[i + 1])
+            for (var i = 0; i < params.textureCoordinates.length; i += 2)
+                console.log("params.textureCoordinates: [" + i + ",...]=" + params.textureCoordinates[i] + "," + params.textureCoordinates[i + 1])
 
         const textureCoordBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(params.textureCoordinates), gl.STATIC_DRAW);
 
-        return {
-            positionSize: positions.length,
+        this.buffers = {
+            positionSize: params.positions.length,
             position: positionBuffer,
             // color: colorBuffer,
             // colorSize: colors.length,
             indices: indexBuffer,
-            indicesSize: indices.length,
+            indicesSize: params.indices.length,
             normals: normalBuffer,
             textureCoord: textureCoordBuffer,
-            textures: textureCoordinates.length,
+            textures: params.textureCoordinates.length,
         };
+        this.texture=params.texture; // TODO: need to understand more
     }
 
 
 
 
-    draw2(projectionMatrix, viewMatrix, modelMatrix) {
+    draw2(projectionMatrix, viewMatrix) {
         // Tell WebGL to use our program when drawing
-
+        console.log(name + ": draw2()")
         gl.useProgram(this.programInfo.program);
 
+        const modelMatrix=this.getModelMatrix()
         const modelViewMatrix = mat4.create();
         mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
 
@@ -284,5 +344,10 @@ export class BaseObj {
         }
 
 
+    }
+
+    dispose() {
+        console.log(name + ": dispose()")
+            // TODO!!!
     }
 }

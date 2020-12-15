@@ -4,6 +4,9 @@ import './geohelper.js'
 import { BaseObj } from './baseobj.js'
 export class Sphere extends BaseObj {
 
+    constructor(name){
+        super(name)
+    }
     // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
     tile2long(x, z) {
         return (x / Math.pow(2, z) * 360 - 180);
@@ -77,7 +80,7 @@ export class Sphere extends BaseObj {
     //
     // initBuffers
     //
-    initBuffers() {
+    getParams() {
 
 
         // zoom level
@@ -87,7 +90,7 @@ export class Sphere extends BaseObj {
         const n = Math.pow(2, z)
         console.log(" z:" + z + " n:" + n)
 
-        this.texture = gridTexture(n, n); //
+        const texture = gridTexture(n, n); //
         //    loadTexture('/public/0.jpeg');
 
         // longitude per tile
@@ -159,7 +162,13 @@ export class Sphere extends BaseObj {
         }
 
         // let the super class do the WebGl fun
-        return super.initBuffers(positions, indices, vertexNormals, textureCoordinates)
+        return {
+            positions:positions,
+            indices:indices,
+            vertexNormals:vertexNormals, 
+            textureCoordinates:textureCoordinates,
+            texture:texture}
+
     }
 
 
