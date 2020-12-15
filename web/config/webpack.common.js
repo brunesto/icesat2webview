@@ -103,4 +103,8 @@ module.exports = {
             { test: /\.json$/, loader: 'json' },
         ],
     },
+    externals: {
+        'egm96-universal': 'egm96'
+      },
+    
 }

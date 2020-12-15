@@ -1,8 +1,8 @@
 {
   "name": "icesat2webview",
-  "scripts": {
-    "start": "cross-env NODE_ENV=development webpack serve --config config/webpack.dev.js",
-    "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.js ",
+  "scripts": {    
+    "start": "cp node_modules/rfc4648/lib/index.min.js public/rfc4648.js && cross-env NODE_ENV=development webpack serve --config config/webpack.dev.js",
+    "build": "cp node_modules/rfc4648/lib/index.min.js public/rfc4648.js && cross-env NODE_ENV=production webpack --config config/webpack.prod.js ",
     "serve-dist": "ln -s ../tiles dist/tiles && http-server -p8443 dist -S -C cert.pem"
   },
   "devDependencies": {
@@ -25,7 +25,8 @@
     "webpack-bundle-analyzer": "^3.9.0",
     "webpack-cli": "^4.1.0",
     "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^5.2.0"
+    "webpack-merge": "^5.2.0",
+    "rfc4648": "^1.4.0"
   },
   "dependencies": {
     "egm96-universal": "^1.0.2",
@@ -35,6 +36,9 @@
     "leaflet-minimap": "^3.6.1",
     "leaflet.pancontrol": "^1.0.0",
     "pako": "^1.0.11",
+    
+    
+    "save": "^2.4.0",
     "url-search-params-polyfill": "^8.1.0",
     "webpack-config-dump-plugin": "^3.0.1"
   }

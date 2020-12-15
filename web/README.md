@@ -16,3 +16,7 @@ DONE:
 TODO:
 * database tiles boundary (i.e. just min and max tile)
 
+  console.log("egm96-universal ready ",
+                     "egm96=", egm96,
+                     " ellipsoidToEgm96=", ellipsoidToEgm96,
+                     " egm96.ellipsoidToEgm96=", egm96.ellipsoidToEgm96)

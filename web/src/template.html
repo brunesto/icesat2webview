@@ -5,23 +5,37 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-  <!--link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-        crossorigin=""></script>
 
-        <link rel="stylesheet"
-        href="https://kartena.github.io/Leaflet.Pancontrol/lib/Leaflet.Pancontrol/src/L.Control.Pan.css">
-    </script>
-    <script src="https://kartena.github.io/Leaflet.Pancontrol/lib/Leaflet.Pancontrol/src/L.Control.Pan.js"></script-->
+  <!-- hack to load egm96 from cdn -->
+  <!-- 1 load dependency -->
+  <script src="site/rfc4648.js"></script>
+  <script>
+    // 2 set up fake module environment
+    exports = {}
+    require = function (x) {
+      console.log("require " + x)
+      if (x == 'rfc4648') return rfc4648
+      return null
+    }
+  </script>
+  <!-- 3 load egm96 from cdn-->>
+  <script src="https://unpkg.com/egm96-universal@1.0.2/dist/egm96-universal.cjs.js"></script>
+  <!-- retrieve egm96 object from fake module-->
+  <script>
+    egm96 = {
+      egm96ToEllipsoid: exports.egm96ToEllipsoid,
+      ellipsoidToEgm96: exports.ellipsoidToEgm96,
+      meanSeaLevel: exports.meanSeaLevel,
+    }
+    console.log("egm96 loaded:", egm96)
+
+  </script>
+  <!-- end of egm96 cdn hack-->
 
   <title><%= htmlWebpackPlugin.options.title %></title>
-  
+
 </head>
 
 <body>
@@ -38,23 +52,21 @@
 
       <div class="button" id="locateBtn" title="Center the map around your position">
         <i class="material-icons">face</i>Where am I?</div>
-        <div class="button" id="gotoCoordsBtn"
-        title="Center the map around given coordinates"> <i class="material-icons">location_on</i>Goto...</div>
+      <div class="button" id="gotoCoordsBtn" title="Center the map around given coordinates"> <i
+          class="material-icons">location_on</i>Goto...</div>
 
-        <div class="button" id="polygonBtn"
-        title="Show the visible area coordinates">Bbox</div>
+      <div class="button" id="polygonBtn" title="Show the visible area coordinates">Bbox</div>
 
-        <div class="button toggle-button" class="btn btn-primary" id="atl08Btn"
-        title="Toggle ATL08"><div><i class="material-icons">nature</i>ATL08
+      <div class="button toggle-button" class="btn btn-primary" id="atl08Btn" title="Toggle ATL08">
+        <div><i class="material-icons">nature</i>ATL08
           <div class="toggle-button-marker"></div>
         </div>
       </div>
 
-        
-        <div class="button btn btn-primary" id="helpBtn"
-        title="Help"> <i class="material-icons">help_outline</i>Help
-        
-    </div>
+
+      <div class="button btn btn-primary" id="helpBtn" title="Help"> <i class="material-icons">help_outline</i>Help
+
+      </div>
     </div>
 
 

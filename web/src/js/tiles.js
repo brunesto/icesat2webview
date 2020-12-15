@@ -1,6 +1,9 @@
  import pako from 'pako'
  //import * as egm96 from 'egm96-universal'
  import { TextDecoder } from "./textdecoder.js"
+ 
+ 
+ //const egm96=require('https://unpkg.com/egm96-universal')
 
 
  // TODO use CircleMarker, it will be faster
