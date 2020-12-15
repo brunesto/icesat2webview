@@ -72,8 +72,22 @@ module.exports = {
   // Determine how modules within the project are treated
   module: {
     rules: [
-      // JavaScript: Use Babel to transpile JavaScript files
-      {test: /\.js$/, exclude: /node_modules/, use: ['babel-loader']},
+     // JavaScript: Use Babel to transpile JavaScript files
+     {
+      test: /\.js$/,
+      exclude: /node_modules/,
+      loader: 'babel-loader',
+      options: {
+          presets: [
+              '@babel/preset-env',
+              {
+                  'plugins': [
+                      '@babel/plugin-proposal-class-properties'
+                  ]
+              }
+          ]
+      },
+  },
 
       // Styles: Inject CSS into the head with source maps
       {

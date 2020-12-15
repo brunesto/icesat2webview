@@ -1,87 +1,11 @@
 import { mat4, mat3 } from 'gl-matrix';
 import { initShaderProgram, loadTexture, gridTexture } from './webglutil.js';
 import './geohelper.js'
-export class Sphere {
-    // Vertex shader program
-
-    vsSource = `
- attribute vec4 aVertexPosition;
- //attribute vec4 aVertexColor;
- attribute vec3 aVertexNormal;
- attribute vec2 aTextureCoord;
+import {BaseObj} from './baseobj.js'
+export class Sphere extends BaseObj{
 
 
- uniform mat4 uNormalMatrix;
- uniform mat4 uModelMatrix;
- uniform mat4 uViewMatrix;
- uniform mat4 uProjectionMatrix;
-
- varying highp vec3 vLighting;
- varying highp vec2 vTextureCoord;
- //varying lowp vec4 vColor;
- void main(void) {
-    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
-  // vColor = aVertexColor;
-   vTextureCoord = aTextureCoord;
-   // Apply lighting effect
-
-   highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
-   highp vec3 directionalLightColor = vec3(1, 1, 1);
-   highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
-
-   highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
-
-   highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
-   vLighting = ambientLight + (directionalLightColor * directional);
-
- }
-`;
-
-    // Fragment shader program
-
-
-    fsSource = `
-   varying highp vec2 vTextureCoord;
-   varying highp vec3 vLighting;
-   uniform sampler2D uSampler;
-
-   void main(void) {
-       highp vec4 texelColor = texture2D(uSampler, vTextureCoord);
-       gl_FragColor = vec4(texelColor.rgb*vLighting,1);
-   }
- `;
-    programInfo = null
-    buffers = null
-    constructor() {
-        var shaderProgram = initShaderProgram(this.vsSource, this.fsSource);
-        this.programInfo = {
-            program: shaderProgram,
-
-            attribLocations: {
-                vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-                // vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
-                vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
-                textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
-
-            },
-            uniformLocations: {
-                projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-                viewMatrix: gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
-                modelMatrix: gl.getUniformLocation(shaderProgram, 'uModelMatrix'),
-                normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
-                uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
-            }
-        }
-
-
-
-        // Here's where we call the routine that builds all the
-        // objects we'll be drawing.
-        this.buffers = this.initBuffers(gl);
-
-
-    }
-
+    
     
 
     // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
@@ -154,6 +78,22 @@ export class Sphere {
     }
 
 
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //
     // initBuffers
     //
@@ -211,37 +151,37 @@ export class Sphere {
 
         console.log("positions: " + positions.length)
 
-        if (logFlag)
-            for (var i = 0; i < positions.length; i += 3)
-                console.log("[" + i / 3 + ",...]=" + positions[i] + "," + positions[i + 1] + "," + positions[i + 2])
+        // if (logFlag)
+        //     for (var i = 0; i < positions.length; i += 3)
+        //         console.log("[" + i / 3 + ",...]=" + positions[i] + "," + positions[i + 1] + "," + positions[i + 2])
 
-        // Create a buffer for the cube's vertex positions.
+        // // Create a buffer for the cube's vertex positions.
 
-        const positionBuffer = gl.createBuffer();
+        // const positionBuffer = gl.createBuffer();
 
-        // Select the positionBuffer as the one to apply buffer
-        // operations to from here out.
+        // // Select the positionBuffer as the one to apply buffer
+        // // operations to from here out.
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        // gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-        // Now create an array of positions for the cube.
+        // // Now create an array of positions for the cube.
 
 
 
-        // Now pass the list of positions into WebGL to build the
-        // shape. We do this by creating a Float32Array from the
-        // JavaScript array, then use it to fill the current buffer.
+        // // Now pass the list of positions into WebGL to build the
+        // // shape. We do this by creating a Float32Array from the
+        // // JavaScript array, then use it to fill the current buffer.
 
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-        // Build the element array buffer; this specifies the indices
-        // into the vertex arrays for each face's vertices.
+        // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+        // // Build the element array buffer; this specifies the indices
+        // // into the vertex arrays for each face's vertices.
 
-        const indexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        // const indexBuffer = gl.createBuffer();
+        // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 
-        // This array defines each face as two triangles, using the
-        // indices into the vertex array to specify each triangle's
-        // position.
+        // // This array defines each face as two triangles, using the
+        // // indices into the vertex array to specify each triangle's
+        // // position.
 
 
 
@@ -290,25 +230,25 @@ export class Sphere {
 
         console.log("indices: " + indices.length)
 
-        if (logFlag)
-            for (var i = 0; i < indices.length; i += 3)
-                console.log("[" + i + ",...]=" + indices[i] + "," + indices[i + 1] + "," + indices[i + 2])
+        // if (logFlag)
+        //     for (var i = 0; i < indices.length; i += 3)
+        //         console.log("[" + i + ",...]=" + indices[i] + "," + indices[i + 1] + "," + indices[i + 2])
 
-        // Now send the element array to GL
+        // // Now send the element array to GL
 
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
-            new Uint16Array(indices), gl.STATIC_DRAW);
+        // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
+        //     new Uint16Array(indices), gl.STATIC_DRAW);
 
 
 
 
         //-- normals  ---------------------------------------
-        const normalBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+        // const normalBuffer = gl.createBuffer();
+        // gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
 
-        const vertexNormals = GH.computeVertexNormals(positions, indices)
+        // const vertexNormals = GH.computeVertexNormals(positions, indices)
 
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
+        // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
 
 
 
@@ -317,8 +257,8 @@ export class Sphere {
 
 
 
-        const textureCoordBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+        // const textureCoordBuffer = gl.createBuffer();
+        // gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
 
         const textureCoordinates = []
 
@@ -329,12 +269,12 @@ export class Sphere {
                 textureCoordinates.push((y - tileMin[1]) / (ySize))
             }
         }
-        if (logFlag)
-            for (var i = 0; i < textureCoordinates.length; i += 2)
-                console.log("textureCoordinates: [" + i + ",...]=" + textureCoordinates[i] + "," + textureCoordinates[i + 1])
+        // if (logFlag)
+        //     for (var i = 0; i < textureCoordinates.length; i += 2)
+        //         console.log("textureCoordinates: [" + i + ",...]=" + textureCoordinates[i] + "," + textureCoordinates[i + 1])
 
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
-            gl.STATIC_DRAW);
+        // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
+        //     gl.STATIC_DRAW);
 
 
 
@@ -360,18 +300,23 @@ export class Sphere {
         // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
 
-        return {
-            positionSize: positions.length,
-            position: positionBuffer,
-            // color: colorBuffer,
-            // colorSize: colors.length,
-            indices: indexBuffer,
-            indicesSize: indices.length,
-            normals: normalBuffer,
-            textureCoord: textureCoordBuffer,
-            textures: textureCoordinates.length,
-        };
+        // return {
+        //     positionSize: positions.length,
+        //     position: positionBuffer,
+        //     // color: colorBuffer,
+        //     // colorSize: colors.length,
+        //     indices: indexBuffer,
+        //     indicesSize: indices.length,
+        //     normals: normalBuffer,
+        //     textureCoord: textureCoordBuffer,
+        //     textures: textureCoordinates.length,
+        // };
+
+        return super.initBuffers(positions,indices,textureCoordinates)
     }
+
+   
+
 
     draw2(projectionMatrix, viewMatrix) {
         // Tell WebGL to use our program when drawing
