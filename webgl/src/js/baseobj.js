@@ -332,21 +332,21 @@ export class BaseObj {
    
 
 
-    draw2(projectionMatrix, viewMatrix) {
+    draw2(projectionMatrix, viewMatrix,modelMatrix) {
         // Tell WebGL to use our program when drawing
 
         gl.useProgram(this.programInfo.program);
 
         // Set the drawing position to the "identity" point, which is
         // the center of the scene.
-        const modelMatrix = mat4.create();
+        // const modelMatrix = mat4.create();
 
         // Now move the drawing position a bit to where we want to
         // start drawing the square.
 
-        mat4.translate(modelMatrix, // destination matrix
-            modelMatrix, // matrix to translate
-            [0.0, 0.0, 0.0]); // amount to translate : earth is the center of (opengl) universe
+        // mat4.translate(modelMatrix, // destination matrix
+        //     modelMatrix, // matrix to translate
+        //     [0.0, 0.0, 0.0]); // amount to translate : earth is the center of (opengl) universe
 
 
         const modelViewMatrix = mat4.create();

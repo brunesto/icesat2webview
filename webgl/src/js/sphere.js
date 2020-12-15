@@ -319,9 +319,9 @@ export class Sphere extends BaseObj{
 
 
     draw2(projectionMatrix, viewMatrix) {
-        // Tell WebGL to use our program when drawing
+        // // Tell WebGL to use our program when drawing
 
-        gl.useProgram(this.programInfo.program);
+        // gl.useProgram(this.programInfo.program);
 
         // Set the drawing position to the "identity" point, which is
         // the center of the scene.
@@ -334,143 +334,144 @@ export class Sphere extends BaseObj{
             modelMatrix, // matrix to translate
             [0.0, 0.0, 0.0]); // amount to translate : earth is the center of (opengl) universe
 
+        super.draw2(projectionMatrix, viewMatrix,modelMatrix)    
 
-        const modelViewMatrix = mat4.create();
-        mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
+        // const modelViewMatrix = mat4.create();
+        // mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
 
 
 
-        // Tell WebGL how to pull out the positions from the position
-        // buffer into the vertexPosition attribute
-        {
-            const numComponents = 3;
-            const type = gl.FLOAT;
-            const normalize = false;
-            const stride = 0;
-            const offset = 0;
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position);
-            gl.vertexAttribPointer(
-                this.programInfo.attribLocations.vertexPosition,
-                numComponents,
-                type,
-                normalize,
-                stride,
-                offset);
-            gl.enableVertexAttribArray(
-                this.programInfo.attribLocations.vertexPosition);
-        }
-
-        // // Tell WebGL how to pull out the colors from the color buffer
-        // // into the vertexColor attribute.
+        // // Tell WebGL how to pull out the positions from the position
+        // // buffer into the vertexPosition attribute
         // {
-        //     const numComponents = 4;
+        //     const numComponents = 3;
         //     const type = gl.FLOAT;
         //     const normalize = false;
         //     const stride = 0;
         //     const offset = 0;
-        //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.color);
+        //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position);
         //     gl.vertexAttribPointer(
-        //         this.programInfo.attribLocations.vertexColor,
+        //         this.programInfo.attribLocations.vertexPosition,
         //         numComponents,
         //         type,
         //         normalize,
         //         stride,
         //         offset);
         //     gl.enableVertexAttribArray(
-        //         this.programInfo.attribLocations.vertexColor);
+        //         this.programInfo.attribLocations.vertexPosition);
         // }
 
-        // Tell WebGL how to pull out the normals from
-        // the normal buffer into the vertexNormal attribute.
-        {
-            const numComponents = 3;
-            const type = gl.FLOAT;
-            const normalize = false;
-            const stride = 0;
-            const offset = 0;
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normals);
-            gl.vertexAttribPointer(
-                this.programInfo.attribLocations.vertexNormal,
-                numComponents,
-                type,
-                normalize,
-                stride,
-                offset);
-            gl.enableVertexAttribArray(
-                this.programInfo.attribLocations.vertexNormal);
-        }
+        // // // Tell WebGL how to pull out the colors from the color buffer
+        // // // into the vertexColor attribute.
+        // // {
+        // //     const numComponents = 4;
+        // //     const type = gl.FLOAT;
+        // //     const normalize = false;
+        // //     const stride = 0;
+        // //     const offset = 0;
+        // //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.color);
+        // //     gl.vertexAttribPointer(
+        // //         this.programInfo.attribLocations.vertexColor,
+        // //         numComponents,
+        // //         type,
+        // //         normalize,
+        // //         stride,
+        // //         offset);
+        // //     gl.enableVertexAttribArray(
+        // //         this.programInfo.attribLocations.vertexColor);
+        // // }
 
-        // Tell WebGL which indices to use to index the vertices
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indices);
+        // // Tell WebGL how to pull out the normals from
+        // // the normal buffer into the vertexNormal attribute.
+        // {
+        //     const numComponents = 3;
+        //     const type = gl.FLOAT;
+        //     const normalize = false;
+        //     const stride = 0;
+        //     const offset = 0;
+        //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normals);
+        //     gl.vertexAttribPointer(
+        //         this.programInfo.attribLocations.vertexNormal,
+        //         numComponents,
+        //         type,
+        //         normalize,
+        //         stride,
+        //         offset);
+        //     gl.enableVertexAttribArray(
+        //         this.programInfo.attribLocations.vertexNormal);
+        // }
 
-        // Tell WebGL to use our program when drawing
+        // // Tell WebGL which indices to use to index the vertices
+        // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indices);
 
-        gl.useProgram(this.programInfo.program);
+        // // Tell WebGL to use our program when drawing
 
-        // Set the shader uniforms
+        // gl.useProgram(this.programInfo.program);
 
-
-
-        gl.uniformMatrix4fv(
-            this.programInfo.uniformLocations.projectionMatrix,
-            false,
-            projectionMatrix);
-
-        gl.uniformMatrix4fv(
-            this.programInfo.uniformLocations.viewMatrix,
-            false,
-            viewMatrix);
-
-        gl.uniformMatrix4fv(
-            this.programInfo.uniformLocations.modelMatrix,
-            false,
-            modelMatrix);
-
-
-        // Finally, we need to update the code that builds the uniform matrices to generate and deliver to the shader a normal matrix, 
-        // which is used to transform the normals when dealing with the current orientation of the cube in relation to the light source
-        const normalMatrix = mat4.create();
-        mat4.invert(normalMatrix, modelViewMatrix);
-        mat4.transpose(normalMatrix, normalMatrix);
+        // // Set the shader uniforms
 
 
-        gl.uniformMatrix4fv(
-            this.programInfo.uniformLocations.normalMatrix,
-            false,
-            normalMatrix);
+
+        // gl.uniformMatrix4fv(
+        //     this.programInfo.uniformLocations.projectionMatrix,
+        //     false,
+        //     projectionMatrix);
+
+        // gl.uniformMatrix4fv(
+        //     this.programInfo.uniformLocations.viewMatrix,
+        //     false,
+        //     viewMatrix);
+
+        // gl.uniformMatrix4fv(
+        //     this.programInfo.uniformLocations.modelMatrix,
+        //     false,
+        //     modelMatrix);
 
 
-        // tell webgl how to pull out the texture coordinates from buffer
-        {
-            const num = 2; // every coordinate composed of 2 values
-            const type = gl.FLOAT; // the data in the buffer is 32 bit float
-            const normalize = false; // don't normalize
-            const stride = 0; // how many bytes to get from one set to the next
-            const offset = 0; // how many bytes inside the buffer to start from
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.textureCoord);
-            gl.vertexAttribPointer(this.programInfo.attribLocations.textureCoord, num, type, normalize, stride, offset);
-            gl.enableVertexAttribArray(this.programInfo.attribLocations.textureCoord);
-        }
-
-        // Tell WebGL we want to affect texture unit 0
-        {
-            gl.activeTexture(gl.TEXTURE0);
-
-            // Bind the texture to texture unit 0
-            gl.bindTexture(gl.TEXTURE_2D, this.texture);
-
-            // Tell the shader we bound the texture to texture unit 0
-            gl.uniform1i(this.programInfo.uniformLocations.uSampler, 0);
-        }
+        // // Finally, we need to update the code that builds the uniform matrices to generate and deliver to the shader a normal matrix, 
+        // // which is used to transform the normals when dealing with the current orientation of the cube in relation to the light source
+        // const normalMatrix = mat4.create();
+        // mat4.invert(normalMatrix, modelViewMatrix);
+        // mat4.transpose(normalMatrix, normalMatrix);
 
 
-        {
-            const trianglesCount = this.buffers.indicesSize;
-            console.debug("drawElements " + trianglesCount)
-            const type = gl.UNSIGNED_SHORT;
-            const offset = 0;
-            gl.drawElements(gl.TRIANGLES, trianglesCount, type, offset);
-        }
+        // gl.uniformMatrix4fv(
+        //     this.programInfo.uniformLocations.normalMatrix,
+        //     false,
+        //     normalMatrix);
+
+
+        // // tell webgl how to pull out the texture coordinates from buffer
+        // {
+        //     const num = 2; // every coordinate composed of 2 values
+        //     const type = gl.FLOAT; // the data in the buffer is 32 bit float
+        //     const normalize = false; // don't normalize
+        //     const stride = 0; // how many bytes to get from one set to the next
+        //     const offset = 0; // how many bytes inside the buffer to start from
+        //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.textureCoord);
+        //     gl.vertexAttribPointer(this.programInfo.attribLocations.textureCoord, num, type, normalize, stride, offset);
+        //     gl.enableVertexAttribArray(this.programInfo.attribLocations.textureCoord);
+        // }
+
+        // // Tell WebGL we want to affect texture unit 0
+        // {
+        //     gl.activeTexture(gl.TEXTURE0);
+
+        //     // Bind the texture to texture unit 0
+        //     gl.bindTexture(gl.TEXTURE_2D, this.texture);
+
+        //     // Tell the shader we bound the texture to texture unit 0
+        //     gl.uniform1i(this.programInfo.uniformLocations.uSampler, 0);
+        // }
+
+
+        // {
+        //     const trianglesCount = this.buffers.indicesSize;
+        //     console.debug("drawElements " + trianglesCount)
+        //     const type = gl.UNSIGNED_SHORT;
+        //     const offset = 0;
+        //     gl.drawElements(gl.TRIANGLES, trianglesCount, type, offset);
+        // }
 
 
     }
