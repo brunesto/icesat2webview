@@ -5,6 +5,7 @@ import { Dragger } from './js/dragger.js';
 import { Step1Cube } from './js/step1-cube.js';
 import { Step3Texture } from './js/step3-texture.js';
 import { Sphere } from './js/sphere.js';
+import { Cube } from './js/cube.js';
 import { Step2Normals } from './js/step2-normals.js';
 import { GeoHelper } from './js/geohelper.js';
 import { ProgramPINT } from './js/baseobj';
@@ -171,6 +172,13 @@ initGl()
 const sphereObj=new Sphere("sphere1")
 const pp=new ProgramPINT(sphereObj.name,()=>sphereObj.modelMatrix)
 pp.initBuffers(sphereObj.getParams())
+
+// const cubeObj=new Sphere("cube1")
+// const pp=new ProgramPINT(cubeObj.name,()=>cubeObj.modelMatrix)
+// mat4.fromScaling(cubeObj.modelMatrix,[6000,6000,6000])
+// pp.initBuffers(cubeObj.getParams())
+
+
 
 step2s.push(pp)
     //step2s.push(new Step1Cube())
