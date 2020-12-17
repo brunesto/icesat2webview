@@ -245,8 +245,8 @@
          // set popup info and add to map
          // polyline.bindPopup(info);
 
-         var f = () => {
-
+         var f = (e) => {
+            L.DomEvent.stopPropagation(e);
             console.log("egm96:", window["egm96"])
 
              var popup = L.popup()

@@ -75,7 +75,14 @@ export class Map {
             this.myMap.removeLayer(this.myMarkersGroup);
 
     }
+    popupString(lat, lon) {
 
+
+        var info = "There is no ATL08 marker at this location<table><tbody>" +
+            "<tr><th>Lat,Lon:</th><td>" + lat.toFixed(6) + "," + lon.toFixed(6) + "</td></tr>" +
+            "</tbody></table>"
+        return info;
+    }
 
 
     constructor(config) {
@@ -158,7 +165,7 @@ export class Map {
         //var switchBtn = L.control.layers({ "mapbox": mapBoxTileLayer, "satellite": esriTileLayer, "osm": osmTileLayer })
         //switchBtn.addTo(this.myMap);
 
-        this.myMarkersGroup = new L.FeatureGroup();
+        this.myMarkersGroup = new L.LayerGroup();
         this.myMap.addLayer(this.myMarkersGroup);
 
         this.myMap.on('zoomend', function() {
@@ -175,8 +182,18 @@ export class Map {
         var osm2 = new L.TileLayer(osmUrl, { minZoom: 0, maxZoom: 13, attribution: osmAttribution });
         var miniMap = new L.Control.MiniMap(osm2).addTo(this.myMap);
 
-        // maybeLoadTiles()
-        // this.showHideMarkersGroup()
+
+
+
+        // this.myMap.on('click', function(e) {
+        //     var latLng = e.latlng;
+        //     console.log('map click',e)
+
+        //     var popup = L.popup()
+        //         .setLatLng(latLng)
+        //         .setContent(thisMap.popupString(latLng.lat,latLng.lng))
+        //         .openOn(thisMap.myMap);
+        // });
 
     }
 
