@@ -1,6 +1,6 @@
 import '../styles/buttons.css'
-
-
+import {loadExtModule} from './extmodule.js'
+  
 
 
 export class ButtonsMgr {
@@ -23,6 +23,7 @@ export class ButtonsMgr {
 
         $("#helpBtn").click(function() { window.open('site/help.html', 'is2help'); });
         $("#atl08Btn").click(function() { thisButtonsMgr.setDisplayAtl08(!thisButtonsMgr.config.mediator.displayAtl08); });
+        $("#egm96Btn").click(function() { thisButtonsMgr.loadEgm96() });
 
 
 
@@ -125,4 +126,14 @@ export class ButtonsMgr {
         }
 
     }
+
+    loadEgm96() {
+        $("#egm96Btn>span").html('EGM96<span class="waiting" />')
+        loadExtModule("egm96", "https://unpkg.com/egm96-universal@1.0.2/dist/egm96-universal.cjs.js",(b)=>{
+            $("#egm96Btn>span").html('EGM96<i class="material-icons f-right">done</i>')
+            $("#egm96Btn").setClass(true,'buttonDisabled')
+        })
+    }
+    
+ 
 }

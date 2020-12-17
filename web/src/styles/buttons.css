@@ -7,8 +7,8 @@
     margin-top: 10px;
     
 }
-
-#btnBar .button .material-icons{
+/* button */
+#btnBar .button .material-icons {
     vertical-align: text-bottom;
     width:1.2em;
 }
@@ -29,13 +29,21 @@
 
 
 #btnBar .button:hover{
-     background-color: #ddd;  
+    background-color: #ddd;  
     cursor: pointer;     
 }
+
+#btnBar .buttonDisabled:hover{
+    background-color: #fff;
+    cursor: default;     
+}
+
+/* toggle button */
 
 .toggle-button-marker{
     float:right;
     margin-top:0.3em;
+    margin-right:0.8em;
     width: 0.5em;
     height: 0.5em;
 
@@ -73,6 +81,8 @@ XXswitchLayerBtn:hover #switchLayerBtnLabel ,
 XXXswitchLayerBtnLabel{
     background-color: white;
 }
+
+/* switch layer button with preview */
 
 #switchLayerBtn{
     background-position: 0px 1.8em;

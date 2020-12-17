@@ -93,17 +93,17 @@
 
      }
 
-     records2string(ds, useEgm96) {
+     records2string(ds) {
          var info = "<table><tbody>"
              //info += '<table class="table"><th><td>src</td><td>elevation</td><td></td><td>canopy</td><td>channel</td><td>UTC</td></th><tbody>'
          for (var i in ds) {
-             info += "\n" +this. record2string(ds[i], useEgm96)
+             info += "\n" +this. record2string(ds[i])
          }
          info += "</tbody></table>"
          return info;
      }
 
-     record2string(d, ellipsoidToEgm96) {
+     record2string(d) {
 
          var src = d[0]
          var channel = d[1]
@@ -124,9 +124,9 @@
 
 
 
-         var egmInfo = "<span class=\"waiting\"></span>"
-         if (ellipsoidToEgm96)
-             egmInfo = ellipsoidToEgm96(lat, lon, amsl).round(1)
+         var egmInfo = 'egm96 not downloaded';//<span class="waiting"></span> downloading... (egm96)'
+         if (window.egm96)
+             egmInfo = window.egm96.ellipsoidToEgm96(lat, lon, amsl).round(1)+" m (egm96)" 
 
 
          var direction = d[8]
@@ -142,7 +142,7 @@
              '<tr><th>Track id:</th><td>' + rgt + "</td></tr>" +
              "<tr><th>Lat,Lon:</th><td>" + lat + "," + lon + "</td></tr>" +
              '<tr><th>Elevation:</th><td>' + amsl + " m (wgs84)" +
-             '</br>' + egmInfo + " m (egm96)" +
+             '</br>' + egmInfo +
              "</td></tr>" +
              "<tr><th>Time:</th><td>" + date.toISOString() + "</td></tr>" +
 
@@ -247,18 +247,18 @@
 
          var f = () => {
 
-
+            console.log("egm96:", window["egm96"])
 
              var popup = L.popup()
                  .setLatLng(latLng)
-                 .setContent(this.records2string(ds, false))
+                 .setContent(this.records2string(ds))
                  .openOn(this.config.map.myMap);
 
 
-             import ('egm96-universal').then((egm96) => {
-                 console.log("egm96-universal ready",egm96.ellipsoidToEgm96)
-                 popup.setContent(thisMap.records2string(ds, egm96.ellipsoidToEgm96))
-             }).catch(error => 'An error occurred while loading the component')
+            //  import ('egm96-universal').then((egm96) => {
+            //      console.log("egm96-universal ready",egm96.ellipsoidToEgm96)
+            //      popup.setContent(thisMap.records2string(ds, egm96.ellipsoidToEgm96))
+            //  }).catch(error => 'An error occurred while loading the component')
 
 
              // if (popup.isOpen()){

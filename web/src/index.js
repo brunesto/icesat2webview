@@ -7,7 +7,9 @@ import { ButtonsMgr } from './js/buttons.js';
 import { TilesMgr } from './js/tiles.js';
 
 import urlParse from 'url-parse';
-
+import * as rfc4648 from 'rfc4648';
+// make it global, so it can be picked up by our module environment stub
+window.rfc4648 = rfc4648
 
 
 global.DEV = window.location.toString().indexOf("DEV=true") != -1
@@ -115,8 +117,5 @@ $(document).ready(function() {
         // mediator.displayAtl08=false
 
     mediator.launch()
-
-
-
 
 });

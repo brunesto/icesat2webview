@@ -10,26 +10,15 @@
 
   <!-- hack to load egm96 from cdn -->
   <!-- 1 load dependency -->
-  <script src="site/rfc4648.js"></script>
+  <xxxscript src="site/rfc4648.js"></xxxscript>
   <script>
-    // 2 set up fake module environment
-    exports = {}
-    require = function (x) {
-      console.log("require " + x)
-      if (x == 'rfc4648') return rfc4648
-      return null
-    }
+   
   </script>
   <!-- 3 load egm96 from cdn-->>
-  <script src="https://unpkg.com/egm96-universal@1.0.2/dist/egm96-universal.cjs.js"></script>
+  <xxxscript defer async src="https://unpkg.com/egm96-universal@1.0.2/dist/egm96-universal.cjs.js"></xxscript>
   <!-- retrieve egm96 object from fake module-->
   <script>
-    egm96 = {
-      egm96ToEllipsoid: exports.egm96ToEllipsoid,
-      ellipsoidToEgm96: exports.ellipsoidToEgm96,
-      meanSeaLevel: exports.meanSeaLevel,
-    }
-    console.log("egm96 loaded:", egm96)
+   
 
   </script>
   <!-- end of egm96 cdn hack-->
@@ -62,6 +51,8 @@
           <div class="toggle-button-marker"></div>
         </div>
       </div>
+      <div class="button" id="egm96Btn" title="Download geoid altitude (~3Mb the 1st time)">
+        <i class="material-icons">terrain</i><span>EGM96<span></div>
 
 
       <div class="button btn btn-primary" id="helpBtn" title="Help"> <i class="material-icons">help_outline</i>Help
