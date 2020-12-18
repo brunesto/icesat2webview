@@ -1,4 +1,5 @@
 import { BaseObj } from './baseobj.js'
+import { initShaderProgram, loadTexture, gridTexture } from './webglutil.js';
 export class Cube extends BaseObj {
     getParams() {
 

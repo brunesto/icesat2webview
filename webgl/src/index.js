@@ -169,14 +169,15 @@ function drawScene(camera) {
 }
 initGl()
 
-const sphereObj=new Sphere("sphere1")
-const pp=new ProgramPINT(sphereObj.name,()=>sphereObj.modelMatrix)
-pp.initBuffers(sphereObj.getParams())
+// const sphereObj=new Sphere("sphere1")
+// mat4.scale(sphereObj.modelMatrix,mat4.create(),[0.01,0.01,0.01])
+// const pp=new ProgramPINT(sphereObj.name,()=>sphereObj.modelMatrix)
+// pp.initBuffers(sphereObj.getParams())
 
-// const cubeObj=new Sphere("cube1")
-// const pp=new ProgramPINT(cubeObj.name,()=>cubeObj.modelMatrix)
-// mat4.fromScaling(cubeObj.modelMatrix,[6000,6000,6000])
-// pp.initBuffers(cubeObj.getParams())
+const cubeObj=new Cube("cube1")
+mat4.scale(cubeObj.modelMatrix,mat4.create(),[6000,6000,6000])
+const pp=new ProgramPINT(cubeObj.name,()=>cubeObj.modelMatrix)
+pp.initBuffers(cubeObj.getParams())
 
 
 
