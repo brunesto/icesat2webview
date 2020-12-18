@@ -23,15 +23,17 @@ export class ProgramPINT extends BaseProgram {
 
 
  //uniform mat4 uNormalMatrix;
- uniform mat4 uModelMatrix;
- uniform mat4 uViewMatrix;
- uniform mat4 uProjectionMatrix;
+//  uniform mat4 uModelMatrix;
+//  uniform mat4 uViewMatrix;
+//  uniform mat4 uProjectionMatrix;
+ uniform mat4 uMvpMatrix;
 
  varying highp vec3 vLighting;
  varying highp vec2 vTextureCoord;
  //varying lowp vec4 vColor;
  void main(void) {
-    gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
+    // gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
+    gl_Position = uMvpMatrix  * aVertexPosition;
   // vColor = aVertexColor;
    vTextureCoord = aTextureCoord;
    // Apply lighting effect
@@ -70,17 +72,18 @@ export class ProgramPINT extends BaseProgram {
         this.programInfo = {
             program: shaderProgram,
 
-            attribLocations: {
+            locations: {
                 vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
                 // vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
                 vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
                 textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
-            },
-            uniformLocations: {
-                projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-                viewMatrix: gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
-                modelMatrix: gl.getUniformLocation(shaderProgram, 'uModelMatrix'),
+            // },
+            // uniformLocations: {
+                // projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+                // viewMatrix: gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
+                // modelMatrix: gl.getUniformLocation(shaderProgram, 'uModelMatrix'),
                // normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
+               mvpMatrix: gl.getUniformLocation(shaderProgram, 'uMvpMatrix'),
                 uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
             }
         };
@@ -171,10 +174,7 @@ export class ProgramPINT extends BaseProgram {
         console.log(name + ": draw2()");
         gl.useProgram(this.programInfo.program);
 
-        const modelMatrix = this.getModelMatrix();
-        const modelViewMatrix = mat4.create();
-        mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
-
+       
 
 
         // Tell WebGL how to pull out the positions from the position
@@ -187,14 +187,14 @@ export class ProgramPINT extends BaseProgram {
             const offset = 0;
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position);
             gl.vertexAttribPointer(
-                this.programInfo.attribLocations.vertexPosition,
+                this.programInfo.locations.vertexPosition,
                 numComponents,
                 type,
                 normalize,
                 stride,
                 offset);
             gl.enableVertexAttribArray(
-                this.programInfo.attribLocations.vertexPosition);
+                this.programInfo.locations.vertexPosition);
         }
 
 
@@ -209,14 +209,14 @@ export class ProgramPINT extends BaseProgram {
             const offset = 0;
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normals);
             gl.vertexAttribPointer(
-                this.programInfo.attribLocations.vertexNormal,
+                this.programInfo.locations.vertexNormal,
                 numComponents,
                 type,
                 normalize,
                 stride,
                 offset);
             gl.enableVertexAttribArray(
-                this.programInfo.attribLocations.vertexNormal);
+                this.programInfo.locations.vertexNormal);
         }
 
         // Tell WebGL which indices to use to index the vertices
@@ -225,20 +225,33 @@ export class ProgramPINT extends BaseProgram {
 
 
         // Set the shader uniforms
-        gl.uniformMatrix4fv(
-            this.programInfo.uniformLocations.projectionMatrix,
-            false,
-            projectionMatrix);
+        // gl.uniformMatrix4fv(
+        //     this.programInfo.locations.projectionMatrix,
+        //     false,
+        //     projectionMatrix);
 
-        gl.uniformMatrix4fv(
-            this.programInfo.uniformLocations.viewMatrix,
-            false,
-            viewMatrix);
+        // gl.uniformMatrix4fv(
+        //     this.programInfo.locations.viewMatrix,
+        //     false,
+        //     viewMatrix);
 
-        gl.uniformMatrix4fv(
-            this.programInfo.uniformLocations.modelMatrix,
+        // gl.uniformMatrix4fv(
+        //     this.programInfo.locations.modelMatrix,
+        //     false,
+        //     modelMatrix);
+
+
+            
+            const modelMatrix = this.getModelMatrix();
+            const modelViewMatrix = mat4.create();
+            mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
+            const mvpMatrix = mat4.create();
+            mat4.multiply(mvpMatrix, projectionMatrix, modelViewMatrix);
+    
+  gl.uniformMatrix4fv(
+            this.programInfo.locations.mvpMatrix,
             false,
-            modelMatrix);
+            mvpMatrix);
 
 
         // // Generate and deliver to the shader a normal matrix, 
@@ -250,7 +263,7 @@ export class ProgramPINT extends BaseProgram {
         // // normalMatrix=modelViewMatrix
 
         // gl.uniformMatrix4fv(
-        //     this.programInfo.uniformLocations.normalMatrix,
+        //     this.programInfo.locations.normalMatrix,
         //     false,
         //     normalMatrix);
 
@@ -263,8 +276,8 @@ export class ProgramPINT extends BaseProgram {
             const stride = 0; // how many bytes to get from one set to the next
             const offset = 0; // how many bytes inside the buffer to start from
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.textureCoord);
-            gl.vertexAttribPointer(this.programInfo.attribLocations.textureCoord, num, type, normalize, stride, offset);
-            gl.enableVertexAttribArray(this.programInfo.attribLocations.textureCoord);
+            gl.vertexAttribPointer(this.programInfo.locations.textureCoord, num, type, normalize, stride, offset);
+            gl.enableVertexAttribArray(this.programInfo.locations.textureCoord);
         }
 
         // Tell WebGL we want to affect texture unit 0
@@ -275,7 +288,7 @@ export class ProgramPINT extends BaseProgram {
             gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
             // Tell the shader we bound the texture to texture unit 0
-            gl.uniform1i(this.programInfo.uniformLocations.uSampler, 0);
+            gl.uniform1i(this.programInfo.locations.uSampler, 0);
         }
 
 
