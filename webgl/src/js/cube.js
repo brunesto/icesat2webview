@@ -1,9 +1,10 @@
 import { BaseObj } from './baseobj.js'
 import { initShaderProgram, loadTexture, gridTexture } from './webglutil.js';
+import './geohelper.js'
 export class Cube extends BaseObj {
     getParams() {
 
-      
+
 
         // Now create an array of positions for the square.
 
@@ -38,12 +39,12 @@ export class Cube extends BaseObj {
             -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0,
         ];
 
-        
+
 
 
 
         // -- indices ------------------------------------------------
-       
+
 
         // This array defines each face as two triangles, using the
         // indices into the vertex array to specify each triangle's
@@ -58,10 +59,10 @@ export class Cube extends BaseObj {
             20, 21, 22, 20, 22, 23, // left
         ];
 
-       
+
 
         //-- normals  ---------------------------------------
-        
+
 
         const vertexNormals =
             GH.computeVertexNormals(positions, indices)
@@ -71,7 +72,7 @@ export class Cube extends BaseObj {
 
 
 
-       
+
 
         const textureCoordinates = [
             // Front
@@ -108,20 +109,24 @@ export class Cube extends BaseObj {
 
         const texture = loadTexture('/public/ground.png');
 
-         // let the super class do the WebGl fun
-         return {
-            positions:positions,
-            indices:indices,
-            vertexNormals:vertexNormals, 
-            textureCoordinates:textureCoordinates,
-            texture:texture}
+        // let the super class do the WebGl fun
+        const retVal = {
+            positions: positions,
+            indices: indices,
+            vertexNormals: vertexNormals,
+            textureCoordinates: textureCoordinates,
+            texture: texture
+        }
+
+        console.log("cube done", retVal)
+        return retVal
 
     }
 
     constructor(name) {
         super(name)
-        
-        
+
+
     }
 
 
