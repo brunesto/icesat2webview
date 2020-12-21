@@ -1,18 +1,19 @@
 
 
+// -- Strings ---------------------------------------------
+
 export function padLeft(r, length, pad) {
     while (r.length < length) r = pad + r;
     return r;
 }
 
+/**
+ * float to string 
+ */
 export function f2string(n) {
     return padLeft(n.toFixed(3), 10, " ");
 }
 
-export function isSquare(n) {
-    const rs = Math.sqrt(n)
-    return (rs * rs == n)
-}
 
 export function vec2string(a, formatter) {
     if (formatter == undefined)
@@ -25,6 +26,9 @@ export function vec2string(a, formatter) {
 
 }
 
+/**
+ * dump a matrix to string
+ */
 export function mat2string(a, formatter) {
     console.log("dedieu...")
     if (formatter == undefined)
@@ -45,4 +49,29 @@ export function mat2string(a, formatter) {
         retVal = vec2string(a, formatter)
     }
     return retVal
+}
+
+// -- Math ------------------------------------------------
+export function isSquare(n) {
+    const rs = Math.sqrt(n)
+    return (rs * rs == n)
+}
+
+
+
+export function isPowerOf2(value) {
+    return (value & (value - 1)) == 0;
+}
+
+
+export function radians2degrees(radians) {
+    var pi = Math.PI;
+    return radians * (180 / pi);
+}
+
+
+
+export function degrees2radians(degrees) {
+    var pi = Math.PI;
+    return degrees * (pi / 180);
 }

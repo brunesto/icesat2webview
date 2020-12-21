@@ -2,7 +2,6 @@
 
 import { GlWrapper } from "./glwrapper.js";
 import { Dragger } from './dragger.js';
- 
 import { vec2string, mat2string } from "./global.js";
 
 /**

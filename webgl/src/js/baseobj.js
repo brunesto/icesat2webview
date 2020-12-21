@@ -1,8 +1,12 @@
 import { mat4, mat3 } from 'gl-matrix';
 import { loadTexture, gridTexture } from './webglutil.js';
 
-
-export class BaseProgram {
+/**
+ * TODO the lifecycle/ boundaries of these classes are not yet well defined
+ * 
+ * Basically they are meant to merge a 3d object and a WebGl program
+ */
+export class Drawable {
     constructor(name) {
         this.name = name
     }
@@ -33,8 +37,7 @@ export class BaseObj {
         console.log(name + ": getDrawable() program:" + program.name)
 
         const thisBaseObj = this
-        const retVal = new Drawable()
-        retVal.name = thisBaseObj.name + "+" + program.name
+        const retVal = new Drawable(thisBaseObj.name + "+" + program.name)
         retVal.init = function() {
             console.log(name + ": init()")
             thisBaseObj.ensureInit()
@@ -52,8 +55,6 @@ export class BaseObj {
     }
 
 
-
-//draw2(projectionMatrix, viewMatrix) {}
 }
 
 

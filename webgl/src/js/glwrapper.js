@@ -3,6 +3,9 @@ import { vec2string,mat2string } from "./global.js";
 
 
 export class GlWrapper {
+    /**
+     * initialize the WebGl object
+     */
     constructor() {
         global.canvas = $("#glCanvas")[0];
         // Initialize the GL context
@@ -24,8 +27,13 @@ export class GlWrapper {
     }
 
 
-    drawScene(camera,step2s) {
+    /**
+     * draw a bunch of BaseObj 
+     */
+    drawScene(camera,baseObjs) {
         console.log("drawScene")
+
+         // 1) reset GL drawing
         gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
         gl.clearDepth(1.0); // Clear everything
         gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -34,6 +42,8 @@ export class GlWrapper {
         // Clear the canvas before we start drawing on it.
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        // 2) compute the projectionMatrix and viewMatrix
 
         // Create a perspective matrix, a special matrix that is
         // used to simulate the distortion of perspective in a camera.
@@ -55,12 +65,7 @@ export class GlWrapper {
             zNear,
             zFar);
 
-
-
-
         var viewMatrix = mat4.create();
-
-        //    mat4.fromRotationTranslation(viewMatrix,  camera.q,  camera.position)
 
         // steps taken from mat.fromRotationTranslation, except that the last step is reverse order
         var dest = mat4.create();
@@ -69,28 +74,12 @@ export class GlWrapper {
         mat4.fromQuat(quatMat, camera.orientation);
         mat4.multiply(viewMatrix, quatMat, dest);
 
-        //    viewMatrix = dest;
-
-
-        //var lookDirection=GH.plus(camera.position,camera.front)
-        //mat4.lookAt( viewMatrix, camera.position, lookDirection, camera.up );
-
-
-
-
-        // var viewMatrix1 = mat4.create();
-        // mat4.translate(viewMatrix1, // destination matrix
-        //     mat4.create(), // matrix to translate
-        //     camera.position); // amount to translate
-        // console.log("camera.position:" + camera.position, "vs " + mat2string(viewMatrix1))
-        // var viewMatrix = mat4.create();
-        // mat4.multiply(viewMatrix, viewMatrix1, camera.rotationMatrix)
-
-
-        for (var step2 of step2s)
+        // 3) now draw all objects
+        for (var step2 of baseObjs)
             step2.draw2(projectionMatrix, viewMatrix)
 
 
+        // some debug info
         this.lastRenderInfo=    
             "\n projectionMatrix:" + mat2string(projectionMatrix) +
             "\n viewMatrix:" + mat2string(viewMatrix) 

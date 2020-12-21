@@ -1,6 +1,10 @@
+/**
+ * a simple cube
+ */
+
 import { BaseObj } from './baseobj.js'
 import { initShaderProgram, loadTexture, gridTexture } from './webglutil.js';
-import './geohelper.js'
+import {computeVertexNormals} from './normals.js'
 export class Cube extends BaseObj {
     getParams() {
 
@@ -65,7 +69,7 @@ export class Cube extends BaseObj {
 
 
         const vertexNormals =
-            GH.computeVertexNormals(positions, indices)
+            computeVertexNormals(positions, indices)
 
 
         // -- texture coords -------------------------------------------

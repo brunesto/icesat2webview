@@ -1,5 +1,6 @@
+import {bv3} from './bv3.js';
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
-import { vec2string,mat2string } from "./global.js";
+import { vec2string,mat2string,radians2degrees } from "./global.js";
 
 
 
@@ -29,17 +30,17 @@ export class Camera {
      * NOTE that for distanceFromEarthSurface earth is considered a sphere, not an elipsoid
      */
     computeCoords() {
-        this.distanceFromEarthCenter = GH.length(this.position)
+        this.distanceFromEarthCenter = bv3.length(this.position)
         this.distanceFromEarthSurface = this.distanceFromEarthCenter - 6378
 
-        this.lat = GH.radians2degrees(Math.asin(-this.position[1] / this.distanceFromEarthCenter))
+        this.lat = radians2degrees(Math.asin(-this.position[1] / this.distanceFromEarthCenter))
 
 
         const posAtEquator = [this.position[0], 0, this.position[2]]
 
 
-        const distanceFromEarthCenterAtEquator = GH.length(posAtEquator)
-        const l90 = GH.radians2degrees(Math.asin(-this.position[0] / distanceFromEarthCenterAtEquator))
+        const distanceFromEarthCenterAtEquator = bv3.length(posAtEquator)
+        const l90 = radians2degrees(Math.asin(-this.position[0] / distanceFromEarthCenterAtEquator))
 
 
         if (this.position[0] > 0 != this.position[2] > 0) {

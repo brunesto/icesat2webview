@@ -1,7 +1,12 @@
 import { mat4, mat3 } from 'gl-matrix';
 import { initShaderProgram, loadTexture, gridTexture } from './webglutil.js';
-import './geohelper.js'
+import './normals.js'
 import { BaseObj } from './baseobj.js'
+
+/**
+ * build a mesh for a Sphere (or part of it)
+ * the mesh is build using pairs of triangle whose coordinates match osm slippy tiles
+ */
 export class Sphere extends BaseObj {
 
     constructor(name){

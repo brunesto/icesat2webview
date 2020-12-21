@@ -1,6 +1,6 @@
 import { mat4 } from 'gl-matrix';
 import { initShaderProgram } from './webglutil.js';
-import { BaseProgram } from './baseobj';
+import { Drawable } from './baseobj';
 
 /**
  * A base class with
@@ -11,7 +11,7 @@ import { BaseProgram } from './baseobj';
 
 
 
-export class ProgramPINT extends BaseProgram {
+export class ProgramPINT extends Drawable {
 
 
     // Vertex shader program

@@ -1,6 +1,6 @@
 import { mat4 } from 'gl-matrix';
 import { initShaderProgram } from './webglutil.js';
-import { BaseProgram } from './baseobj';
+import { Drawable } from './baseobj';
 
 /**
  * A base class with uniform color 
@@ -10,7 +10,7 @@ import { BaseProgram } from './baseobj';
 
 
 
-export class ProgramU extends BaseProgram {
+export class ProgramU extends Drawable {
 
 
     // Vertex shader program

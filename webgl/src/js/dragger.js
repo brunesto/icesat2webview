@@ -1,4 +1,9 @@
-// small utility to handle dragging
+/**
+ * Small utility to handle dragging
+ * 
+ * not related with WebGl
+ * 
+ */
 
 export class Dragger {
     constructor(element, callbacks) {

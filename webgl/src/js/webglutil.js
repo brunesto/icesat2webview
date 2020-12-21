@@ -1,3 +1,10 @@
+/**
+ * Usual WebGl helpers
+ */
+
+import { isPowerOf2 } from "./global.js";
+
+
 //
 // Initialize a shader program, so WebGL knows how to draw our data
 //
@@ -103,17 +110,7 @@ export function gridTexture(x, y,options) {
 
     const imgUrl=canvas.toDataURL()
 
-    // const image = document.createElement("img");
-    // image.src=imgUrl
-    // document.body.appendChild(image)
     return loadTexture(imgUrl)
-        // var image = new Image();    
-        // image.src = ;
-
-    // const texture = gl.createTexture();
-    // gl.bindTexture(gl.TEXTURE_2D, texture);
-    // canvas2texture(image,texture)
-    // return texture;
 }
 
 
@@ -181,8 +178,4 @@ export function loadTexture(url) {
     image.src = url;
 
     return texture;
-}
-
-function isPowerOf2(value) {
-    return (value & (value - 1)) == 0;
 }

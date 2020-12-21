@@ -5,22 +5,7 @@ import { Cube } from './js/cube.js';
 import { ProgramPINT } from "./js/programpint.js";
 import { ProgramU } from "./js/programu.js";
 import { Camera } from "./js/camera.js";
-
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
-/*
-import { Dragger } from './js/dragger.js';
-
-import { Step1Cube } from './js/step1-cube.js';
-import { Step3Texture } from './js/step3-texture.js';
-
-import { Step2Normals } from './js/step2-normals.js';
-import { GeoHelper } from './js/geohelper.js';
-import { ProgramPINT } from "./js/programpint.js";
-import { ProgramU } from "./js/programu.js";
-
-
-import { vec2string, mat2string } from "./js/global.js";
-*/
 import { WglUI } from "./js/wglui.js";
 
 global.logFlag = true
@@ -58,6 +43,7 @@ $(document).ready(function() {
 
     step2s.push(pp)
 
+    wglui.redraw()
 
 
 })

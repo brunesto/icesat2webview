@@ -11,6 +11,8 @@ https://stackoverflow.com/questions/13983189/opengl-how-to-calculate-normals-in-
 main tutorial
 https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Creating_3D_objects_using_WebGL
 
+
+
 example to generate a sphere:
 http://www.songho.ca/opengl/gl_sphere.html
 

@@ -1,3 +1,6 @@
+//
+// REMOVE ME
+//
 import { mat4, mat3 } from 'gl-matrix';
 import { initShaderProgram, loadTexture } from './webglutil.js';
 
