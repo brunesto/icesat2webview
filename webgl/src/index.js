@@ -11,8 +11,9 @@ import { GeoHelper } from './js/geohelper.js';
 import { ProgramPINT } from "./js/programpint.js";
 import { ProgramU } from "./js/programu.js";
 import { Camera } from "./js/camera.js";
-import { GlWrapper } from "./js/glwrapper.js";
+
 import { vec2string, mat2string } from "./js/global.js";
+import { WglUI } from "./js/wglui.js";
 
 global.logFlag = true
 
@@ -37,7 +38,7 @@ $(document).ready(function() {
     console.log('process.env.NODE_ENV:' + (process.env.NODE_ENV))
     var camera = new Camera(-6472)
     const step2s = []
-    var glWrapper = new GlWrapper(camera, step2s)
+    var wglui = new WglUI(camera, step2s)
 
 
     const cubeObj = new Cube("cube1")
