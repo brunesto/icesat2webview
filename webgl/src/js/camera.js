@@ -2,30 +2,48 @@ import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
 import { vec2string,mat2string } from "./global.js";
 
 
+
+/**
+ * This class takes care of rotating and moving the camera in a natural way 
+ * e.g. 
+  * press the right key->the scene will move to the right (right in world)
+ * you rotate 90 degree, press right key, the scene will move to the right (up in world)
+ */
 export class Camera {
-    pos = [0.0, 0.0, 0, 0]
-    q = quat.create()
+
+    /**
+     * position
+     */
+    position = [0.0, 0.0, 0, 0]
+    /**
+     * quaternion is used of orientation
+     */
+    orientation = quat.create()
 
     constructor(z) {
-        this.pos[2] = z
+        this.position[2] = z
     }
 
+    /**
+     * compute the lat,lon as well as (distanceFromEarthSurface) amsl and distanceFromEarthCenter
+     * NOTE that for distanceFromEarthSurface earth is considered a sphere, not an elipsoid
+     */
     computeCoords() {
-        this.distanceFromEarthCenter = GH.length(this.pos)
+        this.distanceFromEarthCenter = GH.length(this.position)
         this.distanceFromEarthSurface = this.distanceFromEarthCenter - 6378
 
-        this.lat = GH.radians2degrees(Math.asin(-this.pos[1] / this.distanceFromEarthCenter))
+        this.lat = GH.radians2degrees(Math.asin(-this.position[1] / this.distanceFromEarthCenter))
 
 
-        const posAtEquator = [this.pos[0], 0, this.pos[2]]
+        const posAtEquator = [this.position[0], 0, this.position[2]]
 
 
         const distanceFromEarthCenterAtEquator = GH.length(posAtEquator)
-        const l90 = GH.radians2degrees(Math.asin(-this.pos[0] / distanceFromEarthCenterAtEquator))
+        const l90 = GH.radians2degrees(Math.asin(-this.position[0] / distanceFromEarthCenterAtEquator))
 
 
-        if (this.pos[0] > 0 != this.pos[2] > 0) {
-            if (this.pos[0] > 0) {
+        if (this.position[0] > 0 != this.position[2] > 0) {
+            if (this.position[0] > 0) {
                 console.log("c1")
                 this.lon = l90;
             } else {
@@ -33,7 +51,7 @@ export class Camera {
                 this.lon = 180 - l90;
             }
         } else {
-            if (this.pos[0] > 0) {
+            if (this.position[0] > 0) {
                 console.log("c3")
                 this.lon = -180 - l90;
             } else {
@@ -46,12 +64,15 @@ export class Camera {
     }
 
 
-
-    movescreen2world(v) {
+    /**
+     * move the camera. 
+     * @param v: translation vector, in screen space  
+     */
+    move(v) {
 
         // inverse camera rotation
         var iq = quat.create()
-        quat.invert(iq, this.q)
+        quat.invert(iq, this.orientation)
         let iqm = mat4.create();
         mat4.fromQuat(iqm, iq);
 
@@ -63,15 +84,22 @@ export class Camera {
         console.log("movescreen2world " + vec2string(v) + " ->" + vec2string(dest))
 
         // modify camera position by inversely rotated z
-        this.pos[0] += dest[0]
-        this.pos[1] += dest[1]
-        this.pos[2] += dest[2]
+        this.position[0] += dest[0]
+        this.position[1] += dest[1]
+        this.position[2] += dest[2]
     }
 
 
-    rotatescreen2world(euler) {
-        const q = quat.create()
-        quat.fromEuler(q, euler[0], euler[1], euler[2], 0)
-        this.q = quat.normalize(quat.create(), quat.mul(quat.create(), q, this.q))
+    /**
+     * rotate the camera
+     * 
+     * @param euler : euler angles, using screen space
+     */
+    rotate(euler) {
+
+        // very lean computation with quaternions :)
+        const orientation = quat.create()
+        quat.fromEuler(orientation, euler[0], euler[1], euler[2], 0)
+        this.orientation = quat.normalize(quat.create(), quat.mul(quat.create(), orientation, this.orientation))
     }
 }

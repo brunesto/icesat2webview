@@ -60,20 +60,20 @@ export class GlWrapper {
 
         var viewMatrix = mat4.create();
 
-        //    mat4.fromRotationTranslation(viewMatrix,  camera.q,  camera.pos)
+        //    mat4.fromRotationTranslation(viewMatrix,  camera.q,  camera.position)
 
         // steps taken from mat.fromRotationTranslation, except that the last step is reverse order
         var dest = mat4.create();
-        mat4.translate(dest, mat4.create(), camera.pos);
+        mat4.translate(dest, mat4.create(), camera.position);
         let quatMat = mat4.create();
-        mat4.fromQuat(quatMat, camera.q);
+        mat4.fromQuat(quatMat, camera.orientation);
         mat4.multiply(viewMatrix, quatMat, dest);
 
         //    viewMatrix = dest;
 
 
-        //var lookDirection=GH.plus(camera.pos,camera.front)
-        //mat4.lookAt( viewMatrix, camera.pos, lookDirection, camera.up );
+        //var lookDirection=GH.plus(camera.position,camera.front)
+        //mat4.lookAt( viewMatrix, camera.position, lookDirection, camera.up );
 
 
 
@@ -81,8 +81,8 @@ export class GlWrapper {
         // var viewMatrix1 = mat4.create();
         // mat4.translate(viewMatrix1, // destination matrix
         //     mat4.create(), // matrix to translate
-        //     camera.pos); // amount to translate
-        // console.log("camera.pos:" + camera.pos, "vs " + mat2string(viewMatrix1))
+        //     camera.position); // amount to translate
+        // console.log("camera.position:" + camera.position, "vs " + mat2string(viewMatrix1))
         // var viewMatrix = mat4.create();
         // mat4.multiply(viewMatrix, viewMatrix1, camera.rotationMatrix)
 
