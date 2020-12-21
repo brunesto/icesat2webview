@@ -15,10 +15,12 @@ import { vec2string, mat2string } from "./global.js";
 export class WglUI {
     
 
-    constructor(camera,step2s) {
+    constructor(canvasElementId,camera,step2s) {
         this.camera=camera
         this.step2s=step2s
-        this.glWrapper=new GlWrapper()       
+        this.glWrapper=new GlWrapper(canvasElementId)       
+        this.canvas=this.glWrapper.canvas // keep a ref 
+       
         this.initUI()
     }
    
@@ -66,7 +68,7 @@ export class WglUI {
        this.redraw()
 
        // handle mouse
-        canvas.addEventListener("mousewheel", e => {
+       this.canvas.addEventListener("mousewheel", e => {
 
             console.log("mouseWheel", e)
             if (e.wheelDelta != 0) {
@@ -91,7 +93,7 @@ export class WglUI {
         })
 
         // dragging is delegated to Dragger
-        new Dragger(canvas, {
+        new Dragger(this.canvas, {
             moved: s => {
 
 
@@ -111,7 +113,7 @@ export class WglUI {
         })
         // handle keyboard
 
-        canvas.addEventListener('keydown', (e)=> {
+       this. canvas.addEventListener('keydown', (e)=> {
             console.log('key', e);
             const v = [0, 0, 0, 0]
 
@@ -156,6 +158,6 @@ export class WglUI {
 
         }, false);
 
-        canvas.focus()
+       this. canvas.focus()
     }
 }

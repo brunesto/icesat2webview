@@ -31,7 +31,7 @@ $(document).ready(function() {
     console.log('process.env.NODE_ENV:' + (process.env.NODE_ENV))
     var camera = new Camera(-25000)//-6472)
     const step2s = []
-    var wglui = new WglUI(camera, step2s)
+    var wglui = new WglUI("glCanvas",camera, step2s)
 
 
     const cubeObj = new Cube("cube1")

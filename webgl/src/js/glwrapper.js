@@ -7,9 +7,9 @@ export class GlWrapper {
      * initialize the WebGl object
      */
     constructor() {
-        global.canvas = $("#glCanvas")[0];
+        this.canvas = $("#glCanvas")[0];
         // Initialize the GL context
-        global.gl = canvas.getContext("webgl");
+        global.gl = this.canvas.getContext("webgl");
 
         // Only continue if WebGL is available and working
         if (gl === null) {
