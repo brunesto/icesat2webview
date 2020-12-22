@@ -110,9 +110,9 @@ export class ProgramU extends Drawable {
 
 
 
-    draw2(projectionMatrix, viewMatrix) {
+    draw2(id,projectionMatrix, viewMatrix) {
         // Tell WebGL to use our program when drawing
-        console.log(name + ": draw2()");
+        console.log(name + "."+id+": draw2()");
         gl.useProgram(this.programInfo.program);
 
 
@@ -155,8 +155,8 @@ export class ProgramU extends Drawable {
             false,
             mvpMatrix);
 
-        const rgb=id2color(123)
-        console.log("color2id:"+color2id(rgb))
+        const rgb=id2color(id+1)
+       // console.log("color2id:"+color2id(rgb))
         gl.uniform3fv( this.programInfo.locations.color, rgb)//new Float32Array([0.349,0.241,0.912]) )
 
         // draw

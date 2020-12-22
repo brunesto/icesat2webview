@@ -56,10 +56,14 @@ export class WglUI {
             data); // typed array to hold result
         var rgb = [data[0], data[1], data[2]];
         console.log("rgb:" + rgb)
-        const id=color2id(rgb)
-        console.log("color2id:"+id)
+        const id=color2id(rgb)-1
+        console.log("id:"+id)
         // immediately replace the view
         this.drawRenderScene()
+
+        // if (id==-1)    
+        //     return null
+        // this.drawables4MousePick[id].
         return id
 
     }

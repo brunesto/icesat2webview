@@ -75,8 +75,8 @@ export class GlWrapper {
         mat4.multiply(viewMatrix, quatMat, dest);
 
         // 3) now draw all objects
-        for (var step2 of baseObjs)
-            step2.draw2(projectionMatrix, viewMatrix)
+        for (var i in baseObjs)
+            baseObjs[i].draw2(i,projectionMatrix, viewMatrix)
 
 
         // some debug info

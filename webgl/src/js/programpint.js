@@ -169,7 +169,7 @@ export class ProgramPINT extends Drawable {
 
 
 
-    draw2(projectionMatrix, viewMatrix) {
+    draw2(id,projectionMatrix, viewMatrix) {
         // Tell WebGL to use our program when drawing
         console.log(name + ": draw2()");
         gl.useProgram(this.programInfo.program);

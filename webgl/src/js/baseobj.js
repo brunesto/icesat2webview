@@ -10,7 +10,7 @@ export class Drawable {
     constructor(name) {
         this.name = name
     }
-    draw2(projectionMatrix, viewMatrix) {}
+    draw2(id,projectionMatrix, viewMatrix) {}
 }
 
 export class BaseObj {
