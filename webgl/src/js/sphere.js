@@ -1,8 +1,8 @@
 import { mat4, mat3 } from 'gl-matrix';
 import { initShaderProgram, loadTexture, gridTexture } from './webglutil.js';
-import './normals.js'
+import {computeVertexNormals} from './normals.js'
 import { BaseObj } from './baseobj.js'
-
+import { degrees2radians} from './global.js'
 /**
  * build a mesh for a Sphere (or part of it)
  * the mesh is build using pairs of triangle whose coordinates match osm slippy tiles
@@ -69,8 +69,8 @@ export class Sphere extends BaseObj {
         const lat0 = 90 - lat
 
 
-        const φ = GH.degrees2radians(lat0)
-        const θ = GH.degrees2radians(lon)
+        const φ = degrees2radians(lat0)
+        const θ = degrees2radians(lon)
         const ρ = 6378;
         const x = ρ * Math.sin(φ) * Math.cos(θ)
         const z = ρ * Math.sin(φ) * Math.sin(θ)
@@ -150,7 +150,7 @@ export class Sphere extends BaseObj {
         console.log("indices: " + indices.length)
 
         // 2.3 normals
-        const vertexNormals = GH.computeVertexNormals(positions, indices)
+        const vertexNormals = computeVertexNormals(positions, indices)
 
 
 

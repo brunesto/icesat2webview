@@ -1,7 +1,7 @@
 import { GlWrapper } from "./glwrapper.js";
 import { Dragger } from './dragger.js';
 import { vec2string, mat2string } from "./global.js";
-import {color2id} from "./programu.js"
+import { rgb2id } from "./programu.js"
 
 
 /**
@@ -55,11 +55,12 @@ export class WglUI {
             gl.UNSIGNED_BYTE, // type
             data); // typed array to hold result
         var rgb = [data[0], data[1], data[2]];
+        // Note: the rgb here is in 0/255 range
         console.log("rgb:" + rgb)
-        const id=color2id(rgb)-1
-        console.log("id:"+id)
-        // immediately replace the view
-        this.drawRenderScene()
+        const id = rgb2id(rgb) - 1
+        console.log("id:" + id)
+            // immediately replace the view
+       // this.drawRenderScene()
 
         // if (id==-1)    
         //     return null

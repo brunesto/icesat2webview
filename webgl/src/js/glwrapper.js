@@ -38,7 +38,7 @@ export class GlWrapper {
         gl.clearDepth(1.0); // Clear everything
         gl.enable(gl.DEPTH_TEST); // Enable depth testing
         gl.depthFunc(gl.LEQUAL); // Near things obscure far things
-
+        //gl.enable(gl.SAMPLE_COVERAGE);
         // Clear the canvas before we start drawing on it.
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -76,7 +76,7 @@ export class GlWrapper {
 
         // 3) now draw all objects
         for (var i in baseObjs)
-            baseObjs[i].draw2(i,projectionMatrix, viewMatrix)
+            baseObjs[i].draw2(Number(i),projectionMatrix, viewMatrix)
 
 
         // some debug info

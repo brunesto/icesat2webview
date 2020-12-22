@@ -1,6 +1,7 @@
 import { mat4 } from 'gl-matrix';
 import { initShaderProgram } from './webglutil.js';
-import { Drawable } from './baseobj';
+import { Drawable } from './baseobj.js';
+import { bv3 } from './bv3.js';
 
 /**
  * A base class with uniform color 
@@ -155,9 +156,13 @@ export class ProgramU extends Drawable {
             false,
             mvpMatrix);
 
-        const rgb=id2color(id+1)
-       // console.log("color2id:"+color2id(rgb))
-        gl.uniform3fv( this.programInfo.locations.color, rgb)//new Float32Array([0.349,0.241,0.912]) )
+        const sid=(id+1)
+        console.log("id+1:"+sid)
+        const rgb=id2rgb(sid)
+        console.log("rgb:"+rgb)
+        const rgb1=bv3.scalarmul(rgb,1/255.0)
+        console.log("rgb1:"+rgb1)
+        gl.uniform3fv( this.programInfo.locations.color, rgb1)//new Float32Array([0.349,0.241,0.912]) )
 
         // draw
         {
@@ -177,8 +182,10 @@ export class ProgramU extends Drawable {
     }
 }
 
-
-export function id2color(i){
+/**
+ * convert an id to rgb [0..255]
+ */
+export function id2rgb(i){
 
     if (i>0xffffff || i<0) // 0xffffff=16777215
     throw "id out of range: "+i
@@ -188,13 +195,17 @@ export function id2color(i){
 
     
 
-    return [r/255.0,g/255.0,b/255.0]
+    return [r,g,b]
 }
-export function color2id(rgb){
+
+/**
+ * convert a rgb [0..255] back to id
+ */
+export function rgb2id(rgb){
     
-    const r=rgb[0] * 255; 
-    const g=rgb[1] * 255; 
-    const b=rgb[2] * 255; 
+    const r=rgb[0] ; 
+    const g=rgb[1] ; 
+    const b=rgb[2] ; 
 
     const id = r*256*256+g*256+b;
     return id;
