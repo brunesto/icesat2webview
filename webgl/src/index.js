@@ -3,7 +3,7 @@ import './styles/body.css';
 import { Sphere } from './js/sphere.js';
 import { Cube } from './js/cube.js';
 import { ProgramPINT } from "./js/programpint.js";
-import { ProgramU } from "./js/programu.js";
+import { ProgramPIU } from "./js/programpiu.js";
 import { Camera } from "./js/camera.js";
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
 import { WglUI } from "./js/wglui.js";
@@ -37,7 +37,7 @@ class ModelBinder{
         return pp
     }
     forMousePick(){
-        const pp = new ProgramU(this.mesh.name,this.getModelMatrix)// () => this.mesh.modelMatrix)
+        const pp = new ProgramPIU(this.mesh.name,this.getModelMatrix)// () => this.mesh.modelMatrix)
         pp.initBuffers(this.mesh.getParams())
         return pp
     }

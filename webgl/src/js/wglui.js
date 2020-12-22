@@ -1,7 +1,7 @@
 import { GlWrapper } from "./glwrapper.js";
 import { Dragger } from './dragger.js';
 import { vec2string, mat2string } from "./global.js";
-import { rgb2id } from "./programu.js"
+import { rgb2id } from "./programpiu.js"
 
 
 /**

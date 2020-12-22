@@ -11,7 +11,7 @@ import { bv3 } from './bv3.js';
 
 
 
-export class ProgramU extends Drawable {
+export class ProgramPIU extends Drawable {
 
 
     // Vertex shader program
