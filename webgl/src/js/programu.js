@@ -105,28 +105,7 @@ export class ProgramU extends Drawable {
         };
     }
 
-    id2color(i){
-
-        if (i>0xffffff || i<0) // 0xffffff=16777215
-        throw "id out of range: "+i
-        const b = (i & 0x000000FF) >>  0;
-        const g = (i & 0x0000FF00) >>  8;
-        const r = (i & 0x00FF0000) >> 16;
-
-        
-
-        return [r/255.0,g/255.0,b/255.0]
-    }
-    color2id(rgb){
-        
-        const r=rgb[0] * 255; 
-        const g=rgb[1] * 255; 
-        const b=rgb[2] * 255; 
-
-        const id = r*256*256+g*256+b;
-        return id;
-    }
-
+    
 
 
 
@@ -176,8 +155,8 @@ export class ProgramU extends Drawable {
             false,
             mvpMatrix);
 
-        const rgb=this.id2color(0xffffff)
-        console.log("color2id:"+this.color2id(rgb))
+        const rgb=id2color(123)
+        console.log("color2id:"+color2id(rgb))
         gl.uniform3fv( this.programInfo.locations.color, rgb)//new Float32Array([0.349,0.241,0.912]) )
 
         // draw
@@ -196,4 +175,27 @@ export class ProgramU extends Drawable {
         console.log(name + ": dispose()");
         // TODO!!!
     }
+}
+
+
+export function id2color(i){
+
+    if (i>0xffffff || i<0) // 0xffffff=16777215
+    throw "id out of range: "+i
+    const b = (i & 0x000000FF) >>  0;
+    const g = (i & 0x0000FF00) >>  8;
+    const r = (i & 0x00FF0000) >> 16;
+
+    
+
+    return [r/255.0,g/255.0,b/255.0]
+}
+export function color2id(rgb){
+    
+    const r=rgb[0] * 255; 
+    const g=rgb[1] * 255; 
+    const b=rgb[2] * 255; 
+
+    const id = r*256*256+g*256+b;
+    return id;
 }

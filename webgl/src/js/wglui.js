@@ -1,7 +1,7 @@
 import { GlWrapper } from "./glwrapper.js";
 import { Dragger } from './dragger.js';
 import { vec2string, mat2string } from "./global.js";
-
+import {color2id} from "./programu.js"
 
 
 /**
@@ -17,7 +17,7 @@ export class WglUI {
 
     constructor(canvasElementId, camera, binders) {
         this.camera = camera
-        this.binders=binders
+        this.binders = binders
 
         this.glWrapper = new GlWrapper(canvasElementId)
         this.canvas = this.glWrapper.canvas // keep a ref 
@@ -25,30 +25,46 @@ export class WglUI {
         this.initUI()
     }
     maybeBindModels() {
-        if (!this.modelBounds) {
-            this.modelBounds = true
-            this.drawables4Render = []
-            this.drawables4MousePick = []
-            console.log("binders:" + this.binders.length)
-            for (var binder of this.binders) {
-                this.drawables4Render.push(binder.forRender())
-                this.drawables4MousePick.push(binder.forMousePick())
+            if (!this.modelBounds) {
+                this.modelBounds = true
+                this.drawables4Render = []
+                this.drawables4MousePick = []
+                console.log("binders:" + this.binders.length)
+                for (var binder of this.binders) {
+                    this.drawables4Render.push(binder.forRender())
+                    this.drawables4MousePick.push(binder.forMousePick())
+                }
             }
         }
-    }
- // TODO retrieve the pixel 2d
-    drawMousePick(x,y) {
-        console.log("drawMousePick "+x+","+y)
+        // TODO: many optimizations here
+        // https://webglfundamentals.org/webgl/lessons/webgl-picking.html
+    drawMousePick(x, y) {
+        console.log("drawMousePick " + x + "," + y)
         this.maybeBindModels()
         this.glWrapper.drawScene(this.camera, this.drawables4MousePick);
-        
-        // var context = this.canvas.getContext('2d');
-        // var data = context.getImageData(x, y, 1, 1).data;
-        // var rgb = [ data[0], data[1], data[2] ];
-        // console.log("rgb:"+rgb)
+
+
+
+        const data = new Uint8Array(4);
+        gl.readPixels(
+            x, // x
+            gl.canvas.height - y, // y
+            1, // width
+            1, // height
+            gl.RGBA, // format
+            gl.UNSIGNED_BYTE, // type
+            data); // typed array to hold result
+        var rgb = [data[0], data[1], data[2]];
+        console.log("rgb:" + rgb)
+        const id=color2id(rgb)
+        console.log("color2id:"+id)
+        // immediately replace the view
+        this.drawRenderScene()
+        return id
+
     }
 
-   
+
     drawRenderScene() {
 
         console.log("drawRenderScene")
