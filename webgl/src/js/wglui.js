@@ -1,8 +1,8 @@
-
-
 import { GlWrapper } from "./glwrapper.js";
 import { Dragger } from './dragger.js';
 import { vec2string, mat2string } from "./global.js";
+
+
 
 /**
  * the main UI.
@@ -13,28 +13,54 @@ import { vec2string, mat2string } from "./global.js";
  * 
  */
 export class WglUI {
-    
 
-    constructor(canvasElementId,camera,step2s) {
-        this.camera=camera
-        this.step2s=step2s
-        this.glWrapper=new GlWrapper(canvasElementId)       
-        this.canvas=this.glWrapper.canvas // keep a ref 
-       
+
+    constructor(canvasElementId, camera, binders) {
+        this.camera = camera
+        this.binders=binders
+
+        this.glWrapper = new GlWrapper(canvasElementId)
+        this.canvas = this.glWrapper.canvas // keep a ref 
+
         this.initUI()
     }
-   
+    maybeBindModels() {
+        if (!this.modelBounds) {
+            this.modelBounds = true
+            this.drawables4Render = []
+            this.drawables4MousePick = []
+            console.log("binders:" + this.binders.length)
+            for (var binder of this.binders) {
+                this.drawables4Render.push(binder.forRender())
+                this.drawables4MousePick.push(binder.forMousePick())
+            }
+        }
+    }
+ // TODO retrieve the pixel 2d
+    drawMousePick(x,y) {
+        console.log("drawMousePick "+x+","+y)
+        this.maybeBindModels()
+        this.glWrapper.drawScene(this.camera, this.drawables4MousePick);
+        
+        // var context = this.canvas.getContext('2d');
+        // var data = context.getImageData(x, y, 1, 1).data;
+        // var rgb = [ data[0], data[1], data[2] ];
+        // console.log("rgb:"+rgb)
+    }
 
-    drawScene() {
-        console.log("drawScene")
-        this.glWrapper.drawScene(this.camera,this.step2s);
+   
+    drawRenderScene() {
+
+        console.log("drawRenderScene")
+        this.maybeBindModels()
+        this.glWrapper.drawScene(this.camera, this.drawables4Render);
         this.camera.computeCoords();
         $('#info').html("<pre>" +
             "\n position:" + vec2string(this.camera.position) +
             "\n center earth " + this.camera.distanceFromEarthCenter.toFixed(2) + "m" +
             "\n coords: " + this.camera.lat.toFixed(6) + "," + this.camera.lon.toFixed(6) + " amsl:" + this.camera.distanceFromEarthSurface +
-           this.glWrapper.lastRenderInfo+
-          
+            this.glWrapper.lastRenderInfo +
+
             "</pre>")
     }
 
@@ -45,7 +71,7 @@ export class WglUI {
 
 
     redrawNow() {
-       this.drawScene()
+        this.drawRenderScene()
     }
 
     stepify(v, s) {
@@ -65,11 +91,9 @@ export class WglUI {
      */
     initUI() {
 
-       this.redraw()
 
-      
-       // handle mouse
-       this.canvas.addEventListener("mousewheel", e => {
+        // handle mouse
+        this.canvas.addEventListener("mousewheel", e => {
 
             console.log("mouseWheel", e)
             if (e.wheelDelta != 0) {
@@ -95,29 +119,39 @@ export class WglUI {
 
         // dragging is delegated to Dragger
         new Dragger(this.canvas, {
-            moved: s => {
+                moved: s => {
 
 
 
-                console.log("deltaLast:", s.deltaLast)
-                if (s.shiftKey) {
-                    const euler = [this.stepify(s.deltaLast[1], 1), this.stepify(s.deltaLast[0], 1), 0]
-                    this.camera.rotate(euler)
-                } else {
-                    const step = this.camera.distanceFromEarthSurface / 100;
-                    var v = [this.stepify(s.deltaLast[0], step), this.stepify(s.deltaLast[1], -step), 0, 0]
-                    this.camera.move(v)
+                    console.log("deltaLast:", s.deltaLast)
+                    if (s.shiftKey) {
+                        const euler = [this.stepify(s.deltaLast[1], 1), this.stepify(s.deltaLast[0], 1), 0]
+                        this.camera.rotate(euler)
+                    } else {
+                        const step = this.camera.distanceFromEarthSurface / 100;
+                        var v = [this.stepify(s.deltaLast[0], step), this.stepify(s.deltaLast[1], -step), 0, 0]
+                        this.camera.move(v)
+                    }
+                    this.redraw()
+                },
+                click: e => {
+                    console.log("click!")
+                    this.drawMousePick(e.clientX, e.clientY)
+
+
+
+
+
+
+
+
+
                 }
-                this.redraw()
-            },
-            click: e=>{
-                console.log("click!")
-            }
 
-        })
-        // handle keyboard
+            })
+            // handle keyboard
 
-       this. canvas.addEventListener('keydown', (e)=> {
+        this.canvas.addEventListener('keydown', (e) => {
             console.log('key', e);
             const v = [0, 0, 0, 0]
 
@@ -156,12 +190,12 @@ export class WglUI {
                     v[2] = -step
                 else
                     return
-                    this.camera.move(v)
+                this.camera.move(v)
                 this.redraw()
             }
 
         }, false);
 
-       this. canvas.focus()
+        this.canvas.focus()
     }
 }

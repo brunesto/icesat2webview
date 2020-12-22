@@ -25,6 +25,21 @@ global.logFlag = true
 //step2s.push(new Step3Texture())
 
 
+class ModelBinder{
+    constructor(cubeObj){
+        this.cubeObj=cubeObj
+    }
+    forRender(){
+        const pp = new ProgramPINT(this.cubeObj.name, () => this.cubeObj.modelMatrix)
+        pp.initBuffers(this.cubeObj.getParams())
+        return pp
+    }
+    forMousePick(){
+        const pp = new ProgramU(this.cubeObj.name, () => this.cubeObj.modelMatrix)
+        pp.initBuffers(this.cubeObj.getParams())
+        return pp
+    }
+}
 
 
 $(document).ready(function() {
@@ -36,12 +51,13 @@ $(document).ready(function() {
 
     const cubeObj = new Cube("cube1")
     mat4.scale(cubeObj.modelMatrix, mat4.create(), [6000, 6000, 6000])
-    const pp = new ProgramPINT(cubeObj.name, () => cubeObj.modelMatrix)
-    pp.initBuffers(cubeObj.getParams())
+
+    // const pp = new ProgramPINT(cubeObj.name, () => cubeObj.modelMatrix)
+    // pp.initBuffers(cubeObj.getParams())
 
 
 
-    step2s.push(pp)
+    step2s.push(new ModelBinder(cubeObj))
 
     wglui.redraw()
 
