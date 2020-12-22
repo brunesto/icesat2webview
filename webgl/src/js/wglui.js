@@ -31,6 +31,7 @@ export class WglUI {
                 this.drawables4MousePick = []
                 console.log("binders:" + this.binders.length)
                 for (var binder of this.binders) {
+                    console.log("binder:" + binder)
                     this.drawables4Render.push(binder.forRender())
                     this.drawables4MousePick.push(binder.forMousePick())
                 }
