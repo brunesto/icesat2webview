@@ -19,6 +19,7 @@ export class Dragger {
 
     _updateFrom(e) {
         this.dragState.deltaLast = [e.clientX - this.dragState.last[0], e.clientY - this.dragState.last[1]];
+       
         this.dragState.last = [e.clientX, e.clientY];
         this.dragState.deltaStart = [e.clientX - this.dragState.start[0], e.clientY - this.dragState.start[1]];
 
@@ -31,13 +32,23 @@ export class Dragger {
             start: [e.clientX, e.clientY],
             last: [e.clientX, e.clientY],
             ctrlKey: e.ctrlKey,
-            shiftKey: e.shiftKey
+            shiftKey: e.shiftKey,
+            moved:false
         };
         this.callbacks.started?.(this.dragState)
     }
 
     handleMouseUp(e) {
         console.log("mouseup", e)
+        if (this.dragState && !this.dragState.moved) {
+            this.callbacks.click?.(e)
+            this.dragState = null
+        } else {
+            this.handleMouseUpOrOut(e);
+        }
+    }
+    handleMouseUpOrOut(e) {
+        console.log("mouseuporout", e)
         if (this.dragState) {
             this._updateFrom(e)
             this.callbacks.done?.(this.dragState)
@@ -51,8 +62,9 @@ export class Dragger {
     }
 
     handleMouseMove(e) {
-        console.log("mousemove")
+      //  console.log("mousemove")
         if (this.dragState) {
+            this.dragState.moved=true
             this._updateFrom(e)
             this.callbacks.moved?.(this.dragState)
         }

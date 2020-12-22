@@ -67,6 +67,7 @@ export class WglUI {
 
        this.redraw()
 
+      
        // handle mouse
        this.canvas.addEventListener("mousewheel", e => {
 
@@ -108,6 +109,9 @@ export class WglUI {
                     this.camera.move(v)
                 }
                 this.redraw()
+            },
+            click: e=>{
+                console.log("click!")
             }
 
         })
