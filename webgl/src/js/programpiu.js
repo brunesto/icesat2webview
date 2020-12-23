@@ -2,7 +2,8 @@ import { mat4 } from 'gl-matrix';
 import { initShaderProgram } from './webglutil.js';
 import { Drawable } from './baseobj.js';
 import { bv3 } from './bv3.js';
-
+import {createPositionAndIndexBuffers,createNormalBuffers,createTextureCoordsBuffers,
+    bufferLocationSetup,bufferTextureCoordinatesLocationSetup,matrixSetup} from "./programhelper.js"
 /**
  * A base class with uniform color 
  * This is used for http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-an-opengl-hack/
@@ -73,37 +74,42 @@ export class ProgramPIU extends Drawable {
             for (var i = 0; i < params.positions.length; i += 3)
                 console.log("[" + i / 3 + ",...]=" + params.positions[i] + "," + params.positions[i + 1] + "," + params.positions[i + 2]);
 
-        // Create a buffer for the cube's vertex params.positions.
-        const positionBuffer = gl.createBuffer();
+        // // Create a buffer for the cube's vertex params.positions.
+        // const positionBuffer = gl.createBuffer();
 
-        // Select the positionBuffer as the one to apply buffer
-        // operations to from here out.
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        // // Select the positionBuffer as the one to apply buffer
+        // // operations to from here out.
+        // gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-        // Now pass the list of params.positions into WebGL to build the
-        // shape. We do this by creating a Float32Array from the
-        // JavaScript array, then use it to fill the current buffer.
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(params.positions), gl.STATIC_DRAW);
+        // // Now pass the list of params.positions into WebGL to build the
+        // // shape. We do this by creating a Float32Array from the
+        // // JavaScript array, then use it to fill the current buffer.
+        // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(params.positions), gl.STATIC_DRAW);
 
 
-        // -- 2 params.indices  
-        console.log("params.indices: " + params.indices.length);
-        if (logFlag)
-            for (var i = 0; i < params.indices.length; i += 3)
-                console.log("[" + i + ",...]=" + params.indices[i] + "," + params.indices[i + 1] + "," + params.indices[i + 2]);
+        // // -- 2 params.indices  
+        // console.log("params.indices: " + params.indices.length);
+        // if (logFlag)
+        //     for (var i = 0; i < params.indices.length; i += 3)
+        //         console.log("[" + i + ",...]=" + params.indices[i] + "," + params.indices[i + 1] + "," + params.indices[i + 2]);
 
-        const indexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(params.indices), gl.STATIC_DRAW);
+        // const indexBuffer = gl.createBuffer();
+        // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(params.indices), gl.STATIC_DRAW);
 
-        this.buffers = {
-            positionSize: params.positions.length,
-            position: positionBuffer,
+        // this.buffers = {
+        //     positionSize: params.positions.length,
+        //     position: positionBuffer,
       
-            indices: indexBuffer,
-            indicesSize: params.indices.length,
+        //     indices: indexBuffer,
+        //     indicesSize: params.indices.length,
       
-        };
+        // };
+
+        this.buffers ={...createPositionAndIndexBuffers(params),
+            // ...createNormalBuffers(params),
+            // ...createTextureCoordsBuffers(params),
+        }
     }
 
     
@@ -113,61 +119,62 @@ export class ProgramPIU extends Drawable {
 
     draw2(id,projectionMatrix, viewMatrix) {
         // Tell WebGL to use our program when drawing
-        console.log(name + "."+id+": draw2()");
+        //console.log(name + "."+id+": draw2()");
         gl.useProgram(this.programInfo.program);
 
 
+        bufferLocationSetup(this.buffers.position,this.programInfo.locations.vertexPosition)
 
 
-        // Tell WebGL how to pull out the positions from the position
-        // buffer into the vertexPosition attribute
-        {
-            const numComponents = 3;
-            const type = gl.FLOAT;
-            const normalize = false;
-            const stride = 0;
-            const offset = 0;
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position);
-            gl.vertexAttribPointer(
-                this.programInfo.locations.vertexPosition,
-                numComponents,
-                type,
-                normalize,
-                stride,
-                offset);
-            gl.enableVertexAttribArray(
-                this.programInfo.locations.vertexPosition);
-        }
+        // // Tell WebGL how to pull out the positions from the position
+        // // buffer into the vertexPosition attribute
+        // {
+        //     const numComponents = 3;
+        //     const type = gl.FLOAT;
+        //     const normalize = false;
+        //     const stride = 0;
+        //     const offset = 0;
+        //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position);
+        //     gl.vertexAttribPointer(
+        //         this.programInfo.locations.vertexPosition,
+        //         numComponents,
+        //         type,
+        //         normalize,
+        //         stride,
+        //         offset);
+        //     gl.enableVertexAttribArray(
+        //         this.programInfo.locations.vertexPosition);
+        // }
 
 
 
       
 
+        matrixSetup(this.getModelMatrix(),viewMatrix,projectionMatrix,this.programInfo.locations.mvpMatrix)
 
+        // const modelMatrix = this.getModelMatrix();
+        // const modelViewMatrix = mat4.create();
+        // mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
+        // const mvpMatrix = mat4.create();
+        // mat4.multiply(mvpMatrix, projectionMatrix, modelViewMatrix);
 
-        const modelMatrix = this.getModelMatrix();
-        const modelViewMatrix = mat4.create();
-        mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
-        const mvpMatrix = mat4.create();
-        mat4.multiply(mvpMatrix, projectionMatrix, modelViewMatrix);
-
-        gl.uniformMatrix4fv(
-            this.programInfo.locations.mvpMatrix,
-            false,
-            mvpMatrix);
+        // gl.uniformMatrix4fv(
+        //     this.programInfo.locations.mvpMatrix,
+        //     false,
+        //     mvpMatrix);
 
         const sid=(id+1)
-        console.log("id+1:"+sid)
+        //console.log("id+1:"+sid)
         const rgb=id2rgb(sid)
-        console.log("rgb:"+rgb)
+        //console.log("rgb:"+rgb)
         const rgb1=bv3.scalarmul(rgb,1/255.0)
-        console.log("rgb1:"+rgb1)
+        //console.log("rgb1:"+rgb1)
         gl.uniform3fv( this.programInfo.locations.color, rgb1)//new Float32Array([0.349,0.241,0.912]) )
 
         // draw
         {
             const trianglesCount = this.buffers.indicesSize;
-            console.debug("drawElements " + trianglesCount);
+            //console.debug("drawElements " + trianglesCount);
             const type = gl.UNSIGNED_SHORT;
             const offset = 0;
             gl.drawElements(gl.TRIANGLES, trianglesCount, type, offset);

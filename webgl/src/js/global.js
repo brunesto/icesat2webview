@@ -30,7 +30,7 @@ export function vec2string(a, formatter) {
  * dump a matrix to string
  */
 export function mat2string(a, formatter) {
-    console.log("dedieu...")
+    
     if (formatter == undefined)
         formatter = f2string
     var retVal = ""

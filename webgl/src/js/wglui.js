@@ -61,7 +61,7 @@ export class WglUI {
         const id = rgb2id(rgb) - 1
         console.log("id:" + id)
             // immediately replace the view
-       // this.drawRenderScene()
+       this.drawRenderScene()
 
         // if (id==-1)    
         //     return null

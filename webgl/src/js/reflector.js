@@ -39,7 +39,7 @@ export class reflector extends BaseObj {
         // position.
 
         const indices = [
-            0, 1, 2, 2, 3, 0, // vertical
+            0, 1, 2, 2, 3, 0, // vt
             4, 5, 6, 6, 7, 4, // hz            
         ];
 

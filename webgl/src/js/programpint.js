@@ -1,7 +1,8 @@
 import { mat4 } from 'gl-matrix';
 import { initShaderProgram } from './webglutil.js';
 import { Drawable } from './baseobj';
-import {createPositionAndIndexBuffers,createNormalBuffers,createTextureCoordsBuffers} from "./programhelper.js"
+import {createPositionAndIndexBuffers,createNormalBuffers,createTextureCoordsBuffers,
+    bufferLocationSetup,bufferTextureCoordinatesLocationSetup,matrixSetup} from "./programhelper.js"
 /**
  * A base class with
  * -positions & indices
@@ -127,53 +128,53 @@ export class ProgramPINT extends Drawable {
 
     draw2(id,projectionMatrix, viewMatrix) {
         // Tell WebGL to use our program when drawing
-        console.log(name + ": draw2()");
+        //console.log(name + ": draw2()");
         gl.useProgram(this.programInfo.program);
 
        
+        bufferLocationSetup(this.buffers.position,this.programInfo.locations.vertexPosition)
 
+        // // Tell WebGL how to pull out the positions from the position
+        // // buffer into the vertexPosition attribute
+        // {
+        //     const numComponents = 3;
+        //     const type = gl.FLOAT;
+        //     const normalize = false;
+        //     const stride = 0;
+        //     const offset = 0;
+        //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position);
+        //     gl.vertexAttribPointer(
+        //         this.programInfo.locations.vertexPosition,
+        //         numComponents,
+        //         type,
+        //         normalize,
+        //         stride,
+        //         offset);
+        //     gl.enableVertexAttribArray(
+        //         this.programInfo.locations.vertexPosition);
+        // }
 
-        // Tell WebGL how to pull out the positions from the position
-        // buffer into the vertexPosition attribute
-        {
-            const numComponents = 3;
-            const type = gl.FLOAT;
-            const normalize = false;
-            const stride = 0;
-            const offset = 0;
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position);
-            gl.vertexAttribPointer(
-                this.programInfo.locations.vertexPosition,
-                numComponents,
-                type,
-                normalize,
-                stride,
-                offset);
-            gl.enableVertexAttribArray(
-                this.programInfo.locations.vertexPosition);
-        }
+        bufferLocationSetup(this.buffers.normals,this.programInfo.locations.vertexNormal)
 
-
-
-        // Tell WebGL how to pull out the normals from
-        // the normal buffer into the vertexNormal attribute.
-        {
-            const numComponents = 3;
-            const type = gl.FLOAT;
-            const normalize = false;
-            const stride = 0;
-            const offset = 0;
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normals);
-            gl.vertexAttribPointer(
-                this.programInfo.locations.vertexNormal,
-                numComponents,
-                type,
-                normalize,
-                stride,
-                offset);
-            gl.enableVertexAttribArray(
-                this.programInfo.locations.vertexNormal);
-        }
+        // // Tell WebGL how to pull out the normals from
+        // // the normal buffer into the vertexNormal attribute.
+        // {
+        //     const numComponents = 3;
+        //     const type = gl.FLOAT;
+        //     const normalize = false;
+        //     const stride = 0;
+        //     const offset = 0;
+        //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normals);
+        //     gl.vertexAttribPointer(
+        //         this.programInfo.locations.vertexNormal,
+        //         numComponents,
+        //         type,
+        //         normalize,
+        //         stride,
+        //         offset);
+        //     gl.enableVertexAttribArray(
+        //         this.programInfo.locations.vertexNormal);
+        // }
 
         // Tell WebGL which indices to use to index the vertices
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indices);
@@ -196,18 +197,18 @@ export class ProgramPINT extends Drawable {
         //     false,
         //     modelMatrix);
 
-
+        matrixSetup(this.getModelMatrix(),viewMatrix,projectionMatrix,this.programInfo.locations.mvpMatrix)
             
-            const modelMatrix = this.getModelMatrix();
-            const modelViewMatrix = mat4.create();
-            mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
-            const mvpMatrix = mat4.create();
-            mat4.multiply(mvpMatrix, projectionMatrix, modelViewMatrix);
+            // const modelMatrix = this.getModelMatrix();
+            // const modelViewMatrix = mat4.create();
+            // mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
+            // const mvpMatrix = mat4.create();
+            // mat4.multiply(mvpMatrix, projectionMatrix, modelViewMatrix);
     
-  gl.uniformMatrix4fv(
-            this.programInfo.locations.mvpMatrix,
-            false,
-            mvpMatrix);
+//   gl.uniformMatrix4fv(
+//             this.programInfo.locations.mvpMatrix,
+//             false,
+//             mvpMatrix);
 
 
         // // Generate and deliver to the shader a normal matrix, 
@@ -223,18 +224,18 @@ export class ProgramPINT extends Drawable {
         //     false,
         //     normalMatrix);
 
-
-        // tell webgl how to pull out the texture coordinates from buffer
-        {
-            const num = 2; // every coordinate composed of 2 values
-            const type = gl.FLOAT; // the data in the buffer is 32 bit float
-            const normalize = false; // don't normalize
-            const stride = 0; // how many bytes to get from one set to the next
-            const offset = 0; // how many bytes inside the buffer to start from
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.textureCoord);
-            gl.vertexAttribPointer(this.programInfo.locations.textureCoord, num, type, normalize, stride, offset);
-            gl.enableVertexAttribArray(this.programInfo.locations.textureCoord);
-        }
+        bufferTextureCoordinatesLocationSetup(this.buffers.textureCoord,this.programInfo.locations.textureCoord)
+        // // tell webgl how to pull out the texture coordinates from buffer
+        // {
+        //     const num = 2; // every coordinate composed of 2 values
+        //     const type = gl.FLOAT; // the data in the buffer is 32 bit float
+        //     const normalize = false; // don't normalize
+        //     const stride = 0; // how many bytes to get from one set to the next
+        //     const offset = 0; // how many bytes inside the buffer to start from
+        //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.textureCoord);
+        //     gl.vertexAttribPointer(this.programInfo.locations.textureCoord, num, type, normalize, stride, offset);
+        //     gl.enableVertexAttribArray(this.programInfo.locations.textureCoord);
+        // }
 
         // Tell WebGL we want to affect texture unit 0
         {

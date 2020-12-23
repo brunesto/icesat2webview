@@ -1,3 +1,5 @@
+import { mat4 } from 'gl-matrix';
+
 export function createPositionAndIndexBuffers(params) {
     // -- 1 params.positions
     // dump...
@@ -70,3 +72,51 @@ export function createTextureCoordsBuffers(params) {
     }
 }
 
+
+
+export function bufferLocationSetup(positionBuffer, vertexPositionLocation) {
+    // Tell WebGL how to pull out the positions from the position
+    // buffer into the vertexPosition attribute
+    //console.log("bufferLocationSetup l: " + vertexPositionLocation)
+    const numComponents = 3;
+    const type = gl.FLOAT;
+    const normalize = false;
+    const stride = 0;
+    const offset = 0;
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.vertexAttribPointer(
+        vertexPositionLocation,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset);
+    gl.enableVertexAttribArray(
+        vertexPositionLocation);
+}
+export function bufferTextureCoordinatesLocationSetup(textureCoordBuffer, textureCoordLocation)
+// tell webgl how to pull out the texture coordinates from buffer
+{
+    //console.log("bufferTextureCoordinatesLocationSetup l: " + textureCoordLocation)
+    const num = 2; // every coordinate composed of 2 values
+    const type = gl.FLOAT; // the data in the buffer is 32 bit float
+    const normalize = false; // don't normalize
+    const stride = 0; // how many bytes to get from one set to the next
+    const offset = 0; // how many bytes inside the buffer to start from
+    gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+    gl.vertexAttribPointer(textureCoordLocation, num, type, normalize, stride, offset);
+    gl.enableVertexAttribArray(textureCoordLocation);
+}
+
+export function matrixSetup(modelMatrix,viewMatrix,projectionMatrix,mvpMatrixLocation) {
+    // const modelMatrix = this.getModelMatrix();
+    const modelViewMatrix = mat4.create();
+    mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
+    const mvpMatrix = mat4.create();
+    mat4.multiply(mvpMatrix, projectionMatrix, modelViewMatrix);
+
+    gl.uniformMatrix4fv(
+        mvpMatrixLocation,
+        false,
+        mvpMatrix);
+}
