@@ -67,6 +67,9 @@ module.exports = {
     $: 'jquery',
     jQuery: 'jquery'
   }),
+  new webpack.ProvidePlugin({
+    _: 'lodash',    
+  }),
   ],
 
   // Determine how modules within the project are treated

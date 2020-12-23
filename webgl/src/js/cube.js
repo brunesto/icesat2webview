@@ -76,7 +76,7 @@ export class Cube extends BaseObj {
 
 
 
-
+        /*
 
         const textureCoordinates = [
             // Front
@@ -112,14 +112,33 @@ export class Cube extends BaseObj {
         ];
 
         const texture = loadTexture('/public/ground.png');
+        */
+
+       const triangleColors = [
+        [1.0, 1.0, 1.0], // Front face: white
+        [1.0, 1.0, 1.0], // Front face: white
+        [1.0, 0.0, 0.0], // Back face: red
+        [1.0, 0.0, 0.0], // Back face: red
+        [0.0, 1.0, 0.0], // Top face: green
+        [0.0, 1.0, 0.0], // Top face: green
+        [0.0, 0.0, 1.0], // Bottom face: blue
+        [0.0, 0.0, 1.0], // Bottom face: blue
+        [1.0, 1.0, 0.0], // Right face: yellow
+        [1.0, 1.0, 0.0], // Right face: yellow
+        [1.0, 0.0, 1.0], // Left face: purple
+        [1.0, 0.0, 1.0], // Left face: purple
+    ];
+
+
 
         // let the super class do the WebGl fun
         const retVal = {
             positions: positions,
             indices: indices,
             vertexNormals: vertexNormals,
-            textureCoordinates: textureCoordinates,
-            texture: texture
+            // textureCoordinates: textureCoordinates,
+            // texture: texture,
+            triangleColors:triangleColors
         }
 
         console.log("cube done", retVal)
