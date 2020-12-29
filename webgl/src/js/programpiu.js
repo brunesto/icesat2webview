@@ -40,7 +40,7 @@ export class ProgramPIU extends Drawable {
  `;
     programInfo = null;
     buffers = null;
-    init(name, getModelMatrix) {
+    init(name, getModelMatrix,params) {
         super.init(name + "+" + "U");
         this.getModelMatrix = getModelMatrix;
 
@@ -58,14 +58,14 @@ export class ProgramPIU extends Drawable {
         };
 
 
-    }
+    
 
 
 
     //
     // Initialize the buffers we'll need. 
     //
-    initBuffers(params) {
+
         // -- 1 params.positions
         // dump...
         console.log("params.positions: " + params.positions.length);

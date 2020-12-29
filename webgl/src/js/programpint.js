@@ -60,7 +60,7 @@ export class ProgramPINT extends Drawable {
  `;
     programInfo = null;
     buffers = null;
-    init(name, getModelMatrix) {
+    init(name, getModelMatrix,params) {
         super.init(name + "+" + "PINT");
         this.getModelMatrix = getModelMatrix;
 
@@ -77,14 +77,14 @@ export class ProgramPINT extends Drawable {
                 uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
             }
         };
-    }
+    
 
 
 
     //
     // Initialize the buffers we'll need. 
     //
-    initBuffers(params) {
+  
 
         this.buffers = {...createPositionAndIndexBuffers(params),
             ...createNormalBuffers(params),

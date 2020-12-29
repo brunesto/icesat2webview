@@ -28,14 +28,12 @@ class ModelBinder {
 
     }
     forRender() {
-        this.renderProgram.init(this.mesh.name, this.getModelMatrix) // () => this.mesh.modelMatrix)
-        this.renderProgram.initBuffers(this.mesh.getParams())
+        this.renderProgram.init(this.mesh.name, this.getModelMatrix,this.mesh.getParams()) 
         return   this.renderProgram
     }
     forMousePick() {
         const pp = new ProgramPIU4Id()
-        pp.init(this.mesh.name, this.getModelMatrix) // () => this.mesh.modelMatrix)
-        pp.initBuffers(this.mesh.getParams())
+        pp.init(this.mesh.name, this.getModelMatrix,this.mesh.getParams())
         return pp
     }
 }
