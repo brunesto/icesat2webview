@@ -51,6 +51,18 @@ export function mat2string(a, formatter) {
     return retVal
 }
 
+
+export function logBufferArray(name, colors, step) {
+    for (var i = 0; i < colors.length; i += step) {
+        var acc = ""
+        for (var s = 0; s < step; s++) {
+            acc += colors[i + s] + ","
+        }
+        console.log("" + name + "@" + (i / step) + "[" + i + ",...]=" + acc);
+
+    }
+}
+
 // -- Math ------------------------------------------------
 export function isSquare(n) {
     const rs = Math.sqrt(n)

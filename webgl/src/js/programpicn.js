@@ -6,10 +6,12 @@ import {
     createPositionAndIndexBuffers,
     createNormalBuffers,
     createTextureCoordsBuffers,
+    createColorBuffer,
     bufferLocationSetup,
     bufferTextureCoordinatesLocationSetup,
     matrixSetup
 } from "./programhelper.js"
+
 /**
  * Position Index Color Normals
  * 
@@ -64,16 +66,7 @@ export class ProgramPICN extends Drawable {
 
     }
 
-    logBufferArray(name, colors, step) {
-        for (var i = 0; i < colors.length; i += step) {
-            var acc = ""
-            for (var s = 0; s < step; s++) {
-                acc += colors[i + s] + ","
-            }
-            console.log("" + name + "@" + (i / step) + "[" + i + ",...]=" + acc);
-
-        }
-    }
+    
 
     //
     // Initialize the buffers we'll need. 
@@ -89,38 +82,7 @@ export class ProgramPICN extends Drawable {
 
 
 
-        var vertexColors = [];
-        const numTriangles= Math.trunc(params.indices.length / 3)
-        console.log("numTriangles:",numTriangles)
-        for (var i = 0; i < numTriangles; i++){
-            for (var c = 0; c < 3; c++) {
-                vertexColors.push(null);
-            }
-        }
-        console.log("vertexColors elems:", vertexColors.length)
-
-        for (var i = 0; i < params.indices.length; i++) {
-            // triangle color
-            const triangleIdx = Math.trunc(i / 3)
-            const triangleColor = params.triangleColors[triangleIdx]
-            console.log("index:" + i + " triangle:" + triangleIdx + " color:", triangleColor)
-
-            const positionIndex = params.indices[i]
-            console.log("positionIndex:" +positionIndex)
-
-
-            // console.log("" + index + "+" + c + ":", color)
-            // if (colors[index + v] && !_.isEqual(colors[index + c], color))
-            //     throw "index @" + i + "+" + c + " is +" + index + "+" + c + " and already had a different color assigned"
-
-            // c==rgb
-            for (var c = 0; c < 3; c++) {
-                vertexColors[positionIndex*3 + c] = triangleColor[c]
-            }
-            // vertexColors[positionIndex*4 + 3] = 1 // alpha
-
-        }
-        this.logBufferArray("vertexColors", vertexColors, 4)
+      
             /*
                     const colorBuffer = gl.createBuffer();
                     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
@@ -155,16 +117,13 @@ export class ProgramPICN extends Drawable {
 
 
 
-        const colorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexColors), gl.STATIC_DRAW);
-
+      
 
 
 
 
         this.buffers = {...createPositionAndIndexBuffers(params),
-            color: colorBuffer,
+            ...createColorBuffer(params),
             // ...createNormalBuffers(params),
             // ...createTextureCoordsBuffers(params),
         }
@@ -183,29 +142,29 @@ export class ProgramPICN extends Drawable {
 
         bufferLocationSetup(this.buffers.position, this.programInfo.locations.vertexPosition)
 
-
+        bufferLocationSetup(this.buffers.color,this.programInfo.locations.vertexColor)
 
 
         matrixSetup(this.getModelMatrix(), viewMatrix, projectionMatrix, this.programInfo.locations.mvpMatrix)
-            // Tell WebGL how to pull out the colors from the color buffer
-            // into the vertexColor attribute.
-            {
-                const numComponents = 3;
-                const type = gl.FLOAT;
-                const normalize = false;
-                const stride = 0;
-                const offset = 0;
-                gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.color);
-                gl.vertexAttribPointer(
-                    this.programInfo.locations.vertexColor,
-                    numComponents,
-                    type,
-                    normalize,
-                    stride,
-                    offset);
-                gl.enableVertexAttribArray(
-                    this.programInfo.locations.vertexColor);
-            }
+            // // Tell WebGL how to pull out the colors from the color buffer
+            // // into the vertexColor attribute.
+            // {
+            //     const numComponents = 3;
+            //     const type = gl.FLOAT;
+            //     const normalize = false;
+            //     const stride = 0;
+            //     const offset = 0;
+            //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.color);
+            //     gl.vertexAttribPointer(
+            //         this.programInfo.locations.vertexColor,
+            //         numComponents,
+            //         type,
+            //         normalize,
+            //         stride,
+            //         offset);
+            //     gl.enableVertexAttribArray(
+            //         this.programInfo.locations.vertexColor);
+            // }
 
         // draw
         {

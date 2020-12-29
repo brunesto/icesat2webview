@@ -1,4 +1,5 @@
 import { mat4 } from 'gl-matrix';
+import {logBufferArray} from './global.js'
 
 export function createPositionAndIndexBuffers(params) {
     // -- 1 params.positions
@@ -72,6 +73,58 @@ export function createTextureCoordsBuffers(params) {
     }
 }
 
+
+/**
+ * 
+ * given indexed positions and triangle colors, create the vertex colors buffer
+ */
+export function createColorBuffer(params) {
+    var vertexColors = [];
+    const numTriangles = Math.trunc(params.indices.length / 3)
+    console.log("numTriangles:", numTriangles)
+    for (var i = 0; i < numTriangles; i++) {
+        for (var c = 0; c < 3; c++) {
+            vertexColors.push(null);
+        }
+    }
+    console.log("vertexColors elems:", vertexColors.length)
+
+    for (var i = 0; i < params.indices.length; i++) {
+        // triangle color
+        const triangleIdx = Math.trunc(i / 3)
+        const triangleColor = params.triangleColors[triangleIdx]
+        console.log("index:" + i + " triangle:" + triangleIdx + " color:", triangleColor)
+
+        const positionIndex = params.indices[i]
+        console.log("positionIndex:" + positionIndex)
+
+
+        // copy the 3 color channels (rgb) for this position
+        for (var c = 0; c < 3; c++) {
+            const channelIdx = positionIndex * 3 + c
+                //  check in case the color is already assigned that it is not changed
+            const prev = vertexColors[channelIdx]
+            if (prev != null) {
+                if (prev != triangleColor[c]) {
+                    // conflict in color assignement
+                    throw ("error: index @" + positionIndex + " already had a different color assigned")
+                }
+            } else {
+                vertexColors[channelIdx] = triangleColor[c]
+            }
+        }
+
+    }
+    logBufferArray("vertexColors", vertexColors, 4)
+
+    const colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexColors), gl.STATIC_DRAW);
+
+    return {
+        color:colorBuffer
+    }
+}
 
 
 export function bufferLocationSetup(positionBuffer, vertexPositionLocation) {
