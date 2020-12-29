@@ -1,6 +1,6 @@
 import { mat4 } from 'gl-matrix';
 import { initShaderProgram } from './webglutil.js';
-import { Drawable } from './baseobj';
+import { BaseProgram } from './baseobj';
 import {
     createPositionAndIndexBuffers,
     createNormalBuffers,
@@ -9,6 +9,8 @@ import {
     bufferTextureCoordinatesLocationSetup,
     matrixSetup
 } from "./programhelper.js"
+
+import {registerProgram} from './webglprogramcache.js'
 /**
  * A program that will render using
  * -positions & indices
@@ -18,7 +20,7 @@ import {
 
 
 
-export class ProgramPINT extends Drawable {
+export class ProgramPINT extends BaseProgram {
 
 
     // Vertex shader program
@@ -60,9 +62,9 @@ export class ProgramPINT extends Drawable {
  `;
     programInfo = null;
     buffers = null;
-    init(name, getModelMatrix,params) {
-        super.init(name + "+" + "PINT");
-        this.getModelMatrix = getModelMatrix;
+    constructor(name) {
+        super(name + "+" + "PINT");
+       
 
 
         var shaderProgram = initShaderProgram(this.vsSource, this.fsSource);
@@ -79,42 +81,41 @@ export class ProgramPINT extends Drawable {
         };
     
 
-
+    }
 
     //
     // Initialize the buffers we'll need. 
     //
-  
+    initBuffers(params) {
 
-        this.buffers = {...createPositionAndIndexBuffers(params),
+        return {...createPositionAndIndexBuffers(params),
             ...createNormalBuffers(params),
             ...createTextureCoordsBuffers(params),
+            texture : params.texture,
         }
-
-        this.texture = params.texture; // TODO: need to understand more
     }
 
 
 
 
-    draw2(id, projectionMatrix, viewMatrix) {
+    draw2(id, buffers,projectionMatrix, viewMatrix,modelMatrix) {
         // Tell WebGL to use our program when drawing
         //console.log(name + ": draw2()");
         gl.useProgram(this.programInfo.program);
-        bufferLocationSetup(this.buffers.position, this.programInfo.locations.vertexPosition)
-        bufferLocationSetup(this.buffers.normals, this.programInfo.locations.vertexNormal)
+        bufferLocationSetup(buffers.position, this.programInfo.locations.vertexPosition)
+        bufferLocationSetup(buffers.normals, this.programInfo.locations.vertexNormal)
 
         // Tell WebGL which indices to use to index the vertices
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indices);
-        matrixSetup(this.getModelMatrix(), viewMatrix, projectionMatrix, this.programInfo.locations.mvpMatrix)
-        bufferTextureCoordinatesLocationSetup(this.buffers.textureCoord, this.programInfo.locations.textureCoord)
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
+        matrixSetup(modelMatrix, viewMatrix, projectionMatrix, this.programInfo.locations.mvpMatrix)
+        bufferTextureCoordinatesLocationSetup(buffers.textureCoord, this.programInfo.locations.textureCoord)
 
         // Tell WebGL we want to affect texture unit 0
         {
             gl.activeTexture(gl.TEXTURE0);
 
             // Bind the texture to texture unit 0
-            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            gl.bindTexture(gl.TEXTURE_2D, buffers.texture);
 
             // Tell the shader we bound the texture to texture unit 0
             gl.uniform1i(this.programInfo.locations.uSampler, 0);
@@ -123,7 +124,7 @@ export class ProgramPINT extends Drawable {
 
         // draw
         {
-            const trianglesCount = this.buffers.indicesSize;
+            const trianglesCount = buffers.indicesSize;
             console.debug("drawElements " + trianglesCount);
             const type = gl.UNSIGNED_SHORT;
             const offset = 0;
@@ -136,3 +137,5 @@ export class ProgramPINT extends Drawable {
         // TODO!!!
     }
 }
+
+// registerProgram(new ProgramPINT())

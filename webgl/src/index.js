@@ -13,30 +13,10 @@ import { ProgramPICN } from "./js/programpicn.js";
 
 import { Camera } from "./js/camera.js";
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
-import { WglUI } from "./js/wglui.js";
+import { WglUI,ModelBinder } from "./js/wglui.js";
 
 global.logFlag = true
 
-
-
-
-class ModelBinder {
-    constructor(mesh, getModelMatrix,renderProgram) {
-        this.mesh = mesh
-        this.getModelMatrix = getModelMatrix
-        this.renderProgram=renderProgram
-
-    }
-    forRender() {
-        this.renderProgram.init(this.mesh.name, this.getModelMatrix,this.mesh.getParams()) 
-        return   this.renderProgram
-    }
-    forMousePick() {
-        const pp = new ProgramPIU4Id()
-        pp.init(this.mesh.name, this.getModelMatrix,this.mesh.getParams())
-        return pp
-    }
-}
 
 
 $(document).ready(function() {

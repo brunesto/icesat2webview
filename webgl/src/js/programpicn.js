@@ -1,6 +1,6 @@
 import { mat4 } from 'gl-matrix';
 import { initShaderProgram } from './webglutil.js';
-import { Drawable } from './baseobj.js';
+import { BaseProgram } from './baseobj.js';
 import { bv3 } from './bv3.js';
 import {
     createPositionAndIndexBuffers,
@@ -16,7 +16,7 @@ import {
  * Program to render using Position Index (Vertex)Color Normals
  */
 
-export class ProgramPICN extends Drawable {
+export class ProgramPICN extends BaseProgram {
 
 
     // Vertex shader program
@@ -55,10 +55,9 @@ export class ProgramPICN extends Drawable {
  `;
     programInfo = null;
     buffers = null;
-    init(name, getModelMatrix,params) {
-        super.init(name + "+" + "U");
-        this.getModelMatrix = getModelMatrix;
-
+    constructor(name) {
+        super(name + "+" + "U");
+        
 
         var shaderProgram = initShaderProgram(this.vsSource, this.fsSource);
         this.programInfo = {
@@ -74,14 +73,14 @@ export class ProgramPICN extends Drawable {
         };
 
 
-    
+    }
 
     
     //
     // Initialize the buffers we'll need. 
     //
-
-        this.buffers = {...createPositionAndIndexBuffers(params),
+    initBuffers(params) {
+        return {...createPositionAndIndexBuffers(params),
             ...createColorBuffer(params),
             ...createNormalBuffers(params),
             // ...createTextureCoordsBuffers(params),
@@ -89,21 +88,21 @@ export class ProgramPICN extends Drawable {
     }
 
 
-    draw2(id, projectionMatrix, viewMatrix) {
+    draw2(id, buffers,projectionMatrix, viewMatrix,modelMatrix) {
         // Tell WebGL to use our program when drawing
         //console.log(name + "."+id+": draw2()");
         gl.useProgram(this.programInfo.program);
 
 
-        bufferLocationSetup(this.buffers.position, this.programInfo.locations.vertexPosition)
-        bufferLocationSetup(this.buffers.color,this.programInfo.locations.vertexColor)
-        bufferLocationSetup(this.buffers.normals,this.programInfo.locations.vertexNormal)
-        matrixSetup(this.getModelMatrix(), viewMatrix, projectionMatrix, this.programInfo.locations.mvpMatrix)
+        bufferLocationSetup(buffers.position, this.programInfo.locations.vertexPosition)
+        bufferLocationSetup(buffers.color,this.programInfo.locations.vertexColor)
+        bufferLocationSetup(buffers.normals,this.programInfo.locations.vertexNormal)
+        matrixSetup(modelMatrix, viewMatrix, projectionMatrix, this.programInfo.locations.mvpMatrix)
          
 
         // draw
         {
-            const trianglesCount = this.buffers.indicesSize;
+            const trianglesCount = buffers.indicesSize;
             //console.debug("drawElements " + trianglesCount);
             const type = gl.UNSIGNED_SHORT;
             const offset = 0;

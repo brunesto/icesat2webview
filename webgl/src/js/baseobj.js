@@ -13,6 +13,15 @@ export class Drawable {
     draw2(id,projectionMatrix, viewMatrix) {}
 }
 
+
+export class BaseProgram {
+    constructor(name) {
+        this.name = name
+    }
+    initBuffers(params){}
+    draw2(id,buffers,projectionMatrix, viewMatrix,modelMatrix) {}
+}
+
 export class BaseObj {
     inited = false
     constructor(name) {

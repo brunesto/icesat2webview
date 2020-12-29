@@ -2,6 +2,43 @@ import { GlWrapper } from "./glwrapper.js";
 import { Dragger } from './dragger.js';
 import { vec2string, mat2string } from "./global.js";
 import { rgb2id } from "./programpiu4id.js"
+import { Drawable } from './baseobj.js';
+
+import { ProgramPIU4Id } from "./programpiu4id.js";
+
+
+export class ModelBinder {
+    constructor(mesh, getModelMatrix,renderProgram) {
+        this.mesh = mesh
+        this.getModelMatrix = getModelMatrix
+        this.renderProgram=renderProgram
+
+     }
+     forRender() {
+         const thisModelBinder=this
+        const renderProgramBuffer=this.renderProgram.initBuffers(this.mesh.getParams()) 
+        
+        const retVal= new Drawable(this.mesh.name+"."+this.renderProgram.name);
+        retVal.draw2=(id,projectionMatrix, viewMatrix)=> {
+                this.renderProgram.draw2(id,renderProgramBuffer,projectionMatrix, viewMatrix,thisModelBinder.getModelMatrix())
+            }
+        
+        return retVal;
+     }
+     forMousePick() {
+        const thisModelBinder=this
+        const pickProgram = new ProgramPIU4Id(this.mesh.name)
+       
+        const pickProgramBuffer=pickProgram.initBuffers(this.mesh.getParams())
+
+        const retVal=  new Drawable(this.mesh.name+"."+pickProgram.name) ;
+        retVal.draw2=(id,projectionMatrix, viewMatrix)=> {
+                pickProgram.draw2(id,pickProgramBuffer,projectionMatrix, viewMatrix,thisModelBinder.getModelMatrix())
+            }
+        return retVal
+    }
+}
+
 
 
 /**
@@ -24,6 +61,13 @@ export class WglUI {
 
         this.initUI()
     }
+
+
+    bindModel(binder){
+        console.log("binder:" + binder)
+        this.drawables4Render.push(binder.forRender())
+        this.drawables4MousePick.push(binder.forMousePick())
+    }
     maybeBindModels() {
             if (!this.modelBounds) {
                 this.modelBounds = true
@@ -31,9 +75,7 @@ export class WglUI {
                 this.drawables4MousePick = []
                 console.log("binders:" + this.binders.length)
                 for (var binder of this.binders) {
-                    console.log("binder:" + binder)
-                    this.drawables4Render.push(binder.forRender())
-                    this.drawables4MousePick.push(binder.forMousePick())
+                    this.bindModel(binder)
                 }
             }
         }

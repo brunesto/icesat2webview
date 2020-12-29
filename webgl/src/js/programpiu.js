@@ -1,6 +1,6 @@
 import { mat4 } from 'gl-matrix';
 import { initShaderProgram } from './webglutil.js';
-import { Drawable } from './baseobj.js';
+import { BaseProgram } from './baseobj.js';
 import { bv3 } from './bv3.js';
 import {
     createPositionAndIndexBuffers,
@@ -13,7 +13,7 @@ import {
 /**
  * program that renders with Position Index and uniform Color 
  */
-export class ProgramPIU extends Drawable {
+export class ProgramPIU extends BaseProgram {
 
 
     // Vertex shader program
@@ -40,9 +40,9 @@ export class ProgramPIU extends Drawable {
  `;
     programInfo = null;
     buffers = null;
-    init(name, getModelMatrix,params) {
-        super.init(name + "+" + "U");
-        this.getModelMatrix = getModelMatrix;
+    constructor(name) {
+        super(name + "+" + "U");
+       
 
 
         var shaderProgram = initShaderProgram(this.vsSource, this.fsSource);
@@ -58,14 +58,14 @@ export class ProgramPIU extends Drawable {
         };
 
 
-    
+    }
 
 
 
     //
     // Initialize the buffers we'll need. 
     //
-
+    initBuffers(params) {
         // -- 1 params.positions
         // dump...
         console.log("params.positions: " + params.positions.length);
@@ -75,7 +75,7 @@ export class ProgramPIU extends Drawable {
 
 
 
-        this.buffers = {...createPositionAndIndexBuffers(params),
+        return {...createPositionAndIndexBuffers(params),
             color: params.color
         }
     }
@@ -85,20 +85,20 @@ export class ProgramPIU extends Drawable {
 
 
 
-    draw2(id, projectionMatrix, viewMatrix) {
-        this.drawWithColor(this.buffers.color, projectionMatrix, viewMatrix)
+    draw2(id, buffers,projectionMatrix, viewMatrix,modelMatrix) {
+        this.drawWithColor(buffers.color, buffers,projectionMatrix, viewMatrix,modelMatrix)
     }
-    drawWithColor(color, projectionMatrix, viewMatrix) {
+    drawWithColor(color, buffers,projectionMatrix, viewMatrix,modelMatrix) {
 
         // Tell WebGL to use our program when drawing
         console.log(name + "." + this.id + ": draw2()");
         gl.useProgram(this.programInfo.program);
-        bufferLocationSetup(this.buffers.position, this.programInfo.locations.vertexPosition)
-        matrixSetup(this.getModelMatrix(), viewMatrix, projectionMatrix, this.programInfo.locations.mvpMatrix)
+        bufferLocationSetup(buffers.position, this.programInfo.locations.vertexPosition)
+        matrixSetup(modelMatrix, viewMatrix, projectionMatrix, this.programInfo.locations.mvpMatrix)
         gl.uniform3fv(this.programInfo.locations.color, color)
             // draw
             {
-                const trianglesCount = this.buffers.indicesSize;
+                const trianglesCount = buffers.indicesSize;
                 //console.debug("drawElements " + trianglesCount);
                 const type = gl.UNSIGNED_SHORT;
                 const offset = 0;

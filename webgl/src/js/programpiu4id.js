@@ -1,6 +1,6 @@
 import { mat4 } from 'gl-matrix';
 import { initShaderProgram } from './webglutil.js';
-import { Drawable } from './baseobj.js';
+// import { BaseProgram } from './baseobj.js';
 import { bv3 } from './bv3.js';
 import { ProgramPIU } from './programpiu.js';
 /**
@@ -10,8 +10,11 @@ import { ProgramPIU } from './programpiu.js';
 
 export class ProgramPIU4Id extends ProgramPIU {
 
+    constructor(name, getModelMatrix) {
+        super(name, getModelMatrix);
+    }
 
-    draw2(id, projectionMatrix, viewMatrix) {
+    draw2(id, buffers,projectionMatrix, viewMatrix,modelMatrix) {
         const sid = (id + 1)
             //console.log("id+1:"+sid)
         const rgb = id2rgb(sid)
@@ -19,7 +22,7 @@ export class ProgramPIU4Id extends ProgramPIU {
         const rgb1 = bv3.scalarmul(rgb, 1 / 255.0)
             //console.log("rgb1:"+rgb1)
             //gl.uniform3fv( this.programInfo.locations.color, rgb1)//new Float32Array([0.349,0.241,0.912]) )
-        this.drawWithColor(rgb1, projectionMatrix, viewMatrix)
+        this.drawWithColor(rgb1,buffers, projectionMatrix, viewMatrix,modelMatrix)
     }
 
     dispose() {
