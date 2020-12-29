@@ -4,8 +4,8 @@
 
 import { BaseObj } from './baseobj.js'
 import { initShaderProgram, loadTexture, gridTexture } from './webglutil.js';
-import {computeVertexNormals} from './normals.js'
-export class reflector extends BaseObj {
+import { computeVertexNormals } from './normals.js'
+export class Reflector extends BaseObj {
     getParams() {
 
 
@@ -13,18 +13,24 @@ export class reflector extends BaseObj {
         // Now create an array of positions for the square.
 
         const positions = [
-            // vertical
+            // vert
             0, -1.0, -1.0,
             0, -1.0, 1.0,
             0, 1.0, 1.0,
             0, 1.0, -1.0,
-            
-            // horizontal
 
-             -1.0,0, -1.0,
-             -1.0,0, 1.0,
-             1.0,0, 1.0,
-             1.0,0, -1.0,
+            // hz
+
+            -1.0, 0, -1.0, -1.0, 0, 1.0,
+            1.0, 0, 1.0,
+            1.0, 0, -1.0,
+
+
+
+            // facing
+            -1.0, -1.0, 0, -1.0, 1.0, 0,
+            1.0, 1.0, 0,
+            1.0, -1.0, 0,
         ];
 
 
@@ -40,7 +46,12 @@ export class reflector extends BaseObj {
 
         const indices = [
             0, 1, 2, 2, 3, 0, // vt
-            4, 5, 6, 6, 7, 4, // hz            
+            2, 1, 0, 0, 3, 2, // vt
+            4, 5, 6, 6, 7, 4, // hz    
+            6, 5, 4, 4, 7, 6, // hz    
+            8, 9, 10, 10, 11, 8, // face
+            10, 9, 8, 8, 11, 10, // face
+                     
         ];
 
 
@@ -52,8 +63,21 @@ export class reflector extends BaseObj {
             computeVertexNormals(positions, indices)
 
 
-        // -- texture coords -------------------------------------------
+        const triangleColors = [
+            [0.0, 1.0, 0.0], //  green
+            [0.0, 1.0, 0.0], //  green
+            [0.0, 1.0, 0.0], //  green
+            [0.0, 1.0, 0.0], //  green
+            [1.0, 0.0, 0.0], //  red
+            [1.0, 0.0, 0.0], //  red
+            [1.0, 0.0, 0.0], //  red
+            [1.0, 0.0, 0.0], //  red
+            [0.0, 0.0, 1.0], //  blue
+            [0.0, 0.0, 1.0], //  blue
+            [0.0, 0.0, 1.0], //  blue
+            [0.0, 0.0, 1.0], //  blue
 
+        ];
 
 
 
@@ -63,7 +87,8 @@ export class reflector extends BaseObj {
         const retVal = {
             positions: positions,
             indices: indices,
-            vertexNormals: vertexNormals,            
+            vertexNormals: vertexNormals,
+            triangleColors: triangleColors,
         }
 
         console.log("reflector done", retVal)

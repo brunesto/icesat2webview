@@ -2,6 +2,9 @@ import './styles/body.css';
 
 import { Sphere } from './js/sphere.js';
 import { Cube } from './js/cube.js';
+import { Reflector } from './js/reflector.js';
+
+
 import { ProgramPINT } from "./js/programpint.js";
 import { ProgramPIU } from "./js/programpiu.js";
 import { ProgramPICN } from "./js/programpicn.js";
@@ -54,7 +57,7 @@ $(document).ready(function() {
 
 
     for (var i = 9; i < 10; i++) {
-        const cubeObj = new Cube("cube" + i, )
+        const cubeObj = new Reflector("reflector" + i, )
         const cm = mat4.create()
         mat4.identity(cm);
         mat4.translate(cm, mat4.create(), [100, 1000 + i * 100, 1000 + i * 1000]);
