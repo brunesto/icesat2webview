@@ -2,7 +2,7 @@
  * Usual WebGl helpers
  */
 
-import { isPowerOf2 } from "./global.js";
+import { isPowerOf2,padLeft } from "./global.js";
 
 
 //
@@ -47,6 +47,10 @@ export function loadShader(type, source) {
     // See if it compiled successfully
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        const lines = source.split(/\r?\n/);
+        for(var y=0;y<lines.length;y++){
+            console.log(padLeft(y+1)+":"+lines[y])
+        }
         console.error('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;

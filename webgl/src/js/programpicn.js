@@ -26,12 +26,24 @@ export class ProgramPICN extends Drawable {
     vsSource = `
  attribute vec4 aVertexPosition;
  attribute vec3 aVertexColor;
+ attribute vec3 aVertexNormal;
  uniform mat4 uMvpMatrix;
 
  varying lowp vec3 vColor;
+
  void main(void) {
     gl_Position = uMvpMatrix  * aVertexPosition;
-    vColor = aVertexColor;   
+
+    // Apply lighting effect
+
+    highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
+    highp vec3 directionalLightColor = vec3(1, 1, 1);
+    highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
+
+    highp float directional = max(dot(aVertexNormal, directionalVector), 0.0);
+    highp vec3 lighting = ambientLight + (directionalLightColor * directional);
+
+    vColor = aVertexColor*lighting;   
  }
 `;
 
@@ -58,6 +70,7 @@ export class ProgramPICN extends Drawable {
             locations: {
                 vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
                 vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
+                vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
                 mvpMatrix: gl.getUniformLocation(shaderProgram, 'uMvpMatrix'),
 
             }
@@ -72,59 +85,9 @@ export class ProgramPICN extends Drawable {
     // Initialize the buffers we'll need. 
     //
     initBuffers(params) {
-
-
-
-        // Now set up the colors for the faces. We'll use solid colors
-        // for each face.
-
-        // Convert the array of colors into a table for all the vertices.
-
-
-
-      
-            /*
-                    const colorBuffer = gl.createBuffer();
-                    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-                    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexColors), gl.STATIC_DRAW);
-            */
-
-
-        // // Now set up the colors for the faces. We'll use solid colors
-        // // for each face.
-
-        // const faceColors = [
-        //     [1.0, 1.0, 1.0, 1.0], // Front face: white
-        //     [1.0, 0.0, 0.0, 1.0], // Back face: red
-        //     [0.0, 1.0, 0.0, 1.0], // Top face: green
-        //     [0.0, 0.0, 1.0, 1.0], // Bottom face: blue
-        //     [1.0, 1.0, 0.0, 1.0], // Right face: yellow
-        //     [1.0, 0.0, 1.0, 1.0], // Left face: purple
-        // ];
-
-        // // Convert the array of colors into a table for all the vertices.
-
-        // var colors = [];
-
-        // for (var j = 0; j < faceColors.length; ++j) {
-        //     const c = faceColors[j];
-
-        //     // Repeat each color four times for the four vertices of the face
-        //     colors = colors.concat(c, c, c, c);
-        // }
-
-        // this.logBufferArray("colors", colors, 4)
-
-
-
-      
-
-
-
-
         this.buffers = {...createPositionAndIndexBuffers(params),
             ...createColorBuffer(params),
-            // ...createNormalBuffers(params),
+            ...createNormalBuffers(params),
             // ...createTextureCoordsBuffers(params),
         }
     }
@@ -141,30 +104,10 @@ export class ProgramPICN extends Drawable {
 
 
         bufferLocationSetup(this.buffers.position, this.programInfo.locations.vertexPosition)
-
         bufferLocationSetup(this.buffers.color,this.programInfo.locations.vertexColor)
-
-
+        bufferLocationSetup(this.buffers.normals,this.programInfo.locations.vertexNormal)
         matrixSetup(this.getModelMatrix(), viewMatrix, projectionMatrix, this.programInfo.locations.mvpMatrix)
-            // // Tell WebGL how to pull out the colors from the color buffer
-            // // into the vertexColor attribute.
-            // {
-            //     const numComponents = 3;
-            //     const type = gl.FLOAT;
-            //     const normalize = false;
-            //     const stride = 0;
-            //     const offset = 0;
-            //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.color);
-            //     gl.vertexAttribPointer(
-            //         this.programInfo.locations.vertexColor,
-            //         numComponents,
-            //         type,
-            //         normalize,
-            //         stride,
-            //         offset);
-            //     gl.enableVertexAttribArray(
-            //         this.programInfo.locations.vertexColor);
-            // }
+         
 
         // draw
         {
