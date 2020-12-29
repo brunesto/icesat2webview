@@ -55,8 +55,8 @@ export class ProgramPICN extends Drawable {
  `;
     programInfo = null;
     buffers = null;
-    constructor(name, getModelMatrix) {
-        super(name + "+" + "U");
+    init(name, getModelMatrix) {
+        super.init(name + "+" + "U");
         this.getModelMatrix = getModelMatrix;
 
 

@@ -21,18 +21,20 @@ global.logFlag = true
 
 
 class ModelBinder {
-    constructor(mesh, getModelMatrix) {
+    constructor(mesh, getModelMatrix,renderProgram) {
         this.mesh = mesh
         this.getModelMatrix = getModelMatrix
+        this.renderProgram=renderProgram
 
     }
     forRender() {
-        const pp = new ProgramPIU(this.mesh.name, this.getModelMatrix) // () => this.mesh.modelMatrix)
-        pp.initBuffers(this.mesh.getParams())
-        return pp
+        this.renderProgram.init(this.mesh.name, this.getModelMatrix) // () => this.mesh.modelMatrix)
+        this.renderProgram.initBuffers(this.mesh.getParams())
+        return   this.renderProgram
     }
     forMousePick() {
-        const pp = new ProgramPIU4Id(this.mesh.name, this.getModelMatrix) // () => this.mesh.modelMatrix)
+        const pp = new ProgramPIU4Id()
+        pp.init(this.mesh.name, this.getModelMatrix) // () => this.mesh.modelMatrix)
         pp.initBuffers(this.mesh.getParams())
         return pp
     }
@@ -52,13 +54,13 @@ $(document).ready(function() {
         mat4.identity(cm);
         mat4.translate(cm, mat4.create(), [100, 1000 + i * 100, 1000 + i * 1000]);
         mat4.scale(cm, cm, [200, 200, 200]);
-        step2s.push(new ModelBinder(cubeObj, () => cm))
+        step2s.push(new ModelBinder(cubeObj, () => cm,new ProgramPIU()))
     }
 
     const sm = mat4.create()
     mat4.scale(sm, sm, [0.1, 0.1, 0.1]);
     const sphereObj = new Sphere("sphere1")
-    step2s.push(new ModelBinder(sphereObj, () => sm))
+    step2s.push(new ModelBinder(sphereObj, () => sm,new ProgramPINT()))
 
 
 

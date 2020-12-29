@@ -60,8 +60,8 @@ export class ProgramPINT extends Drawable {
  `;
     programInfo = null;
     buffers = null;
-    constructor(name, getModelMatrix) {
-        super(name + "+" + "PINT");
+    init(name, getModelMatrix) {
+        super.init(name + "+" + "PINT");
         this.getModelMatrix = getModelMatrix;
 
 

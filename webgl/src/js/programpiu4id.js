@@ -10,9 +10,6 @@ import { ProgramPIU } from './programpiu.js';
 
 export class ProgramPIU4Id extends ProgramPIU {
 
-    constructor(name, getModelMatrix) {
-        super(name, getModelMatrix);
-    }
 
     draw2(id, projectionMatrix, viewMatrix) {
         const sid = (id + 1)
