@@ -89,6 +89,7 @@ export class Reflector extends BaseObj {
             indices: indices,
             vertexNormals: vertexNormals,
             triangleColors: triangleColors,
+            color: [1.0, 1.0, 0.0],
         }
 
         console.log("reflector done", retVal)

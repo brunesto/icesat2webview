@@ -126,32 +126,3 @@ export class ProgramPICN extends Drawable {
         // TODO!!!
     }
 }
-
-/**
- * convert an id to rgb [0..255]
- */
-export function id2rgb(i) {
-
-    if (i > 0xffffff || i < 0) // 0xffffff=16777215
-        throw "id out of range: " + i
-    const b = (i & 0x000000FF) >> 0;
-    const g = (i & 0x0000FF00) >> 8;
-    const r = (i & 0x00FF0000) >> 16;
-
-
-
-    return [r, g, b]
-}
-
-/**
- * convert a rgb [0..255] back to id
- */
-export function rgb2id(rgb) {
-
-    const r = rgb[0];
-    const g = rgb[1];
-    const b = rgb[2];
-
-    const id = r * 256 * 256 + g * 256 + b;
-    return id;
-}

@@ -7,6 +7,8 @@ import { Reflector } from './js/reflector.js';
 
 import { ProgramPINT } from "./js/programpint.js";
 import { ProgramPIU } from "./js/programpiu.js";
+import { ProgramPIU4Id } from "./js/programpiu4id.js";
+
 import { ProgramPICN } from "./js/programpicn.js";
 
 import { Camera } from "./js/camera.js";
@@ -37,12 +39,12 @@ class ModelBinder {
 
     }
     forRender() {
-        const pp = new ProgramPICN(this.mesh.name, this.getModelMatrix) // () => this.mesh.modelMatrix)
+        const pp = new ProgramPIU(this.mesh.name, this.getModelMatrix) // () => this.mesh.modelMatrix)
         pp.initBuffers(this.mesh.getParams())
         return pp
     }
     forMousePick() {
-        const pp = new ProgramPIU(this.mesh.name, this.getModelMatrix) // () => this.mesh.modelMatrix)
+        const pp = new ProgramPIU4Id(this.mesh.name, this.getModelMatrix) // () => this.mesh.modelMatrix)
         pp.initBuffers(this.mesh.getParams())
         return pp
     }
@@ -56,7 +58,7 @@ $(document).ready(function() {
     var wglui = new WglUI("glCanvas", camera, step2s)
 
 
-    for (var i = 9; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
         const cubeObj = new Reflector("reflector" + i, )
         const cm = mat4.create()
         mat4.identity(cm);
