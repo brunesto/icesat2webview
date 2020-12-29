@@ -4,26 +4,17 @@ import { Drawable } from './baseobj.js';
 import { bv3 } from './bv3.js';
 import { ProgramPIU } from './programpiu.js';
 /**
- *
+ * Render objects using a special color for each object as ID
  * This is used for http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-an-opengl-hack/
- * 
  */
-
-
 
 export class ProgramPIU4Id extends ProgramPIU {
 
-
     constructor(name, getModelMatrix) {
         super(name, getModelMatrix);
-
-
     }
 
-
     draw2(id, projectionMatrix, viewMatrix) {
-
-
         const sid = (id + 1)
             //console.log("id+1:"+sid)
         const rgb = id2rgb(sid)
@@ -32,8 +23,6 @@ export class ProgramPIU4Id extends ProgramPIU {
             //console.log("rgb1:"+rgb1)
             //gl.uniform3fv( this.programInfo.locations.color, rgb1)//new Float32Array([0.349,0.241,0.912]) )
         this.drawWithColor(rgb1, projectionMatrix, viewMatrix)
-
-
     }
 
     dispose() {

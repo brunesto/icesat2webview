@@ -1,5 +1,7 @@
 /**
- * a simple reflector
+ * A simple object in the shape of a radar reflector, i.e. 3 planes . should be visible from all angles
+ * 
+ * TODO: the gain of using this vs cubes is minimal....so probably better to use cubes instead?
  */
 
 import { BaseObj } from './baseobj.js'

@@ -1,7 +1,9 @@
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
 import { vec2string,mat2string } from "./global.js";
 
-
+/**
+ * setup GL at a global level.
+ */
 export class GlWrapper {
     /**
      * initialize the WebGl object

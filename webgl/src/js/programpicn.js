@@ -13,11 +13,8 @@ import {
 } from "./programhelper.js"
 
 /**
- * Position Index Color Normals
- * 
+ * Program to render using Position Index (Vertex)Color Normals
  */
-
-
 
 export class ProgramPICN extends Drawable {
 
@@ -80,7 +77,6 @@ export class ProgramPICN extends Drawable {
     }
 
     
-
     //
     // Initialize the buffers we'll need. 
     //
@@ -91,10 +87,6 @@ export class ProgramPICN extends Drawable {
             // ...createTextureCoordsBuffers(params),
         }
     }
-
-
-
-
 
 
     draw2(id, projectionMatrix, viewMatrix) {

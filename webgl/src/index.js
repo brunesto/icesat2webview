@@ -19,18 +19,6 @@ global.logFlag = true
 
 
 
-//initGl()
-
-// const sphereObj=new Sphere("sphere1")
-// mat4.scale(sphereObj.modelMatrix,mat4.create(),[1,1,1])
-// const pp=new ProgramU(sphereObj.name,()=>sphereObj.modelMatrix)
-// pp.initBuffers(sphereObj.getParams())
-
-
-//step2s.push(new Step1Cube())
-//step2s.push(new Step2Normals())
-//step2s.push(new Step3Texture())
-
 
 class ModelBinder {
     constructor(mesh, getModelMatrix) {
@@ -67,10 +55,10 @@ $(document).ready(function() {
         step2s.push(new ModelBinder(cubeObj, () => cm))
     }
 
-    // const sm = mat4.create()
-    // mat4.scale(sm, sm, [0.1, 0.1, 0.1]);
-    // const sphereObj = new Sphere("sphere1")
-    // step2s.push(new ModelBinder(sphereObj, () => sm))
+    const sm = mat4.create()
+    mat4.scale(sm, sm, [0.1, 0.1, 0.1]);
+    const sphereObj = new Sphere("sphere1")
+    step2s.push(new ModelBinder(sphereObj, () => sm))
 
 
 

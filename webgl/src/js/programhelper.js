@@ -1,6 +1,10 @@
 import { mat4 } from 'gl-matrix';
 import {logBufferArray} from './global.js'
 
+/**
+ * bunch of functions to allocate and setup buffers
+ * the index/position expected format is as defined in normal.js
+ */
 export function createPositionAndIndexBuffers(params) {
     // -- 1 params.positions
     // dump...

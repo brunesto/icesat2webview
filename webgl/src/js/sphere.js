@@ -172,7 +172,8 @@ export class Sphere extends BaseObj {
             indices:indices,
             vertexNormals:vertexNormals, 
             textureCoordinates:textureCoordinates,
-            texture:texture}
+            texture:texture,
+        color:[1.0,1.0,1.0]}
 
     }
 

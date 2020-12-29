@@ -1,4 +1,7 @@
 /**
+ * compute vertices normals
+ * 
+ * 
  * in this file,
  * - indices are non overlapping triangles (i.e. an index[i] is only used in the ith/3 triangle )
  * - positions are flat array of floats, used to store 3d positions after another
