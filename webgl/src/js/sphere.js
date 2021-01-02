@@ -2,8 +2,8 @@ import { mat4, mat3 } from 'gl-matrix';
 import { initShaderProgram, loadTexture, gridTexture } from './webglutil.js';
 import {computeVertexNormals} from './normals.js'
 import { BaseObj } from './baseobj.js'
-
-import {latlon23d} from './latlon23d.js'
+import { degrees2radians} from './global.js'
+import  './gpsutils.js'
 /**
  * build a mesh for a Sphere (or part of it)
  * the mesh is build using pairs of triangle whose coordinates match osm slippy tiles
@@ -53,10 +53,34 @@ export class Sphere extends BaseObj {
             lon = this.tile2long(x, z)
 
             // }
-            return latlon23d(lat, lon,0)
+            return this.latlon23d(lat, lon)
         }
-    
-   
+        /**
+         * 
+         * given latitude + longitude
+         * return a 3d coordinates
+         * 
+         * https://math.libretexts.org/Bookshelves/Calculus/Book%3A_Calculus_(OpenStax)/12%3A_Vectors_in_Space/12.7%3A_Cylindrical_and_Spherical_Coordinates
+         * section: 
+         */
+    latlon23d(lat, lon) {
+        // TODO
+
+        // latitude from the north pole 
+        const lat0 = 90 - lat
+
+
+        const φ = degrees2radians(lat0)
+        const θ = degrees2radians(lon)
+        const ρ = 6378;
+        const x = ρ * Math.sin(φ) * Math.cos(θ)
+        const z = ρ * Math.sin(φ) * Math.sin(θ)
+        const y = ρ * Math.cos(φ)
+
+        const retVal = [x, y, z]
+        console.log(" latlon23d(" + lat + "," + lon + ") = " + retVal)
+        return retVal
+    }
 
 
     //

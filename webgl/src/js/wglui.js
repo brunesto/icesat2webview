@@ -126,7 +126,7 @@ export class WglUI {
 
             "</pre>")
 
-       /* const projectionMatrix = this.glWrapper.getProjectionMatrix()
+        const projectionMatrix = this.glWrapper.getProjectionMatrix()
         const viewMatrix = this.glWrapper.getViewMatrix(this.camera)
         const vpMatrix = mat4.create();
      
@@ -137,7 +137,7 @@ export class WglUI {
         const overlay=document.getElementById('glOverlay');
         overlay.innerHTML="center"
         overlay.style.left=xy.x+"px";
-        overlay.style.top=xy.y+"px";*/
+        overlay.style.top=xy.y+"px";
  
 
     }

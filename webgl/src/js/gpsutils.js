@@ -38,7 +38,8 @@ export function GeodeticToEcef(lat, lon, h) {
 
 // Converts the Earth-Centered Earth-Fixed (ECEF) coordinates (x, y, z) to 
 // (WGS-84) Geodetic point (lat, lon, h).
-export function EcefToGeodetic(x, y, z) {
+export function EcefToGeodetic(x, y, z,
+    lat, lon, h) {
     var eps = e_sq / (1.0 - e_sq);
     var p = Math.sqrt(x * x + y * y);
     var q = Math.atan2((z * a), (p * b));
@@ -62,7 +63,8 @@ export function EcefToGeodetic(x, y, z) {
 // East-North-Up coordinates in a Local Tangent Plane that is centered at the 
 // (WGS-84) Geodetic point (lat0, lon0, h0).
 export function EcefToEnu(x, y, z,
-    lat0, lon0, h0 ) {
+    lat0, lon0, h0,
+    xEast, yNorth, zUp) {
     // Convert to radians in notation consistent with the paper:
     var lambda = DegreesToRadians(lat0);
     var phi = DegreesToRadians(lon0);
@@ -126,7 +128,8 @@ export function EnuToEcef(xEast, yNorth, zUp,
 // East-North-Up coordinates in a Local Tangent Plane that is centered at the 
 // (WGS-84) Geodetic point (lat0, lon0, h0).
 export function GeodeticToEnu(lat, lon, h,
-    lat0, lon0, h0) {
+    lat0, lon0, h0,
+    xEast, yNorth, zUp) {
     x,
     y,
     z;

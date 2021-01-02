@@ -14,19 +14,14 @@ import { ProgramPICN } from "./js/programpicn.js";
 import { Camera } from "./js/camera.js";
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
 import { WglUI,ModelBinder } from "./js/wglui.js";
-import {latlon23d} from './js/latlon23d.js'
+
 global.logFlag = true
 
 
 
 $(document).ready(function() {
     console.log('process.env.NODE_ENV:' + (process.env.NODE_ENV))
-
-
-
-    const xyz=latlon23d(50,14,2500)
-
-    var camera = new Camera([xyz[0],xyz[2],xyz[1]]) //-6472)
+    var camera = new Camera(-25000) //-6472)
     const step2s = []
     var wglui = new WglUI("glCanvas", camera, step2s)
 
