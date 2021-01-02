@@ -18,6 +18,10 @@ body {
 
 #glContainer {
     position: relative;
+    
+}
+#glOverlays{
+   
 }
 #glOverlays div {
     position: absolute;

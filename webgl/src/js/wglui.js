@@ -2,7 +2,7 @@ import { GlWrapper, GlDrawable } from "./glwrapper.js";
 import { Dragger } from './dragger.js';
 import { vec2string, mat2string } from "./global.js";
 import { rgb2id } from "./programpiu4id.js"
-import { mat4, mat3, str, quat, vec4 } from 'gl-matrix'; 
+import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
 import { ProgramPIU4Id } from "./programpiu4id.js";
 
 
@@ -128,12 +128,12 @@ export class WglUI {
 
         const projectionMatrix = this.glWrapper.getProjectionMatrix()
         const viewMatrix = this.glWrapper.getViewMatrix(this.camera)
-        // const vpMatrix = mat4.create();
-     
-      //  mat4.multiply(vpMatrix, projectionMatrix, viewMatrix);
+            // const vpMatrix = mat4.create();
 
-       
-        const overlays=document.getElementById('glOverlays');
+        //  mat4.multiply(vpMatrix, projectionMatrix, viewMatrix);
+
+
+        const overlays = document.getElementById('glOverlays');
 
         // clear children
         var cNode = overlays.cloneNode(false);
@@ -141,32 +141,35 @@ export class WglUI {
 
 
 
-for (var i in this.binders){
-            
-        const binder=this.binders[i]
-        console.log("binder["+i+"]")   
-        var overlay = document.createElement("div");      
-        const modelMatrix=binder.getModelMatrix()
-        const xy=this.world2canvas(modelMatrix,viewMatrix,projectionMatrix)
-            
-        overlay.innerHTML="#"+i+":"+binder.mesh.name
-        overlay.style.left=xy.x+"px";
-        overlay.style.top=xy.y+"px";
-        cNode.appendChild(overlay)
+        for (var i in this.binders) {
 
+            const binder = this.binders[i]
+            console.log("binder[" + i + "]")
+
+            const modelMatrix = binder.getModelMatrix()
+            const xy = this.world2canvas(modelMatrix, viewMatrix, projectionMatrix)
+            if (xy != null) {
+                var overlay = document.createElement("div");
+
+                overlay.innerHTML = "#" + i + ":" + binder.mesh.name
+                overlay.style.left = xy.x + "px";
+                overlay.style.top = xy.y + "px";
+                cNode.appendChild(overlay)
+            }
+
+        }
     }
-}
 
 
     // GOTCHA position is not enouggh.. the model matrix is required
-    world2canvas(modelMatrix, viewMatrix,projectionMatrix) {
+    world2canvas(modelMatrix, viewMatrix, projectionMatrix) {
         // https://webglfundamentals.org/webgl/lessons/webgl-text-html.html
         // We just got through computing a matrix to draw our
         // F in 3D.
 
         // compute a clip space position
         // using the matrix we computed for the F
-        const clipspace=vec4.create()
+        const clipspace = vec4.create()
 
         // duplicate in programHelper
         const modelViewMatrix = mat4.create();
@@ -174,7 +177,7 @@ for (var i in this.binders){
         const mvpMatrix = mat4.create();
         mat4.multiply(mvpMatrix, projectionMatrix, modelViewMatrix);
 
-        vec4.transformMat4(clipspace, [0.5,0.5,0.5,1],mvpMatrix);
+        vec4.transformMat4(clipspace, [0.5, 0.5, 0.5, 1], mvpMatrix);
 
         // divide X and Y by W just like the GPU does.
         clipspace[0] /= clipspace[3];
@@ -184,11 +187,16 @@ for (var i in this.binders){
         var pixelX = (clipspace[0] * 0.5 + 0.5) * gl.canvas.width;
         var pixelY = (clipspace[1] * -0.5 + 0.5) * gl.canvas.height;
 
+        if (pixelX < 0 || pixelX > gl.canvas.width)
+            return null
+        if (pixelY < 0 || pixelY > gl.canvas.height)
+            return null
+
         // position the div
-       // div.style.left = Math.floor(pixelX) + "px";
+        // div.style.left = Math.floor(pixelX) + "px";
         //div.style.top = Math.floor(pixelY) + "px";
         //textNode.nodeValue = clock.toFixed(2);
-        return {x: Math.floor(pixelX), y:Math.floor(pixelY)}
+        return { x: Math.floor(pixelX), y: Math.floor(pixelY) }
     }
 
     redraw() {
@@ -241,6 +249,7 @@ for (var i in this.binders){
 
 
                 this.redraw()
+                e.preventDefault()
             }
         })
 
