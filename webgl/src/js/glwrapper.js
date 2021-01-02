@@ -1,11 +1,11 @@
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
-import { vec2string,mat2string } from "./global.js";
+import { vec2string, mat2string } from "./global.js";
 
 export class GlDrawable {
     init(name) {
         this.name = name
     }
-    draw2(id,projectionMatrix, viewMatrix) {}
+    draw2(id, projectionMatrix, viewMatrix) {}
 }
 
 
@@ -37,24 +37,7 @@ export class GlWrapper {
     }
 
 
-    /**
-     * draw a bunch of drawables 
-     */
-    drawScene(camera,drawables) {
-        console.log("drawScene")
-
-         // 1) reset GL drawing
-        gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
-        gl.clearDepth(1.0); // Clear everything
-        gl.enable(gl.DEPTH_TEST); // Enable depth testing
-        gl.depthFunc(gl.LEQUAL); // Near things obscure far things
-        //gl.enable(gl.SAMPLE_COVERAGE);
-        // Clear the canvas before we start drawing on it.
-
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-        // 2) compute the projectionMatrix and viewMatrix
-
+    getProjectionMatrix() {
         // Create a perspective matrix, a special matrix that is
         // used to simulate the distortion of perspective in a camera.
         // Our field of view is 45 degrees, with a width/height
@@ -74,7 +57,9 @@ export class GlWrapper {
             aspect,
             zNear,
             zFar);
-
+        return projectionMatrix;
+    }
+    getViewMatrix(camera) {
         var viewMatrix = mat4.create();
 
         // steps taken from mat.fromRotationTranslation, except that the last step is reverse order
@@ -83,16 +68,39 @@ export class GlWrapper {
         let quatMat = mat4.create();
         mat4.fromQuat(quatMat, camera.orientation);
         mat4.multiply(viewMatrix, quatMat, dest);
+        return viewMatrix
+    }
+
+
+    /**
+     * draw a bunch of drawables 
+     */
+    drawScene(camera, drawables) {
+        console.log("drawScene")
+
+        // 1) reset GL drawing
+        gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
+        gl.clearDepth(1.0); // Clear everything
+        gl.enable(gl.DEPTH_TEST); // Enable depth testing
+        gl.depthFunc(gl.LEQUAL); // Near things obscure far things
+        //gl.enable(gl.SAMPLE_COVERAGE);
+        // Clear the canvas before we start drawing on it.
+
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        // 2) compute the projectionMatrix and viewMatrix
+        const projectionMatrix = this.getProjectionMatrix()
+        const viewMatrix = this.getViewMatrix(camera)
+
 
         // 3) now draw all objects
         for (var i in drawables)
-            drawables[i].draw2(Number(i),projectionMatrix, viewMatrix)
+            drawables[i].draw2(Number(i), projectionMatrix, viewMatrix)
 
 
         // some debug info
-        this.lastRenderInfo=    
+        this.lastRenderInfo =
             "\n projectionMatrix:" + mat2string(projectionMatrix) +
-            "\n viewMatrix:" + mat2string(viewMatrix) 
+            "\n viewMatrix:" + mat2string(viewMatrix)
     }
 }
-

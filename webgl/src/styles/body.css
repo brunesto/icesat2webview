@@ -14,3 +14,23 @@ body {
 #glCanvas {
     border: 1px gray dashed;
 }
+
+
+#glContainer {
+    position: relative;
+}
+#glOverlay {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    XXwidth: 100%;
+    XXheight: 100%;
+    z-index: 10;
+    overflow: hidden;
+    color:green;
+    font-family: monospace;
+    font-size: 8px;
+    border:1px solid green;
+    background-color:black;
+    pointer-events: none;
+}
