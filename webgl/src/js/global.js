@@ -85,8 +85,42 @@ export function radians2degrees(radians) {
 }
 
 
+global.DEGREES_TO_RADIANS=( Math.PI / 180)
+export function degrees2radians(degrees) {    
+    return degrees *DEGREES_TO_RADIANS;
+}
 
-export function degrees2radians(degrees) {
-    var pi = Math.PI;
-    return degrees * (pi / 180);
+
+
+export function latLonToEcef(lat, lon, alt) {
+    const clat = Math.cos(lat * DEGREES_TO_RADIANS);
+    const slat = Math.sin(lat * DEGREES_TO_RADIANS);
+    const clon = Math.cos(lon * DEGREES_TO_RADIANS);
+    const slon = Math.sin(lon * DEGREES_TO_RADIANS);
+
+    const N = WGS84_A / Math.sqrt(1.0 - WGS84_E * WGS84_E * slat * slat);
+
+    return {
+        x: (N + alt) * clat * clon,
+        y: (N + alt) * clat * slon,
+        z: (N * (1.0 - WGS84_E * WGS84_E) + alt) * slat
+    }
+
+}
+// Coverts ECEF to ENU coordinates centered at given lat, lon
+
+export function ecefToEnu(lat, lon, x, y, z, xr, yr, zr) {
+    clat = Math.cos(lat * DEGREES_TO_RADIANS);
+    slat = Math.sin(lat * DEGREES_TO_RADIANS);
+    clon = Math.cos(lon * DEGREES_TO_RADIANS);
+    slon = Math.sin(lon * DEGREES_TO_RADIANS);
+    dx = x - xr;
+    dy = y - yr;
+    dz = z - zr;
+
+    return {
+        e: -slon * dx + clon * dy,
+        n: -slat * clon * dx - slat * slon * dy + clat * dz,
+        u: clat * clon * dx + clat * slon * dy + slat * dz
+    }
 }
