@@ -91,7 +91,7 @@ export class ProgramPIU extends BaseProgram {
     drawWithColor(color, buffers,projectionMatrix, viewMatrix,modelMatrix) {
 
         // Tell WebGL to use our program when drawing
-        console.log(name + "." + this.id + ": draw2()");
+        console.log(this.name + "." + this.id + ": draw2()");
         gl.useProgram(this.programInfo.program);
         bufferLocationSetup(buffers.position, this.programInfo.locations.vertexPosition)
         matrixSetup(modelMatrix, viewMatrix, projectionMatrix, this.programInfo.locations.mvpMatrix)
@@ -107,7 +107,7 @@ export class ProgramPIU extends BaseProgram {
     }
 
     dispose() {
-        console.log(name + ": dispose()");
+        console.log(this.name + ": dispose()");
         // TODO!!!
     }
 }

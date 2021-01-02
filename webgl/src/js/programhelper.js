@@ -1,5 +1,5 @@
 import { mat4 } from 'gl-matrix';
-import {logBufferArray} from './global.js'
+import {logBufferArray,mat2string} from './global.js'
 
 /**
  * bunch of functions to allocate and setup buffers
@@ -171,7 +171,7 @@ export function matrixSetup(modelMatrix,viewMatrix,projectionMatrix,mvpMatrixLoc
     mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
     const mvpMatrix = mat4.create();
     mat4.multiply(mvpMatrix, projectionMatrix, modelViewMatrix);
-
+    console.log("mvp:",mat2string(mvpMatrix))
     gl.uniformMatrix4fv(
         mvpMatrixLocation,
         false,

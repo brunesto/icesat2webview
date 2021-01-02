@@ -32,7 +32,7 @@ export class GlWrapper {
         // Clear the color buffer with specified clear color
         gl.clear(gl.COLOR_BUFFER_BIT);
 
-        gl.enable(gl.CULL_FACE);
+         gl.enable(gl.CULL_FACE);
         gl.cullFace(gl.BACK);
     }
 

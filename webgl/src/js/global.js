@@ -85,9 +85,9 @@ export function radians2degrees(radians) {
 }
 
 
-global.DEGREES_TO_RADIANS=( Math.PI / 180)
-export function degrees2radians(degrees) {    
-    return degrees *DEGREES_TO_RADIANS;
+global.DEGREES_TO_RADIANS = (Math.PI / 180)
+export function degrees2radians(degrees) {
+    return degrees * DEGREES_TO_RADIANS;
 }
 
 
@@ -123,4 +123,45 @@ export function ecefToEnu(lat, lon, x, y, z, xr, yr, zr) {
         n: -slat * clon * dx - slat * slon * dy + clat * dz,
         u: clat * clon * dx + clat * slon * dy + slat * dz
     }
+}
+
+function copysign(x, y) {
+    a = Math.abs(x)
+    if (y > 0)
+        return a
+    else
+        return -a
+
+}
+
+
+// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+
+export function quat2EulerAngles(q) {
+
+    console.log("quat2EulerAngles",q)
+    // roll (x-axis rotation)
+    const sinr_cosp = 2 * (q[3] * q[0] + q[1] * q[2]);
+    const cosr_cosp = 1 - 2 * (q[0] * q[0] + q[1] * q[1]);
+    const roll =Math.atan2(sinr_cosp, cosr_cosp);
+
+    // pitch (y-axis rotation)
+    const sinp = 2 * (q[3] * q[1] - q[2] * q[0]);
+    var pitch;
+    if (Math.abs(sinp) >= 1)
+
+        pitch = copysign(M_PI / 2, sinp); // use 90 degrees if out of range
+    else
+        pitch = Math.asin(sinp);
+
+    // yaw (z-axis rotation)
+    const siny_cosp = 2 * (q[3] * q[2] + q[0] * q[1]);
+    const cosy_cosp = 1 - 2 * (q[1] * q[1] + q[2] * q[2]);
+    const yaw = Math.atan2(siny_cosp, cosy_cosp);
+
+    return [yaw,roll,pitch]
+    //     yaw: yaw,
+    //     roll: roll,
+    //     pitch: pitch
+    // }
 }

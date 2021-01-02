@@ -26,7 +26,7 @@ export function latlon23d(lat, lon, h) {
             latlonlocal.lat,latlonlocal.lon,latlonlocal.h)
         return [xyz.xEast , xyz.zUp , xyz.yNorth ]
     } else {
-        const xyz = GeodeticToEcef(lat, lon, 0)
+        const xyz = GeodeticToEcef(lat, lon, h)
 
         // const old=latlon23dOLD(lat, lon,h)
         // return old;

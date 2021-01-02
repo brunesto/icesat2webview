@@ -33,16 +33,14 @@ function addMarker(lat,lon,h){
 $(document).ready(function() {
     console.log('process.env.NODE_ENV:' + (process.env.NODE_ENV))
 
-    const xyz=latlon23d(50,14,25000*1000)
-    const xyz2=latlon23d(50,0,25000*1000)
-    const xyz3=latlon23d(0,14,25000*1000)
-    console.log('xyz :' ,xyz)
-    console.log('xyz2:' ,xyz2)
-    console.log('xyz3:' ,xyz3)
+    const xyz=latlon23d(50,14,9000*1000)
+    console.log('xyz:' ,xyz)
 
+    // TODO:  camera negative due to camera.lookAt not working properly otherwise ???
+    var camera = new Camera([-xyz[0], -xyz[1], -xyz[2]]) //-6472)
 
-    // var camera = new Camera([xyz[0], xyz[2], -25000]) //-6472)
-    var camera = new Camera([0,0, -15000]) //-6472)
+     camera.lookat([0,0,0]);
+    // var camera = new Camera([0,0, -15000]) //-6472)
     const step2s = []
     var wglui = new WglUI("glCanvas", camera, step2s)
 
@@ -63,8 +61,13 @@ $(document).ready(function() {
     // const cubeObj = new Reflector("center" , )
     // step2s.push(new ModelBinder(cubeObj, () => cm,new ProgramPIU()))
 
-    for(var i=-60;i<60;i+=10)
+    for(var i=-60;i<=60;i+=20)
         step2s.push(addMarker(i,0,0))
+
+
+    for(var i=-60;i<=60;i+=20)
+        step2s.push(addMarker(0,i,0))
+
     step2s.push(addMarker(50,14,1000*1000,step2s))
     step2s.push(addMarker(20,0,1000*1000,step2s))
    

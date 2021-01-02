@@ -1,6 +1,6 @@
 import { GlWrapper, GlDrawable } from "./glwrapper.js";
 import { Dragger } from './dragger.js';
-import { vec2string, mat2string } from "./global.js";
+import { vec2string, mat2string,quat2EulerAngles } from "./global.js";
 import { rgb2id } from "./programpiu4id.js"
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
 import { ProgramPIU4Id } from "./programpiu4id.js";
@@ -120,6 +120,8 @@ export class WglUI {
         this.camera.computeCoords();
         $('#info').html("<pre>" +
             "\n position:" + vec2string(this.camera.position) +
+            "\n orientation:" + vec2string(quat2EulerAngles(this.camera.orientation)) +
+            
             "\n center earth " + this.camera.distanceFromEarthCenter.toFixed(2) + "m" +
             "\n coords: " + this.camera.lat.toFixed(6) + "," + this.camera.lon.toFixed(6) + " amsl:" + this.camera.distanceFromEarthSurface +
             this.glWrapper.lastRenderInfo +

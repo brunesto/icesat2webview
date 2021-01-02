@@ -103,4 +103,25 @@ export class Camera {
         quat.fromEuler(orientation, euler[0], euler[1], euler[2], 0)
         this.orientation = quat.normalize(quat.create(), quat.mul(quat.create(), orientation, this.orientation))
     }
+
+    lookat(center){
+        console.log("lookAt",center)
+        const m4out = mat4.create()
+        const up=[0,1,0]
+        mat4.lookAt(m4out,
+            [-this.position[0],-this.position[1],-this.position[2]],
+            center,up)
+
+        const m3out = mat3.create()
+        mat3.fromMat4(m3out,m4out)
+        
+
+        const qout=quat.create()
+        quat.fromMat3(qout,m3out)
+
+        // var iq = quat.create()
+        // quat.invert(iq,qout)
+
+        quat.normalize(this.orientation,qout)
+    }
 }

@@ -100,7 +100,7 @@ export class ProgramPINT extends BaseProgram {
 
     draw2(id, buffers,projectionMatrix, viewMatrix,modelMatrix) {
         // Tell WebGL to use our program when drawing
-        //console.log(name + ": draw2()");
+        console.log(this.name + ": draw2()");
         gl.useProgram(this.programInfo.program);
         bufferLocationSetup(buffers.position, this.programInfo.locations.vertexPosition)
         bufferLocationSetup(buffers.normals, this.programInfo.locations.vertexNormal)
