@@ -1,6 +1,14 @@
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
 import { vec2string,mat2string } from "./global.js";
 
+export class GlDrawable {
+    init(name) {
+        this.name = name
+    }
+    draw2(id,projectionMatrix, viewMatrix) {}
+}
+
+
 /**
  * setup GL at a global level.
  */
@@ -30,9 +38,9 @@ export class GlWrapper {
 
 
     /**
-     * draw a bunch of BaseObj 
+     * draw a bunch of drawables 
      */
-    drawScene(camera,baseObjs) {
+    drawScene(camera,drawables) {
         console.log("drawScene")
 
          // 1) reset GL drawing
@@ -77,8 +85,8 @@ export class GlWrapper {
         mat4.multiply(viewMatrix, quatMat, dest);
 
         // 3) now draw all objects
-        for (var i in baseObjs)
-            baseObjs[i].draw2(Number(i),projectionMatrix, viewMatrix)
+        for (var i in drawables)
+            drawables[i].draw2(Number(i),projectionMatrix, viewMatrix)
 
 
         // some debug info

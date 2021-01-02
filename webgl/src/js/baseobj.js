@@ -6,13 +6,7 @@ import { loadTexture, gridTexture } from './webglutil.js';
  * 
  * Basically they are meant to merge a 3d object and a WebGl program
  */
-export class Drawable {
-    init(name) {
-        this.name = name
-    }
-    draw2(id,projectionMatrix, viewMatrix) {}
-}
-
+ 
 
 export class BaseProgram {
     constructor(name) {

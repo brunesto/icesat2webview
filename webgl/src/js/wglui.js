@@ -1,8 +1,7 @@
-import { GlWrapper } from "./glwrapper.js";
+import { GlWrapper ,GlDrawable} from "./glwrapper.js";
 import { Dragger } from './dragger.js';
 import { vec2string, mat2string } from "./global.js";
 import { rgb2id } from "./programpiu4id.js"
-import { Drawable } from './baseobj.js';
 
 import { ProgramPIU4Id } from "./programpiu4id.js";
 
@@ -18,7 +17,7 @@ export class ModelBinder {
          const thisModelBinder=this
         const renderProgramBuffer=this.renderProgram.initBuffers(this.mesh.getParams()) 
         
-        const retVal= new Drawable(this.mesh.name+"."+this.renderProgram.name);
+        const retVal= new GlDrawable(this.mesh.name+"."+this.renderProgram.name);
         retVal.draw2=(id,projectionMatrix, viewMatrix)=> {
                 this.renderProgram.draw2(id,renderProgramBuffer,projectionMatrix, viewMatrix,thisModelBinder.getModelMatrix())
             }
@@ -31,7 +30,7 @@ export class ModelBinder {
        
         const pickProgramBuffer=pickProgram.initBuffers(this.mesh.getParams())
 
-        const retVal=  new Drawable(this.mesh.name+"."+pickProgram.name) ;
+        const retVal=  new GlDrawable(this.mesh.name+"."+pickProgram.name) ;
         retVal.draw2=(id,projectionMatrix, viewMatrix)=> {
                 pickProgram.draw2(id,pickProgramBuffer,projectionMatrix, viewMatrix,thisModelBinder.getModelMatrix())
             }
