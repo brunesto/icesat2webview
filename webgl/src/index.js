@@ -14,6 +14,7 @@ import { ProgramPICN } from "./js/programpicn.js";
 import { Camera } from "./js/camera.js";
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
 import { WglUI,ModelBinder } from "./js/wglui.js";
+import { latlon23d } from "./js/latlon23d.js";
 
 global.logFlag = true
 
@@ -21,7 +22,13 @@ global.logFlag = true
 
 $(document).ready(function() {
     console.log('process.env.NODE_ENV:' + (process.env.NODE_ENV))
-    var camera = new Camera(-25000) //-6472)
+
+    const xyz=latlon23d(50,14,25000*1000)
+
+
+
+    // var camera = new Camera([xyz[0], xyz[2], -25000]) //-6472)
+    var camera = new Camera([0,0, -15000]) //-6472)
     const step2s = []
     var wglui = new WglUI("glCanvas", camera, step2s)
 
@@ -36,7 +43,7 @@ $(document).ready(function() {
     }
 
     const sm = mat4.create()
-    mat4.scale(sm, sm, [0.1, 0.1, 0.1]);
+    mat4.scale(sm, sm, [1, 1, 1]);
     const sphereObj = new Sphere("sphere1")
     step2s.push(new ModelBinder(sphereObj, () => sm,new ProgramPINT()))
 

@@ -15,14 +15,14 @@ export class Camera {
     /**
      * position
      */
-    position = [0.0, 0.0, 0, 0]
+    //position = [0.0, 0.0, 0, 0]
     /**
      * quaternion is used of orientation
      */
     orientation = quat.create()
 
     constructor(z) {
-        this.position[2] = z
+        this.position=[...z,0]
     }
 
     /**
