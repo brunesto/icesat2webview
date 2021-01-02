@@ -3,7 +3,8 @@ import { initShaderProgram, loadTexture, gridTexture } from './webglutil.js';
 import {computeVertexNormals} from './normals.js'
 import { BaseObj } from './baseobj.js'
 import { degrees2radians} from './global.js'
-import  './gpsutils.js'
+import { latlon23d } from "./latlon23d.js";
+
 /**
  * build a mesh for a Sphere (or part of it)
  * the mesh is build using pairs of triangle whose coordinates match osm slippy tiles
@@ -53,7 +54,7 @@ export class Sphere extends BaseObj {
             lon = this.tile2long(x, z)
 
             // }
-            return this.latlon23d(lat, lon)
+            return latlon23d(lat, lon,0)
         }
         /**
          * 
@@ -63,7 +64,7 @@ export class Sphere extends BaseObj {
          * https://math.libretexts.org/Bookshelves/Calculus/Book%3A_Calculus_(OpenStax)/12%3A_Vectors_in_Space/12.7%3A_Cylindrical_and_Spherical_Coordinates
          * section: 
          */
-    latlon23d(lat, lon) {
+   /* latlon23d(lat, lon) {
         // TODO
 
         // latitude from the north pole 
@@ -81,7 +82,7 @@ export class Sphere extends BaseObj {
         console.log(" latlon23d(" + lat + "," + lon + ") = " + retVal)
         return retVal
     }
-
+*/
 
     //
     // initBuffers
@@ -106,6 +107,7 @@ export class Sphere extends BaseObj {
         // remove 1 'peeling' from earth so that it is not overlapping
         // this is only required when displaying the full globe
         var bbox = { min: [-85, -180], max: [90, 180 - lonPerTile] }
+        // var bbox = { min: [-85, 0], max: [90, 60 ] }
 
         console.log(" bbox:", bbox)
         const tileMin = [this.lon2tile(bbox.min[1], z), this.lat2tile(bbox.max[0], z)]
@@ -136,12 +138,24 @@ export class Sphere extends BaseObj {
 
         for (var y = 0; y < ySize; y++) {
             for (var x = 0; x < xSize; x++) {
+            
+                
+                
+                
+                indices.push(x + (y + 1) * (xSize + 1))
+                indices.push(x + 1 + (y) * (xSize + 1))
                 indices.push(x + (y) * (xSize + 1))
-                indices.push(x + 1 + (y) * (xSize + 1))
+                
+                
+                
+                
+                
+                
+              
+                
                 indices.push(x + (y + 1) * (xSize + 1))
-                indices.push(x + 1 + (y) * (xSize + 1))
                 indices.push(x + 1 + (y + 1) * (xSize + 1))
-                indices.push(x + (y + 1) * (xSize + 1))
+                indices.push(x + 1 + (y) * (xSize + 1))
             }
         }
 
@@ -162,7 +176,7 @@ export class Sphere extends BaseObj {
         for (var y = tileMin[1]; y <= tileMax[1] + 1; y++) {
             for (var x = tileMin[0]; x <= tileMax[0] + 1; x++) {
                 // var latLng = this.tile23d(x, y, z);
-                textureCoordinates.push((tileMax[0] - x) / (xSize))
+                textureCoordinates.push((x - tileMin[0]) / (xSize))
                 textureCoordinates.push((y - tileMin[1]) / (ySize))
             }
         }

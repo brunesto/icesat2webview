@@ -128,20 +128,38 @@ export class WglUI {
 
         const projectionMatrix = this.glWrapper.getProjectionMatrix()
         const viewMatrix = this.glWrapper.getViewMatrix(this.camera)
-        const vpMatrix = mat4.create();
+        // const vpMatrix = mat4.create();
      
-        mat4.multiply(vpMatrix, projectionMatrix, viewMatrix);
+      //  mat4.multiply(vpMatrix, projectionMatrix, viewMatrix);
 
-        const xy=this.world2canvas([0,0,0],vpMatrix)
-        console.log("xy:",xy)
-        const overlay=document.getElementById('glOverlay');
-        overlay.innerHTML="center"
+       
+        const overlays=document.getElementById('glOverlays');
+
+        // clear children
+        var cNode = overlays.cloneNode(false);
+        overlays.parentNode.replaceChild(cNode, overlays);
+
+
+
+for (var i in this.binders){
+            
+        const binder=this.binders[i]
+        console.log("binder["+i+"]")   
+        var overlay = document.createElement("div");      
+        const modelMatrix=binder.getModelMatrix()
+        const xy=this.world2canvas(modelMatrix,viewMatrix,projectionMatrix)
+            
+        overlay.innerHTML="#"+i+":"+binder.mesh.name
         overlay.style.left=xy.x+"px";
         overlay.style.top=xy.y+"px";
- 
+        cNode.appendChild(overlay)
 
     }
-    world2canvas(point, vpMatrix) {
+}
+
+
+    // GOTCHA position is not enouggh.. the model matrix is required
+    world2canvas(modelMatrix, viewMatrix,projectionMatrix) {
         // https://webglfundamentals.org/webgl/lessons/webgl-text-html.html
         // We just got through computing a matrix to draw our
         // F in 3D.
@@ -149,7 +167,14 @@ export class WglUI {
         // compute a clip space position
         // using the matrix we computed for the F
         const clipspace=vec4.create()
-        vec4.transformMat4(clipspace, [...point,1],vpMatrix);
+
+        // duplicate in programHelper
+        const modelViewMatrix = mat4.create();
+        mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
+        const mvpMatrix = mat4.create();
+        mat4.multiply(mvpMatrix, projectionMatrix, modelViewMatrix);
+
+        vec4.transformMat4(clipspace, [0.5,0.5,0.5,1],mvpMatrix);
 
         // divide X and Y by W just like the GPU does.
         clipspace[0] /= clipspace[3];

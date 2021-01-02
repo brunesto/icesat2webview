@@ -20,15 +20,16 @@ export function useEnu() {
 
 export function latlon23d(lat, lon, h) {
 
+    lon=-lon+90
     if (useEnu()) {
         const xyz = GeodeticToEnu(lat, lon, h,
             latlonlocal.lat,latlonlocal.lon,latlonlocal.h)
         return [xyz.xEast , xyz.zUp , xyz.yNorth ]
     } else {
-        //const xyz = GeodeticToEcef(lat, lon, 0)
+        const xyz = GeodeticToEcef(lat, lon, 0)
 
-        const old=latlon23dOLD(lat, lon)
-        return old;
+        // const old=latlon23dOLD(lat, lon,h)
+        // return old;
 
         // console.log("coords:"+lat+","+lon)
         // console.log("xyz:",xyz)
@@ -47,19 +48,19 @@ export function latlon23d(lat, lon, h) {
  * https://math.libretexts.org/Bookshelves/Calculus/Book%3A_Calculus_(OpenStax)/12%3A_Vectors_in_Space/12.7%3A_Cylindrical_and_Spherical_Coordinates
  * section: 
  */
-export function latlon23dOLD(lat, lon) {
+export function latlon23dOLD(lat, lon,h) {
     // TODO
 
     // latitude from the north pole 
     const lat0 = 90 - lat
-
+    const lon0 = lon//-lon+80
 
     const φ = degrees2radians(lat0)
-    const θ = degrees2radians(lon)
-    const ρ = 6378;
+    const θ = degrees2radians(lon0)
+    const ρ = 6378+h/1000;
     const x = ρ * Math.sin(φ) * Math.cos(θ)
-    const z = ρ * Math.sin(φ) * Math.sin(θ)
-    const y = ρ * Math.cos(φ)
+    const y = ρ * Math.sin(φ) * Math.sin(θ)
+    const z = ρ * Math.cos(φ)
 
     const retVal = [x, y, z]
     console.log(" latlon23d(" + lat + "," + lon + ") = " + retVal)
