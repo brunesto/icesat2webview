@@ -86,13 +86,25 @@ $(document).ready(function() {
     // step2s.push(new ModelBinder(cubeObj2, () => cm2,new ProgramPIU()))
 
 
+    wglui.onDistance2surfaceChange=()=>{
 
 
-    const sm = mat4.create()
-    mat4.scale(sm, sm, [1, 1, 1]);
-    const sphereObj = new Sphere("sphere1")
-    step2s.push(new ModelBinder(sphereObj, () => sm,new ProgramPINT()))
+        // TODO:
+        // 1 only the relevant area of earth should be added
+        // 2 the precision should increase according to log2 amsl (~=  zoom level)
+        // 3 texture...
+        // 4 how to smoothly transition from ECEF to ENU?
+        
 
+        wglui.removeBinder("gaia")
+        const sm = mat4.create()
+        mat4.scale(sm, sm, [1, 1, 1]);
+        const sphereObj = new Sphere("gaia")
+        wglui.addBinder(new ModelBinder(sphereObj, () => sm,new ProgramPINT()))
+    
+    }
+
+    
 
 
     wglui.redraw()

@@ -1,6 +1,6 @@
 import { GlWrapper, GlDrawable } from "./glwrapper.js";
 import { Dragger } from './dragger.js';
-import { vec2string, mat2string,quat2EulerAngles } from "./global.js";
+import { vec2string, mat2string, quat2EulerAngles } from "./global.js";
 import { rgb2id } from "./programpiu4id.js"
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
 import { ProgramPIU4Id } from "./programpiu4id.js";
@@ -67,6 +67,32 @@ export class WglUI {
         this.drawables4Render.push(binder.forRender())
         this.drawables4MousePick.push(binder.forMousePick())
     }
+
+    addBinder(binder) {
+        console.log("add binder "+binder.mesh.name)
+        this.binders.push(binder)
+        if (this.modelBounds) {
+            this.bindModel(binder)
+        }
+    }
+
+    removeBinder(name) {
+        for (var i = this.binders.length - 1; i >= 0; i--) {
+
+            if (this.binders[i].mesh.name == name) {
+                this.binders.splice(i, 1);
+                if (this.modelBounds) {
+                    this.drawables4Render.splice(i, 1);
+                    this.drawables4MousePick.splice(i, 1);
+                }
+                console.log("removed "+name)
+                return
+            }
+        }
+        console.warn("could not remove binder "+name+" not found")
+
+    }
+
     maybeBindModels() {
             if (!this.modelBounds) {
                 this.modelBounds = true
@@ -119,19 +145,19 @@ export class WglUI {
         this.glWrapper.drawScene(this.camera, this.drawables4Render);
         this.camera.computeCoords();
 
-        const distanceL2f=Math.floor(Math.log2(this.prevDistance))
+        const distanceL2f = Math.floor(Math.log2(this.prevDistance))
         $('#info').html("<pre>" +
             "\n position:" + vec2string(this.camera.position) +
             "\n orientation:" + vec2string(quat2EulerAngles(this.camera.orientation)) +
-            
+
             "\n center earth " + this.camera.distanceFromEarthCenter.toFixed(2) + "m" +
-            "log2="+distanceL2f+" "+
+            "log2=" + distanceL2f + " " +
             "\n coords: " + this.camera.lat.toFixed(6) + "," + this.camera.lon.toFixed(6) + " amsl:" + this.camera.distanceFromEarthSurface +
             this.glWrapper.lastRenderInfo +
 
             "</pre>")
 
-            this.drawLabels()
+        this.drawLabels()
     }
     drawLabels() {
         const projectionMatrix = this.glWrapper.getProjectionMatrix()
@@ -159,7 +185,7 @@ export class WglUI {
             if (xy != null) {
                 var overlay = document.createElement("div");
 
-                overlay.innerHTML = "#" + i + ":" + binder.mesh.name//+" "+xy.z
+                overlay.innerHTML = "#" + i + ":" + binder.mesh.name //+" "+xy.z
                 overlay.style.left = xy.x + "px";
                 overlay.style.top = xy.y + "px";
                 cNode.appendChild(overlay)
@@ -186,9 +212,9 @@ export class WglUI {
 
         vec4.transformMat4(clipspace, [0.5, 0.5, 0.5, 1], mvpMatrix);
 
-        if (clipspace[3]<0)
+        if (clipspace[3] < 0)
             return null
-        // divide X and Y by W just like the GPU does.
+                // divide X and Y by W just like the GPU does.
         clipspace[0] /= clipspace[3];
         clipspace[1] /= clipspace[3];
 
@@ -205,7 +231,7 @@ export class WglUI {
         // div.style.left = Math.floor(pixelX) + "px";
         //div.style.top = Math.floor(pixelY) + "px";
         //textNode.nodeValue = clock.toFixed(2);
-        return { x: Math.floor(pixelX), y: Math.floor(pixelY),z:clipspace[3]}
+        return { x: Math.floor(pixelX), y: Math.floor(pixelY), z: clipspace[3] }
     }
 
     redraw() {
@@ -228,9 +254,9 @@ export class WglUI {
     }
 
 
-    setupButton(id,callback){
-        const button=document.getElementById(id);
-        button.addEventListener("click",(e)=>{
+    setupButton(id, callback) {
+        const button = document.getElementById(id);
+        button.addEventListener("click", (e) => {
             callback(e)
             this.canvas.focus()
         })
@@ -242,8 +268,8 @@ export class WglUI {
      * The speed of movement depends on the distance to earth surface
      */
     initButtons() {
-        this.setupButton("efecBtn",(e)=>{
-            
+        this.setupButton("efecBtn", (e) => {
+
         })
 
     }
@@ -277,117 +303,119 @@ export class WglUI {
 
         // dragging is delegated to Dragger
         new Dragger(this.canvas, {
-                moved: s => {
+            moved: s => {
 
 
 
-                    console.log("deltaLast:", s.deltaLast)
-                    if (s.shiftKey) {
-                        const euler = [this.stepify(s.deltaLast[1], 1), this.stepify(s.deltaLast[0], 1), 0]
-                        this.camera.rotate(euler)
-                    } else {
-                        const step = this.camera.distanceFromEarthSurface / 100;
-                        var v = [this.stepify(s.deltaLast[0], step), this.stepify(s.deltaLast[1], -step), 0, 0]
-                        this.camera.move(v)
-                        this.checkDistance2surfaceChange()
-                    }
-                    this.redraw()
-                },
-                click: e => {
-                    console.log("click!")
-                    this.drawMousePick(e.clientX, e.clientY)
-
-
-
-
-
-
-
-
-
-                }
-
-            })
-    }
-    initKeyboard() {
-            // handle keyboard
-
-            this.canvas.addEventListener('keydown', (e) => {
-                console.log('key', e);
-                const v = [0, 0, 0, 0]
-    
-                if (e.shiftKey) {
-                    const step = 3
-    
-                    if (e.key == 'ArrowUp')
-                        v[0] = step
-                    else if (e.key == 'ArrowDown')
-                        v[0] = -step
-                    else if (e.key == 'ArrowRight')
-                        v[1] = +step
-                    else if (e.key == 'ArrowLeft')
-                        v[1] = -step
-                    else if (e.key == 'PageUp')
-                        v[2] = step
-                    else if (e.key == 'PageDown')
-                        v[2] = -step
-                    else
-                        return
-                    this.camera.rotate(v)
-                    this.redraw()
+                console.log("deltaLast:", s.deltaLast)
+                if (s.shiftKey) {
+                    const euler = [this.stepify(s.deltaLast[1], 1), this.stepify(s.deltaLast[0], 1), 0]
+                    this.camera.rotate(euler)
                 } else {
-                    const step = this.camera.distanceFromEarthSurface / 50
-                    if (e.key == 'ArrowUp')
-                        v[1] = -step
-                    else if (e.key == 'ArrowDown')
-                        v[1] = +step
-                    else if (e.key == 'ArrowRight')
-                        v[0] = -step
-                    else if (e.key == 'ArrowLeft')
-                        v[0] = step
-                    else if (e.key == 'PageUp')
-                        v[2] = step
-                    else if (e.key == 'PageDown')
-                        v[2] = -step
-                    else
-                        return
+                    const step = this.camera.distanceFromEarthSurface / 100;
+                    var v = [this.stepify(s.deltaLast[0], step), this.stepify(s.deltaLast[1], -step), 0, 0]
                     this.camera.move(v)
                     this.checkDistance2surfaceChange()
-                    this.redraw()
                 }
-    
-            }, false);
+                this.redraw()
+            },
+            click: e => {
+                console.log("click!")
+                this.drawMousePick(e.clientX, e.clientY)
 
 
-            this.canvas.focus()
+
+
+
+
+
+
+
+            }
+
+        })
+    }
+    initKeyboard() {
+        // handle keyboard
+
+        this.canvas.addEventListener('keydown', (e) => {
+            console.log('key', e);
+            const v = [0, 0, 0, 0]
+
+            if (e.shiftKey) {
+                const step = 3
+
+                if (e.key == 'ArrowUp')
+                    v[0] = step
+                else if (e.key == 'ArrowDown')
+                    v[0] = -step
+                else if (e.key == 'ArrowRight')
+                    v[1] = +step
+                else if (e.key == 'ArrowLeft')
+                    v[1] = -step
+                else if (e.key == 'PageUp')
+                    v[2] = step
+                else if (e.key == 'PageDown')
+                    v[2] = -step
+                else
+                    return
+                this.camera.rotate(v)
+                this.redraw()
+            } else {
+                const step = this.camera.distanceFromEarthSurface / 50
+                if (e.key == 'ArrowUp')
+                    v[1] = -step
+                else if (e.key == 'ArrowDown')
+                    v[1] = +step
+                else if (e.key == 'ArrowRight')
+                    v[0] = -step
+                else if (e.key == 'ArrowLeft')
+                    v[0] = step
+                else if (e.key == 'PageUp')
+                    v[2] = step
+                else if (e.key == 'PageDown')
+                    v[2] = -step
+                else
+                    return
+                this.camera.move(v)
+                this.checkDistance2surfaceChange()
+                this.redraw()
+            }
+
+        }, false);
+
+
+        this.canvas.focus()
     }
     initUI() {
 
         this.initMouse();
         this.initKeyboard();
         this.initButtons();
-        
-        
 
-        
+
+
+
     }
 
-    checkDistance2surfaceChange(){
-        const distance=this.camera.distanceFromEarthSurface .toFixed(0)
-        
-        const distanceL2f=Math.floor(Math.log2(this.prevDistance))
-        console.log("distanceFromEarthSurface:"+distance+" distanceL2f:"+distanceL2f)
-        if (this.prevDistance==null || this.prevDl2f!=distanceL2f){
-            this.onDistance2surfaceChange()        
+    checkDistance2surfaceChange() {
+        const distance = this.camera.distanceFromEarthSurface.toFixed(0)
+
+        const distanceL2f = Math.floor(Math.log2(this.prevDistance))
+        console.log("distanceFromEarthSurface:" + distance + " distanceL2f:" + distanceL2f)
+        if (this.prevDistance == null || this.prevDl2f != distanceL2f) {
+            this.onDistance2surfaceChange()
         }
 
-        this.prevDistance=distance
-        this.prevDl2f=distanceL2f;
+        this.prevDistance = distance
+        this.prevDl2f = distanceL2f;
 
     }
-    onDistance2surfaceChange(){
+    onDistance2surfaceChange() {
 
         console.log("onDistance2surfaceChange")
 
     }
+
+
 }
