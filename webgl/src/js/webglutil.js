@@ -61,12 +61,14 @@ export function loadShader(type, source) {
 
 
 export function gridTexture(x, y,options) {
-    if (options===undefined)
-        options={checkboard:true,label:true}
+    const defaultOptions={checkboard:true,label:true,text:(i,j)=>{i+","+j}}
+
+    options={...defaultOptions,...options}
+        
 
     const canvas = document.createElement("CANVAS");
-    canvas.width = 1024;
-    canvas.height = 1024;
+    canvas.width = 2*1024;
+    canvas.height = 2*1024;
     const cw = canvas.width / x
     const ch = canvas.height / y
     var ctx = canvas.getContext("2d");
@@ -93,7 +95,7 @@ export function gridTexture(x, y,options) {
             if (options.label){
                 ctx.fillStyle="#0F0"
                 ctx.strokeStyle="yellow"
-                const text=i+","+j;
+                const text=options.text(i,j);
                 const textWidth=ctx.measureText(text).width          
                 ctx.fillText(text, px+cw/2-textWidth/2, py+ch/2-10);
             }

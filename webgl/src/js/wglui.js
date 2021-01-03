@@ -128,6 +128,9 @@ export class WglUI {
 
             "</pre>")
 
+            this.drawLabels()
+    }
+    drawLabels() {
         const projectionMatrix = this.glWrapper.getProjectionMatrix()
         const viewMatrix = this.glWrapper.getViewMatrix(this.camera)
             // const vpMatrix = mat4.create();
@@ -153,7 +156,7 @@ export class WglUI {
             if (xy != null) {
                 var overlay = document.createElement("div");
 
-                overlay.innerHTML = "#" + i + ":" + binder.mesh.name
+                overlay.innerHTML = "#" + i + ":" + binder.mesh.name//+" "+xy.z
                 overlay.style.left = xy.x + "px";
                 overlay.style.top = xy.y + "px";
                 cNode.appendChild(overlay)
@@ -161,7 +164,6 @@ export class WglUI {
 
         }
     }
-
 
     // GOTCHA position is not enouggh.. the model matrix is required
     world2canvas(modelMatrix, viewMatrix, projectionMatrix) {
@@ -181,6 +183,8 @@ export class WglUI {
 
         vec4.transformMat4(clipspace, [0.5, 0.5, 0.5, 1], mvpMatrix);
 
+        if (clipspace[3]<0)
+            return null
         // divide X and Y by W just like the GPU does.
         clipspace[0] /= clipspace[3];
         clipspace[1] /= clipspace[3];
@@ -198,7 +202,7 @@ export class WglUI {
         // div.style.left = Math.floor(pixelX) + "px";
         //div.style.top = Math.floor(pixelY) + "px";
         //textNode.nodeValue = clock.toFixed(2);
-        return { x: Math.floor(pixelX), y: Math.floor(pixelY) }
+        return { x: Math.floor(pixelX), y: Math.floor(pixelY),z:clipspace[3]}
     }
 
     redraw() {
@@ -221,14 +225,26 @@ export class WglUI {
     }
 
 
+    setupButton(id,callback){
+        const button=document.getElementById(id);
+        button.addEventListener("click",(e)=>{
+            callback(e)
+            this.canvas.focus()
+        })
+    }
+
     /**
      * Setup the mouse and keyboard handle.
      * When shift key is pressed, the camera will rotate, otherwise the camera will move.
      * The speed of movement depends on the distance to earth surface
      */
-    initUI() {
+    initButtons() {
+        this.setupButton("efecBtn",(e)=>{
+            
+        })
 
-
+    }
+    initMouse() {
         // handle mouse
         this.canvas.addEventListener("mousewheel", e => {
 
@@ -287,53 +303,66 @@ export class WglUI {
                 }
 
             })
+    }
+    initKeyboard() {
             // handle keyboard
 
-        this.canvas.addEventListener('keydown', (e) => {
-            console.log('key', e);
-            const v = [0, 0, 0, 0]
+            this.canvas.addEventListener('keydown', (e) => {
+                console.log('key', e);
+                const v = [0, 0, 0, 0]
+    
+                if (e.shiftKey) {
+                    const step = 3
+    
+                    if (e.key == 'ArrowUp')
+                        v[0] = step
+                    else if (e.key == 'ArrowDown')
+                        v[0] = -step
+                    else if (e.key == 'ArrowRight')
+                        v[1] = +step
+                    else if (e.key == 'ArrowLeft')
+                        v[1] = -step
+                    else if (e.key == 'PageUp')
+                        v[2] = step
+                    else if (e.key == 'PageDown')
+                        v[2] = -step
+                    else
+                        return
+                    this.camera.rotate(v)
+                    this.redraw()
+                } else {
+                    const step = this.camera.distanceFromEarthSurface / 50
+                    if (e.key == 'ArrowUp')
+                        v[1] = -step
+                    else if (e.key == 'ArrowDown')
+                        v[1] = +step
+                    else if (e.key == 'ArrowRight')
+                        v[0] = -step
+                    else if (e.key == 'ArrowLeft')
+                        v[0] = step
+                    else if (e.key == 'PageUp')
+                        v[2] = step
+                    else if (e.key == 'PageDown')
+                        v[2] = -step
+                    else
+                        return
+                    this.camera.move(v)
+                    this.redraw()
+                }
+    
+            }, false);
 
-            if (e.shiftKey) {
-                const step = 3
 
-                if (e.key == 'ArrowUp')
-                    v[0] = step
-                else if (e.key == 'ArrowDown')
-                    v[0] = -step
-                else if (e.key == 'ArrowRight')
-                    v[1] = +step
-                else if (e.key == 'ArrowLeft')
-                    v[1] = -step
-                else if (e.key == 'PageUp')
-                    v[2] = step
-                else if (e.key == 'PageDown')
-                    v[2] = -step
-                else
-                    return
-                this.camera.rotate(v)
-                this.redraw()
-            } else {
-                const step = this.camera.distanceFromEarthSurface / 50
-                if (e.key == 'ArrowUp')
-                    v[1] = -step
-                else if (e.key == 'ArrowDown')
-                    v[1] = +step
-                else if (e.key == 'ArrowRight')
-                    v[0] = -step
-                else if (e.key == 'ArrowLeft')
-                    v[0] = step
-                else if (e.key == 'PageUp')
-                    v[2] = step
-                else if (e.key == 'PageDown')
-                    v[2] = -step
-                else
-                    return
-                this.camera.move(v)
-                this.redraw()
-            }
+            this.canvas.focus()
+    }
+    initUI() {
 
-        }, false);
+        this.initMouse();
+        this.initKeyboard();
+        this.initButtons();
+        
+        
 
-        this.canvas.focus()
+        
     }
 }
