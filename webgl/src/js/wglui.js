@@ -118,11 +118,14 @@ export class WglUI {
         this.maybeBindModels()
         this.glWrapper.drawScene(this.camera, this.drawables4Render);
         this.camera.computeCoords();
+
+        const distanceL2f=Math.floor(Math.log2(this.prevDistance))
         $('#info').html("<pre>" +
             "\n position:" + vec2string(this.camera.position) +
             "\n orientation:" + vec2string(quat2EulerAngles(this.camera.orientation)) +
             
             "\n center earth " + this.camera.distanceFromEarthCenter.toFixed(2) + "m" +
+            "log2="+distanceL2f+" "+
             "\n coords: " + this.camera.lat.toFixed(6) + "," + this.camera.lon.toFixed(6) + " amsl:" + this.camera.distanceFromEarthSurface +
             this.glWrapper.lastRenderInfo +
 
@@ -262,6 +265,7 @@ export class WglUI {
                     const step = this.camera.distanceFromEarthSurface / 20;
                     v[2] = this.stepify(e.wheelDelta, step)
                     this.camera.move(v)
+                    this.checkDistance2surfaceChange()
                 }
 
 
@@ -285,6 +289,7 @@ export class WglUI {
                         const step = this.camera.distanceFromEarthSurface / 100;
                         var v = [this.stepify(s.deltaLast[0], step), this.stepify(s.deltaLast[1], -step), 0, 0]
                         this.camera.move(v)
+                        this.checkDistance2surfaceChange()
                     }
                     this.redraw()
                 },
@@ -347,6 +352,7 @@ export class WglUI {
                     else
                         return
                     this.camera.move(v)
+                    this.checkDistance2surfaceChange()
                     this.redraw()
                 }
     
@@ -364,5 +370,24 @@ export class WglUI {
         
 
         
+    }
+
+    checkDistance2surfaceChange(){
+        const distance=this.camera.distanceFromEarthSurface .toFixed(0)
+        
+        const distanceL2f=Math.floor(Math.log2(this.prevDistance))
+        console.log("distanceFromEarthSurface:"+distance+" distanceL2f:"+distanceL2f)
+        if (this.prevDistance==null || this.prevDl2f!=distanceL2f){
+            this.onDistance2surfaceChange()        
+        }
+
+        this.prevDistance=distance
+        this.prevDl2f=distanceL2f;
+
+    }
+    onDistance2surfaceChange(){
+
+        console.log("onDistance2surfaceChange")
+
     }
 }

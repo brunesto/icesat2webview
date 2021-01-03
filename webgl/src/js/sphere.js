@@ -80,6 +80,8 @@ class SlippyTilesConverter {
         else
             return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2,  this.z)));
     }
+
+    // TODO not working!
     tiles() {
         // zoom level
         //const this.z = 4
@@ -108,8 +110,8 @@ export class Sphere extends BaseObj {
 
     constructor(name) {
         super(name)
-            this.tileConverter=new SlippyTilesConverter(4)
-        //this.tileConverter = new CoordsTilesConverter(20)
+           this.tileConverter=new SlippyTilesConverter(4)
+        // this.tileConverter = new CoordsTilesConverter(10)
     }
 
 
@@ -182,7 +184,7 @@ export class Sphere extends BaseObj {
         // this is only required when displaying the full globe
         //var bbox = { min: [-85, -180], max: [90, 180 - lonPerTile] }
             // var bbox = { min: [-85, 0], max: [90, 60 ] }
-            var bbox = { min: [-90, -180], max: [90, 180 ] }
+            var bbox = { min: [-80, -180], max: [80, 180 ] }
 
         console.log(" bbox:", bbox)
         const tileBBoxMin = [this.tileConverter.lon2tile(bbox.min[1]), this.tileConverter.lat2tile(bbox.min[0])]

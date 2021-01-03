@@ -33,12 +33,14 @@ function addMarker(lat,lon,h){
 $(document).ready(function() {
     console.log('process.env.NODE_ENV:' + (process.env.NODE_ENV))
 
-    const xyz=latlon23d(50,14,9000*1000)
+    // position the camera
+    const xyz=latlon23d(0,0,9000*1000)
     console.log('xyz:' ,xyz)
 
     // TODO:  camera negative due to camera.lookAt not working properly otherwise ???
     var camera = new Camera([-xyz[0], -xyz[1], -xyz[2]]) //-6472)
 
+    // oriente the camera towards earth
      camera.lookat([0,0,0]);
     // var camera = new Camera([0,0, -15000]) //-6472)
     const step2s = []

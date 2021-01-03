@@ -15,17 +15,20 @@ export function setGeodeticRef(ref) {
     global.latlonlocal = ref
 }
 export function useEnu() {
-    return false;//global.latlonlocal != null
+    return global.latlonlocal != null
 }
 
 export function latlon23d(lat, lon, h) {
 
-    lon=-lon+90
+    //
     if (useEnu()) {
         const xyz = GeodeticToEnu(lat, lon, h,
             latlonlocal.lat,latlonlocal.lon,latlonlocal.h)
-        return [xyz.xEast , xyz.zUp , xyz.yNorth ]
+        return [xyz.xEast , xyz.zUp , -xyz.yNorth ]
     } else {
+
+        // no idea why ... :(
+        lon=-lon+90
         const xyz = GeodeticToEcef(lat, lon, h)
 
         // const old=latlon23dOLD(lat, lon,h)
