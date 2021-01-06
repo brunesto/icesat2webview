@@ -8,7 +8,7 @@
 import { degrees2radians } from './global.js'
 import { GeodeticToEcef, GeodeticToEnu } from './gpsutils.js'
 
-global.latlonlocal = { lat: 50, lon: 14, h: 230 }
+global.latlonlocal = null;//{ lat: 50, lon: 14, h: 230 }
 
 
 export function setGeodeticRef(ref) {

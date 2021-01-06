@@ -8,12 +8,31 @@ import { BaseObj } from './baseobj.js'
 import { degrees2radians } from './global.js'
 import { latlon23d } from "./latlon23d.js";
 
+
+
+class BaseTileConverter{
+
+    lon2tile(lon) { }
+
+    lat2tile(lat) { }
+
+    bbox2tiles(bbox){
+        const tileBBoxMin = [this.lon2tile(bbox.min[1]), this.lat2tile(bbox.min[0])]
+        const tileBBoxMax = [this.lon2tile(bbox.max[1]), this.lat2tile(bbox.max[0])]
+
+        const tileMin = [Math.min(tileBBoxMin[0], tileBBoxMax[0]), Math.min(tileBBoxMin[1], tileBBoxMax[1])]
+        const tileMax = [Math.max(tileBBoxMin[0], tileBBoxMax[0]), Math.max(tileBBoxMin[1], tileBBoxMax[1])]
+        return {min:tileMin,max:tileMax}
+    }
+}
 /**
  * directly convert coordinates (lat,lon) into tiles
  */
-class CoordsTilesConverter {
-    constructor(granularity) {
+class CoordsTilesConverter extends BaseTileConverter {
+    constructor(bbox,granularity) {
+        super()
         this.granularity = granularity;
+        this.  tilesBbox=this.bbox2tiles(bbox)
     }
     tile2lon(x) {
         return x * this.granularity -180
@@ -55,10 +74,38 @@ class CoordsTilesConverter {
  * this is interesting for texturing
  * 
  */
-class SlippyTilesConverter {
-    constructor(z) {
+class SlippyTilesConverter extends BaseTileConverter{
+    constructor(bbox,z) {
+        super()
         this.z = z;
+        const n = this.tiles()
+        console.log(" n :", n )
+        this. texture = gridTexture(n.x+1, n.y+1,{text:(x,y)=>this.tileLabel(x,y)}); //
+        //    loadTexture('/public/0.jpeg');
+
+        // longitude per tile
+        const lonPerTile = 360 / n.x
+            //  const latPerTile = 180 / n
+
+        // remove 1 'peeling' from earth so that it is not overlapping
+        // this is only required when displaying the full globe
+        //var bbox = { min: [-85, -180], max: [90, 180 - lonPerTile] }
+            // var bbox = { min: [-85, 0], max: [90, 60 ] }
+    
+        
+        // const tileBBoxMin = [this.lon2tile(bbox.min[1]), this.lat2tile(bbox.min[0])]
+        // const tileBBoxMax = [this.lon2tile(bbox.max[1]), this.lat2tile(bbox.max[0])]
+
+        // const tileMin = [Math.min(tileBBoxMin[0], tileBBoxMax[0]), Math.min(tileBBoxMin[1], tileBBoxMax[1])]
+        // const tileMax = [Math.max(tileBBoxMin[0], tileBBoxMax[0]), Math.max(tileBBoxMin[1], tileBBoxMax[1])]
+         this.  tilesBbox=this.bbox2tiles(bbox)
+         
     }
+
+
+   
+
+
     
     tile2lon(x) {
         return (x / Math.pow(2, this.z) * 360 - 180);
@@ -108,9 +155,13 @@ class SlippyTilesConverter {
 export class Sphere extends BaseObj {
 
 
-    constructor(name) {
+    constructor(name,bbox) {
         super(name)
-           this.tileConverter=new SlippyTilesConverter(4)
+            console.log(" bbox:", bbox)
+            
+
+           this.tileConverter=new SlippyTilesConverter(bbox,4)
+           console.log(" tilesBbox:", this. tileConverter. tilesBbox)
         // this.tileConverter = new CoordsTilesConverter(10)
     }
 
@@ -170,38 +221,18 @@ export class Sphere extends BaseObj {
     getParams() {
         // zoom level
         
-        const n = this.tileConverter.tiles()
-        console.log(" n :", n )
+        
 
-        const texture = gridTexture(n.x+1, n.y+1,{text:(x,y)=>this.tileConverter.tileLabel(x,y)}); //
-        //    loadTexture('/public/0.jpeg');
-
-        // longitude per tile
-        const lonPerTile = 360 / n.x
-            //  const latPerTile = 180 / n
-
-        // remove 1 'peeling' from earth so that it is not overlapping
-        // this is only required when displaying the full globe
-        //var bbox = { min: [-85, -180], max: [90, 180 - lonPerTile] }
-            // var bbox = { min: [-85, 0], max: [90, 60 ] }
-            var bbox = { min: [-80, -180], max: [80, 180 ] }
-
-        console.log(" bbox:", bbox)
-        const tileBBoxMin = [this.tileConverter.lon2tile(bbox.min[1]), this.tileConverter.lat2tile(bbox.min[0])]
-        const tileBBoxMax = [this.tileConverter.lon2tile(bbox.max[1]), this.tileConverter.lat2tile(bbox.max[0])]
-
-        const tileMin = [Math.min(tileBBoxMin[0], tileBBoxMax[0]), Math.min(tileBBoxMin[1], tileBBoxMax[1])]
-        const tileMax = [Math.max(tileBBoxMin[0], tileBBoxMax[0]), Math.max(tileBBoxMin[1], tileBBoxMax[1])]
-
-        console.log("tileMin:", tileMin)
-        console.log("tileMax:", tileMax)
+        const tilesBbox=this.tileConverter.tilesBbox
+        console.log("tilesBbox:", tilesBbox)
+        
 
 
         // 2.1 positions
         var positions = [];
 
-        for (var y = tileMin[1]; y <= tileMax[1] + 1; y++) {
-            for (var x = tileMin[0]; x <= tileMax[0] + 1; x++) {
+        for (var y = tilesBbox.min[1]; y <= tilesBbox.max[1] + 1; y++) {
+            for (var x = tilesBbox.min[0]; x <= tilesBbox.max[0] + 1; x++) {
                 var latLng = this.tile23d(x, y);
                 console.log("xy:" + x + "," + y + " lll:" + latLng)
                 positions = positions.concat(latLng)
@@ -214,8 +245,8 @@ export class Sphere extends BaseObj {
         // 2.2 indices
 
         var indices = []
-        var xSize = tileMax[0] - tileMin[0] + 1
-        var ySize = tileMax[1] - tileMin[1] + 1
+        var xSize = tilesBbox.max[0] - tilesBbox.min[0] + 1
+        var ySize = tilesBbox.max[1] - tilesBbox.min[1] + 1
         const rev = this.tileConverter.isReversedTextures()
         for (var y = 0; y < ySize; y++) {
             for (var x = 0; x < xSize; x++) {
@@ -265,15 +296,15 @@ export class Sphere extends BaseObj {
         // 2.4 texture coords
         const textureCoordinates = []
 
-        for (var y = tileMin[1]; y <= tileMax[1] + 1; y++) {
-            for (var x = tileMin[0]; x <= tileMax[0] + 1; x++) {
+        for (var y = tilesBbox.min[1]; y <= tilesBbox.max[1] + 1; y++) {
+            for (var x = tilesBbox.min[0]; x <= tilesBbox.max[0] + 1; x++) {
                 // var latLng = this.tile23d(x, y);
                 if (rev) {
-                    textureCoordinates.push((x - tileMin[0]) / (xSize))
-                    textureCoordinates.push((y - tileMin[1]) / (ySize))
+                    textureCoordinates.push((x - tilesBbox.min[0]) / (xSize))
+                    textureCoordinates.push((y - tilesBbox.min[1]) / (ySize))
                 } else {
-                    textureCoordinates.push((x - tileMin[0]) / (xSize))
-                    textureCoordinates.push((-y + tileMax[1]) / (ySize))
+                    textureCoordinates.push((x - tilesBbox.min[0]) / (xSize))
+                    textureCoordinates.push((-y + tilesBbox.max[1]) / (ySize))
                 }
             }
         }
@@ -284,7 +315,7 @@ export class Sphere extends BaseObj {
             indices: indices,
             vertexNormals: vertexNormals,
             textureCoordinates: textureCoordinates,
-            texture: texture,
+            texture: this.tileConverter.texture,
             color: [1.0, 1.0, 1.0]
         }
 

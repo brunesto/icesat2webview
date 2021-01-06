@@ -97,9 +97,19 @@ $(document).ready(function() {
         
 
         wglui.removeBinder("gaia")
+
+       var bbox = { min: [-80, -180], max: [80, 180 ] }
+
+        // camera.distanceFromEarthSurface
+        const distanceL2f = Math.floor(Math.log2(camera.distanceFromEarthSurface/1000))
+
+
+
+
+
         const sm = mat4.create()
         mat4.scale(sm, sm, [1, 1, 1]);
-        const sphereObj = new Sphere("gaia")
+        const sphereObj = new Sphere("gaia",bbox)
         wglui.addBinder(new ModelBinder(sphereObj, () => sm,new ProgramPINT()))
     
     }
