@@ -10,8 +10,9 @@ export function createPositionAndIndexBuffers(params) {
     // dump...
     console.log("createPositionAndIndexBuffers  ") // + params.positions.length);
     if (logFlag)
-        for (var i = 0; i < params.positions.length; i += 3)
+        for (var i = 0; i < params.positions.length; i += 3){
             console.log("[" + i / 3 + ",...]=" + params.positions[i] + "," + params.positions[i + 1] + "," + params.positions[i + 2]);
+        }
 
     // Create a buffer for the cube's vertex params.positions.
     const positionBuffer = gl.createBuffer();
@@ -28,8 +29,9 @@ export function createPositionAndIndexBuffers(params) {
     // -- 2 params.indices  
     console.log("params.indices: " + params.indices.length);
     if (logFlag)
-        for (var i = 0; i < params.indices.length; i += 3)
+        for (var i = 0; i < params.indices.length; i += 3) {
             console.log("[" + i + ",...]=" + params.indices[i] + "," + params.indices[i + 1] + "," + params.indices[i + 2]);
+        }
 
     const indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -49,8 +51,9 @@ export function createNormalBuffers(params) {
 
     console.log("params.vertexNormals: " + params.vertexNormals.length);
     if (logFlag)
-        for (var i = 0; i < params.vertexNormals.length; i += 3)
+        for (var i = 0; i < params.vertexNormals.length; i += 3) {
             console.log("params.vertexNormals: [" + i + ",...]=" + params.vertexNormals[i] + "," + params.vertexNormals[i + 1] + "," + params.vertexNormals[i + 2]);
+        }
 
 
     const normalBuffer = gl.createBuffer();
@@ -65,9 +68,9 @@ export function createTextureCoordsBuffers(params) {
     // 4 texture coords
     console.log("createTextureCoordsBuffers() " + params.textureCoordinates.length);
     if (logFlag)
-        for (var i = 0; i < params.textureCoordinates.length; i += 2)
+        for (var i = 0; i < params.textureCoordinates.length; i += 2) {
             console.log("params.textureCoordinates: [" + i + ",...]=" + params.textureCoordinates[i] + "," + params.textureCoordinates[i + 1]);
-
+        }
     const textureCoordBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(params.textureCoordinates), gl.STATIC_DRAW);
