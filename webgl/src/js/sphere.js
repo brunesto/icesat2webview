@@ -20,8 +20,12 @@ class BaseTileConverter{
         const tileBBoxMin = [this.lon2tile(bbox.min[1]), this.lat2tile(bbox.min[0])]
         const tileBBoxMax = [this.lon2tile(bbox.max[1]), this.lat2tile(bbox.max[0])]
 
-        const tileMin = [Math.min(tileBBoxMin[0], tileBBoxMax[0]), Math.min(tileBBoxMin[1], tileBBoxMax[1])]
-        const tileMax = [Math.max(tileBBoxMin[0], tileBBoxMax[0]), Math.max(tileBBoxMin[1], tileBBoxMax[1])]
+        const tileMin = [
+            Math.floor(Math.min(tileBBoxMin[0], tileBBoxMax[0])),
+            Math.floor(Math.min(tileBBoxMin[1], tileBBoxMax[1]))]
+        const tileMax = [
+            Math.ceil(Math.max(tileBBoxMin[0], tileBBoxMax[0])),
+            Math.ceil(Math.max(tileBBoxMin[1], tileBBoxMax[1]))]
         return {min:tileMin,max:tileMax}
     }
 }
@@ -33,6 +37,10 @@ class CoordsTilesConverter extends BaseTileConverter {
         super()
         this.granularity = granularity;
         this.  tilesBbox=this.bbox2tiles(bbox)
+        const n = this.tiles()
+        console.log(" n :", n )
+        this. texture = gridTexture(n.x+1, n.y+1,{text:(x,y)=>this.tileLabel(x,y)}); //
+        //    loadTexture('/public/0.jpeg');
     }
     tile2lon(x) {
         return x * this.granularity -180
@@ -91,7 +99,8 @@ class SlippyTilesConverter extends BaseTileConverter{
         // this is only required when displaying the full globe
         //var bbox = { min: [-85, -180], max: [90, 180 - lonPerTile] }
             // var bbox = { min: [-85, 0], max: [90, 60 ] }
-    
+         //   var bbox = { min: [-80, -180], max: [80, 180 ] }
+
         
         // const tileBBoxMin = [this.lon2tile(bbox.min[1]), this.lat2tile(bbox.min[0])]
         // const tileBBoxMax = [this.lon2tile(bbox.max[1]), this.lat2tile(bbox.max[0])]
@@ -160,9 +169,10 @@ export class Sphere extends BaseObj {
             console.log(" bbox:", bbox)
             
 
-           this.tileConverter=new SlippyTilesConverter(bbox,4)
-           console.log(" tilesBbox:", this. tileConverter. tilesBbox)
-        // this.tileConverter = new CoordsTilesConverter(10)
+          // this.tileConverter=new SlippyTilesConverter(bbox,4)
+            this.tileConverter = new CoordsTilesConverter(bbox,10)
+           
+      
     }
 
 
@@ -224,7 +234,7 @@ export class Sphere extends BaseObj {
         
 
         const tilesBbox=this.tileConverter.tilesBbox
-        console.log("tilesBbox:", tilesBbox)
+        console.error("tilesBbox:", tilesBbox)
         
 
 

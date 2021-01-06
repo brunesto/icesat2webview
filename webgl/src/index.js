@@ -15,6 +15,7 @@ import { Camera } from "./js/camera.js";
 import { mat4, mat3, str, quat, vec4 } from 'gl-matrix';
 import { WglUI,ModelBinder } from "./js/wglui.js";
 import { latlon23d } from "./js/latlon23d.js";
+import { radians2degrees } from './js/global';
 
 global.logFlag = false
 
@@ -98,14 +99,27 @@ $(document).ready(function() {
 
         wglui.removeBinder("gaia")
 
-       var bbox = { min: [-80, -180], max: [80, 180 ] }
+     
 
         // camera.distanceFromEarthSurface
         const distanceL2f = Math.floor(Math.log2(camera.distanceFromEarthSurface/1000))
 
+        // this has a nice simple explanation
+        // https://sites.math.washington.edu/~conroy/m120-general/horizon.pdf
 
+        const R=6378
+        var a=radians2degrees(Math.acos(R/camera.distanceFromEarthCenter))
+        
+        
+a=a/10
 
-
+        var bbox={
+            min:[Math.max(-80,camera.lat-a),Math.max(-180,camera.lon-a*2)],
+            max:[Math.min(80,camera.lat+a),Math.min(180,camera.lon+a*2)]
+        }
+        bbox = { min: [-10, -10], max: [10, 10 ] }
+        console.error("a:"+a)
+        console.error("bbox:"+JSON.stringify(bbox))
 
         const sm = mat4.create()
         mat4.scale(sm, sm, [1, 1, 1]);
