@@ -70,9 +70,9 @@ export class ProgramPIU extends BaseProgram {
         // dump...
         console.log("params.positions: " + params.positions.length);
         if (logFlag)
-            for (var i = 0; i < params.positions.length; i += 3)
+            for (var i = 0; i < params.positions.length; i += 3){
                 console.log("[" + i / 3 + ",...]=" + params.positions[i] + "," + params.positions[i + 1] + "," + params.positions[i + 2]);
-
+            }
 
 
         return {...createPositionAndIndexBuffers(params),
