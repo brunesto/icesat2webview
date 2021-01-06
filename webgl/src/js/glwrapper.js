@@ -76,7 +76,7 @@ export class GlWrapper {
      * draw a bunch of drawables 
      */
     drawScene(camera, drawables) {
-        console.log("drawScene")
+        //CCconsole.log("drawScene")
 
         // 1) reset GL drawing
         gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque

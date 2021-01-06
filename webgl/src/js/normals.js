@@ -32,11 +32,11 @@ function getTriangleVertices(positions, indices, i) {
 function computeTriangleNormals(positions, indices) {
 
     const retVal = []
-    console.log("computeVertexNormals ")
-        //  console.log("positions:", positions)
-        //        console.log("indices:", indices)
+    //CCconsole.log("computeVertexNormals ")
+        //  //CCconsole.log("positions:", positions)
+        //        //CCconsole.log("indices:", indices)
     for (var i = 0; i < indices.length; i += 3) {
-        //          console.log("triangle " + (i / 3) + "@" + i)
+        //          //CCconsole.log("triangle " + (i / 3) + "@" + i)
         const vs = getTriangleVertices(positions, indices, i)
         const edges = [
             bv3.minus(vs[1], vs[0]),
@@ -44,14 +44,14 @@ function computeTriangleNormals(positions, indices) {
             bv3.minus(vs[0], vs[2])
         ]
         const normal1 = bv3.normal(edges[0], edges[1])
-            //        console.log("normal1:", normal1)
+            //        //CCconsole.log("normal1:", normal1)
         retVal.push(normal1)
 
         // // check that the 2 other normals are the same!
         // const normal2 = this.normal(edges[1], edges[2])
         // const normal3 =this. normal(edges[2], edges[0])
-        // console.log("normal2:",normal2)
-        // console.log("normal3:",normal3)
+        // //CCconsole.log("normal2:",normal2)
+        // //CCconsole.log("normal3:",normal3)
 
     }
 
@@ -72,12 +72,12 @@ export function computeVertexNormals(positions, indices) {
     // hits === how many triangles a vertex belongs too
     const vertexHits = Array.from({ length: vertices }, () => 0)
 
-    // console.log("indices:"+ indices.length)
-    // console.log("positions:"+ positions.length+" vertices:"+vertices)
+    // //CCconsole.log("indices:"+ indices.length)
+    // //CCconsole.log("positions:"+ positions.length+" vertices:"+vertices)
 
     for (var i = 0; i < indices.length; i++) {
 
-        // console.log("i:"+i)
+        // //CCconsole.log("i:"+i)
         // triangle index
         var t = Math.floor(i / 3)
             // vertex index
@@ -98,7 +98,7 @@ export function computeVertexNormals(positions, indices) {
         vertexNormals.push(normalized[2])
     }
     // for (var i=0;i<vertexNormals.length;i+=3)
-    //     console.log("vertexNormals @"+i +":"+ vertexNormals[i]+","+ vertexNormals[i+1]+","+ vertexNormals[i+2])
+    //     //CCconsole.log("vertexNormals @"+i +":"+ vertexNormals[i]+","+ vertexNormals[i+1]+","+ vertexNormals[i+2])
 
     return vertexNormals
 

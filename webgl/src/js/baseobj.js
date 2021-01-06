@@ -31,27 +31,27 @@ export class BaseObj {
 
 
     doInit() {
-            console.log(name + ": init() not implemented")
+            //CCconsole.log(name + ": init() not implemented")
         }
         /**
          * returns a Drawable
          */
     getDrawable(program, getProgramParams) {
-        console.log(name + ": getDrawable() program:" + program.name)
+        //CCconsole.log(name + ": getDrawable() program:" + program.name)
 
         const thisBaseObj = this
         const retVal = new Drawable(thisBaseObj.name + "+" + program.name)
         retVal.init = function() {
-            console.log(name + ": init()")
+            //CCconsole.log(name + ": init()")
             thisBaseObj.ensureInit()
             program.init(getProgramParams(thisBaseObj))
         }
         retVal.dispose = function() {
-            console.log(name + ": dispose()")
+            //CCconsole.log(name + ": dispose()")
             program.dispose()
         }
         retVal.draw2 = function(projectionMatrix, viewMatrix) {
-            console.log(name + ": draw2()")
+            //CCconsole.log(name + ": draw2()")
             program.draw2(projectionMatrix, viewMatrix, thisBaseObj.modelMatrix)
         }
         return retVal

@@ -27,7 +27,7 @@ export class Dragger {
 
 
     handleMouseDown(e) {
-        console.log("mousedown", e)
+        //CCconsole.log("mousedown", e)
         this.dragState = {
             start: [e.clientX, e.clientY],
             last: [e.clientX, e.clientY],
@@ -39,7 +39,7 @@ export class Dragger {
     }
 
     handleMouseUp(e) {
-        console.log("mouseup", e)
+        //CCconsole.log("mouseup", e)
         if (this.dragState && !this.dragState.moved) {
             this.callbacks.click?.(e)
             this.dragState = null
@@ -48,7 +48,7 @@ export class Dragger {
         }
     }
     handleMouseUpOrOut(e) {
-        console.log("mouseuporout", e)
+        //CCconsole.log("mouseuporout", e)
         if (this.dragState) {
             this._updateFrom(e)
             this.callbacks.done?.(this.dragState)
@@ -57,12 +57,12 @@ export class Dragger {
     }
 
     handleMouseOut(e) {
-        console.log("mouseout", e)
+        //CCconsole.log("mouseout", e)
         this.handleMouseUp(e);
     }
 
     handleMouseMove(e) {
-      //  console.log("mousemove")
+      //  //CCconsole.log("mousemove")
         if (this.dragState) {
             this.dragState.moved=true
             this._updateFrom(e)

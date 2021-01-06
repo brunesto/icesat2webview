@@ -141,7 +141,7 @@ export class Cube extends BaseObj {
             triangleColors:triangleColors
         }
 
-        console.log("cube done", retVal)
+        //CCconsole.log("cube done", retVal)
         return retVal
 
     }

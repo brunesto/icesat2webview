@@ -8,10 +8,10 @@ import {logBufferArray,mat2string} from './global.js'
 export function createPositionAndIndexBuffers(params) {
     // -- 1 params.positions
     // dump...
-    console.log("createPositionAndIndexBuffers  ") // + params.positions.length);
+    //CCconsole.log("createPositionAndIndexBuffers  ") // + params.positions.length);
     if (logFlag)
         for (var i = 0; i < params.positions.length; i += 3){
-            console.log("[" + i / 3 + ",...]=" + params.positions[i] + "," + params.positions[i + 1] + "," + params.positions[i + 2]);
+            //CCconsole.log("[" + i / 3 + ",...]=" + params.positions[i] + "," + params.positions[i + 1] + "," + params.positions[i + 2]);
         }
 
     // Create a buffer for the cube's vertex params.positions.
@@ -27,10 +27,10 @@ export function createPositionAndIndexBuffers(params) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(params.positions), gl.STATIC_DRAW);
 
     // -- 2 params.indices  
-    console.log("params.indices: " + params.indices.length);
+    //CCconsole.log("params.indices: " + params.indices.length);
     if (logFlag)
         for (var i = 0; i < params.indices.length; i += 3) {
-            console.log("[" + i + ",...]=" + params.indices[i] + "," + params.indices[i + 1] + "," + params.indices[i + 2]);
+            //CCconsole.log("[" + i + ",...]=" + params.indices[i] + "," + params.indices[i + 1] + "," + params.indices[i + 2]);
         }
 
     const indexBuffer = gl.createBuffer();
@@ -49,10 +49,10 @@ export function createPositionAndIndexBuffers(params) {
 
 export function createNormalBuffers(params) {
 
-    console.log("params.vertexNormals: " + params.vertexNormals.length);
+    //CCconsole.log("params.vertexNormals: " + params.vertexNormals.length);
     if (logFlag)
         for (var i = 0; i < params.vertexNormals.length; i += 3) {
-            console.log("params.vertexNormals: [" + i + ",...]=" + params.vertexNormals[i] + "," + params.vertexNormals[i + 1] + "," + params.vertexNormals[i + 2]);
+            //CCconsole.log("params.vertexNormals: [" + i + ",...]=" + params.vertexNormals[i] + "," + params.vertexNormals[i + 1] + "," + params.vertexNormals[i + 2]);
         }
 
 
@@ -66,10 +66,10 @@ export function createNormalBuffers(params) {
 }
 export function createTextureCoordsBuffers(params) {
     // 4 texture coords
-    console.log("createTextureCoordsBuffers() " + params.textureCoordinates.length);
+    //CCconsole.log("createTextureCoordsBuffers() " + params.textureCoordinates.length);
     if (logFlag)
         for (var i = 0; i < params.textureCoordinates.length; i += 2) {
-            console.log("params.textureCoordinates: [" + i + ",...]=" + params.textureCoordinates[i] + "," + params.textureCoordinates[i + 1]);
+            //CCconsole.log("params.textureCoordinates: [" + i + ",...]=" + params.textureCoordinates[i] + "," + params.textureCoordinates[i + 1]);
         }
     const textureCoordBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
@@ -88,22 +88,22 @@ export function createTextureCoordsBuffers(params) {
 export function createColorBuffer(params) {
     var vertexColors = [];
     const numTriangles = Math.trunc(params.indices.length / 3)
-    console.log("numTriangles:", numTriangles)
+    //CCconsole.log("numTriangles:", numTriangles)
     for (var i = 0; i < numTriangles; i++) {
         for (var c = 0; c < 3; c++) {
             vertexColors.push(null);
         }
     }
-    console.log("vertexColors elems:", vertexColors.length)
+    //CCconsole.log("vertexColors elems:", vertexColors.length)
 
     for (var i = 0; i < params.indices.length; i++) {
         // triangle color
         const triangleIdx = Math.trunc(i / 3)
         const triangleColor = params.triangleColors[triangleIdx]
-        console.log("index:" + i + " triangle:" + triangleIdx + " color:", triangleColor)
+        //CCconsole.log("index:" + i + " triangle:" + triangleIdx + " color:", triangleColor)
 
         const positionIndex = params.indices[i]
-        console.log("positionIndex:" + positionIndex)
+        //CCconsole.log("positionIndex:" + positionIndex)
 
 
         // copy the 3 color channels (rgb) for this position
@@ -137,7 +137,7 @@ export function createColorBuffer(params) {
 export function bufferLocationSetup(positionBuffer, vertexPositionLocation) {
     // Tell WebGL how to pull out the positions from the position
     // buffer into the vertexPosition attribute
-    //console.log("bufferLocationSetup l: " + vertexPositionLocation)
+    ////CCconsole.log("bufferLocationSetup l: " + vertexPositionLocation)
     const numComponents = 3;
     const type = gl.FLOAT;
     const normalize = false;
@@ -157,7 +157,7 @@ export function bufferLocationSetup(positionBuffer, vertexPositionLocation) {
 export function bufferTextureCoordinatesLocationSetup(textureCoordBuffer, textureCoordLocation)
 // tell webgl how to pull out the texture coordinates from buffer
 {
-    //console.log("bufferTextureCoordinatesLocationSetup l: " + textureCoordLocation)
+    ////CCconsole.log("bufferTextureCoordinatesLocationSetup l: " + textureCoordLocation)
     const num = 2; // every coordinate composed of 2 values
     const type = gl.FLOAT; // the data in the buffer is 32 bit float
     const normalize = false; // don't normalize
@@ -174,7 +174,7 @@ export function matrixSetup(modelMatrix,viewMatrix,projectionMatrix,mvpMatrixLoc
     mat4.multiply(modelViewMatrix, viewMatrix, modelMatrix);
     const mvpMatrix = mat4.create();
     mat4.multiply(mvpMatrix, projectionMatrix, modelViewMatrix);
-    console.log("mvp:",mat2string(mvpMatrix))
+    //CCconsole.log("mvp:",mat2string(mvpMatrix))
     gl.uniformMatrix4fv(
         mvpMatrixLocation,
         false,

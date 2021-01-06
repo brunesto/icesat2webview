@@ -34,9 +34,9 @@ export function latlon23d(lat, lon, h) {
         // const old=latlon23dOLD(lat, lon,h)
         // return old;
 
-        // console.log("coords:"+lat+","+lon)
-        // console.log("xyz:",xyz)
-        // console.log("old:",old)
+        // //CCconsole.log("coords:"+lat+","+lon)
+        // //CCconsole.log("xyz:",xyz)
+        // //CCconsole.log("old:",old)
 
         return [xyz.x / 1000.0, xyz.z / 1000.0, xyz.y / 1000.0]
     }
@@ -66,6 +66,6 @@ export function latlon23dOLD(lat, lon,h) {
     const z = ρ * Math.cos(φ)
 
     const retVal = [x, y, z]
-    console.log(" latlon23d(" + lat + "," + lon + ") = " + retVal)
+    //CCconsole.log(" latlon23d(" + lat + "," + lon + ") = " + retVal)
     return retVal
 }

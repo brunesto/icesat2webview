@@ -63,13 +63,13 @@ export class WglUI {
 
 
     bindModel(binder) {
-        console.log("binder:" + binder)
+        //CCconsole.log("binder:" + binder)
         this.drawables4Render.push(binder.forRender())
         this.drawables4MousePick.push(binder.forMousePick())
     }
 
     addBinder(binder) {
-        console.log("add binder "+binder.mesh.name)
+        //CCconsole.log("add binder "+binder.mesh.name)
         this.binders.push(binder)
         if (this.modelBounds) {
             this.bindModel(binder)
@@ -85,7 +85,7 @@ export class WglUI {
                     this.drawables4Render.splice(i, 1);
                     this.drawables4MousePick.splice(i, 1);
                 }
-                console.log("removed "+name)
+                //CCconsole.log("removed "+name)
                 return
             }
         }
@@ -98,7 +98,7 @@ export class WglUI {
                 this.modelBounds = true
                 this.drawables4Render = []
                 this.drawables4MousePick = []
-                console.log("binders:" + this.binders.length)
+                //CCconsole.log("binders:" + this.binders.length)
                 for (var binder of this.binders) {
                     this.bindModel(binder)
                 }
@@ -107,7 +107,7 @@ export class WglUI {
         // TODO: many optimizations here
         // https://webglfundamentals.org/webgl/lessons/webgl-picking.html
     drawMousePick(x, y) {
-        console.log("drawMousePick " + x + "," + y)
+        //CCconsole.log("drawMousePick " + x + "," + y)
         this.maybeBindModels()
         this.glWrapper.drawScene(this.camera, this.drawables4MousePick);
 
@@ -124,9 +124,9 @@ export class WglUI {
             data); // typed array to hold result
         var rgb = [data[0], data[1], data[2]];
         // Note: the rgb here is in 0/255 range
-        console.log("rgb:" + rgb)
+        //CCconsole.log("rgb:" + rgb)
         const id = rgb2id(rgb) - 1
-        console.log("id:" + id)
+        //CCconsole.log("id:" + id)
             // immediately replace the view
         this.drawRenderScene()
 
@@ -140,7 +140,7 @@ export class WglUI {
 
     drawRenderScene() {
 
-        console.log("drawRenderScene")
+        //CCconsole.log("drawRenderScene")
         this.maybeBindModels()
         this.glWrapper.drawScene(this.camera, this.drawables4Render);
         this.camera.computeCoords();
@@ -178,7 +178,7 @@ export class WglUI {
         for (var i in this.binders) {
 
             const binder = this.binders[i]
-            console.log("binder[" + i + "]")
+            //CCconsole.log("binder[" + i + "]")
 
             const modelMatrix = binder.getModelMatrix()
             const xy = this.world2canvas(modelMatrix, viewMatrix, projectionMatrix)
@@ -245,7 +245,7 @@ export class WglUI {
     }
 
     stepify(v, s) {
-        console.log("stepify:", v, s)
+        //CCconsole.log("stepify:", v, s)
         if (v > 0)
             return s
         if (v < 0)
@@ -277,7 +277,7 @@ export class WglUI {
         // handle mouse
         this.canvas.addEventListener("mousewheel", e => {
 
-            console.log("mouseWheel", e)
+            //CCconsole.log("mouseWheel", e)
             if (e.wheelDelta != 0) {
 
                 if (e.shiftKey) {
@@ -307,7 +307,7 @@ export class WglUI {
 
 
 
-                console.log("deltaLast:", s.deltaLast)
+                //CCconsole.log("deltaLast:", s.deltaLast)
                 if (s.shiftKey) {
                     const euler = [this.stepify(s.deltaLast[1], 1), this.stepify(s.deltaLast[0], 1), 0]
                     this.camera.rotate(euler)
@@ -320,7 +320,7 @@ export class WglUI {
                 this.redraw()
             },
             click: e => {
-                console.log("click!")
+                //CCconsole.log("click!")
                 this.drawMousePick(e.clientX, e.clientY)
 
 
@@ -339,7 +339,7 @@ export class WglUI {
         // handle keyboard
 
         this.canvas.addEventListener('keydown', (e) => {
-            console.log('key', e);
+            //CCconsole.log('key', e);
             const v = [0, 0, 0, 0]
 
             if (e.shiftKey) {
@@ -402,7 +402,7 @@ export class WglUI {
         const distance = this.camera.distanceFromEarthSurface.toFixed(0)
 
         const distanceL2f = Math.floor(Math.log2(this.prevDistance))
-        console.log("distanceFromEarthSurface:" + distance + " distanceL2f:" + distanceL2f)
+        //CCconsole.log("distanceFromEarthSurface:" + distance + " distanceL2f:" + distanceL2f)
         if (this.prevDistance == null || this.prevDl2f != distanceL2f) {
             this.onDistance2surfaceChange()
         }
@@ -413,7 +413,7 @@ export class WglUI {
     }
     onDistance2surfaceChange() {
 
-        console.log("onDistance2surfaceChange")
+        //CCconsole.log("onDistance2surfaceChange")
 
     }
 

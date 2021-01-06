@@ -68,10 +68,10 @@ export class ProgramPIU extends BaseProgram {
     initBuffers(params) {
         // -- 1 params.positions
         // dump...
-        console.log("params.positions: " + params.positions.length);
+        //CCconsole.log("params.positions: " + params.positions.length);
         if (logFlag)
             for (var i = 0; i < params.positions.length; i += 3){
-                console.log("[" + i / 3 + ",...]=" + params.positions[i] + "," + params.positions[i + 1] + "," + params.positions[i + 2]);
+                //CCconsole.log("[" + i / 3 + ",...]=" + params.positions[i] + "," + params.positions[i + 1] + "," + params.positions[i + 2]);
             }
 
 
@@ -91,7 +91,7 @@ export class ProgramPIU extends BaseProgram {
     drawWithColor(color, buffers,projectionMatrix, viewMatrix,modelMatrix) {
 
         // Tell WebGL to use our program when drawing
-        console.log(this.name + "." + this.id + ": draw2()");
+        //CCconsole.log(this.name + "." + this.id + ": draw2()");
         gl.useProgram(this.programInfo.program);
         bufferLocationSetup(buffers.position, this.programInfo.locations.vertexPosition)
         matrixSetup(modelMatrix, viewMatrix, projectionMatrix, this.programInfo.locations.mvpMatrix)
@@ -107,7 +107,7 @@ export class ProgramPIU extends BaseProgram {
     }
 
     dispose() {
-        console.log(this.name + ": dispose()");
+        //CCconsole.log(this.name + ": dispose()");
         // TODO!!!
     }
 }

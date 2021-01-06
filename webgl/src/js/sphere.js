@@ -38,7 +38,7 @@ class CoordsTilesConverter extends BaseTileConverter {
         this.granularity = granularity;
         this.  tilesBbox=this.bbox2tiles(bbox)
         const n = this.tiles()
-        console.log(" n :", n )
+        //CCconsole.log(" n :", n )
         this. texture = gridTexture(n.x+1, n.y+1,{text:(x,y)=>this.tileLabel(x,y)}); //
         //    loadTexture('/public/0.jpeg');
     }
@@ -87,7 +87,7 @@ class SlippyTilesConverter extends BaseTileConverter{
         super()
         this.z = z;
         const n = this.tiles()
-        console.log(" n :", n )
+        //CCconsole.log(" n :", n )
         this. texture = gridTexture(n.x+1, n.y+1,{text:(x,y)=>this.tileLabel(x,y)}); //
         //    loadTexture('/public/0.jpeg');
 
@@ -144,7 +144,7 @@ class SlippyTilesConverter extends BaseTileConverter{
 
         // number of tiles accross a x or y
         const n = Math.pow(2, this.z)
-        console.log(" this.z:" + this.z + " n:" + n)
+        //CCconsole.log(" this.z:" + this.z + " n:" + n)
         return { x: n, y: n }
     }
     isReversedTextures() {
@@ -166,7 +166,7 @@ export class Sphere extends BaseObj {
 
     constructor(name,bbox) {
         super(name)
-            console.log(" bbox:", bbox)
+            //CCconsole.log(" bbox:", bbox)
             
 
           // this.tileConverter=new SlippyTilesConverter(bbox,4)
@@ -220,7 +220,7 @@ export class Sphere extends BaseObj {
         const y = ρ * Math.cos(φ)
 
         const retVal = [x, y]
-        console.log(" latlon23d(" + lat + "," + lon + ") = " + retVal)
+        //CCconsole.log(" latlon23d(" + lat + "," + lon + ") = " + retVal)
         return retVal
     }
 */
@@ -234,7 +234,7 @@ export class Sphere extends BaseObj {
         
 
         const tilesBbox=this.tileConverter.tilesBbox
-        console.error("tilesBbox:", tilesBbox)
+        //CCconsole.log("tilesBbox:", tilesBbox)
         
 
 
@@ -244,13 +244,13 @@ export class Sphere extends BaseObj {
         for (var y = tilesBbox.min[1]; y <= tilesBbox.max[1] + 1; y++) {
             for (var x = tilesBbox.min[0]; x <= tilesBbox.max[0] + 1; x++) {
                 var latLng = this.tile23d(x, y);
-                console.log("xy:" + x + "," + y + " lll:" + latLng)
+                //CCconsole.log("xy:" + x + "," + y + " lll:" + latLng)
                 positions = positions.concat(latLng)
             }
         }
 
 
-        console.log("positions: " + positions.length)
+        //CCconsole.log("positions: " + positions.length)
 
         // 2.2 indices
 
@@ -295,7 +295,7 @@ export class Sphere extends BaseObj {
 
 
 
-        console.log("indices: " + indices.length)
+        //CCconsole.log("indices: " + indices.length)
 
         // 2.3 normals
         const vertexNormals = computeVertexNormals(positions, indices)

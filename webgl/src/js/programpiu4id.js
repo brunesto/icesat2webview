@@ -16,17 +16,17 @@ export class ProgramPIU4Id extends ProgramPIU {
 
     draw2(id, buffers,projectionMatrix, viewMatrix,modelMatrix) {
         const sid = (id + 1)
-            //console.log("id+1:"+sid)
+            ////CCconsole.log("id+1:"+sid)
         const rgb = id2rgb(sid)
-            //console.log("rgb:"+rgb)
+            ////CCconsole.log("rgb:"+rgb)
         const rgb1 = bv3.scalarmul(rgb, 1 / 255.0)
-            //console.log("rgb1:"+rgb1)
+            ////CCconsole.log("rgb1:"+rgb1)
             //gl.uniform3fv( this.programInfo.locations.color, rgb1)//new Float32Array([0.349,0.241,0.912]) )
         this.drawWithColor(rgb1,buffers, projectionMatrix, viewMatrix,modelMatrix)
     }
 
     dispose() {
-        console.log(name + ": dispose()");
+        //CCconsole.log(name + ": dispose()");
         // TODO!!!
     }
 }

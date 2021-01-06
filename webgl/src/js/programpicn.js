@@ -90,7 +90,7 @@ export class ProgramPICN extends BaseProgram {
 
     draw2(id, buffers,projectionMatrix, viewMatrix,modelMatrix) {
         // Tell WebGL to use our program when drawing
-        //console.log(name + "."+id+": draw2()");
+        ////CCconsole.log(name + "."+id+": draw2()");
         gl.useProgram(this.programInfo.program);
 
 
@@ -113,7 +113,7 @@ export class ProgramPICN extends BaseProgram {
     }
 
     dispose() {
-        console.log(name + ": dispose()");
+        //CCconsole.log(name + ": dispose()");
         // TODO!!!
     }
 }

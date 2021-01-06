@@ -61,7 +61,7 @@ export function logBufferArray(name, colors, step) {
         for (var s = 0; s < step; s++) {
             acc += colors[i + s] + ","
         }
-        console.log("" + name + "@" + (i / step) + "[" + i + ",...]=" + acc);
+        //CCconsole.log("" + name + "@" + (i / step) + "[" + i + ",...]=" + acc);
 
     }
 }
@@ -139,7 +139,7 @@ function copysign(x, y) {
 
 export function quat2EulerAngles(q) {
 
-    console.log("quat2EulerAngles",q)
+    //CCconsole.log("quat2EulerAngles",q)
     // roll (x-axis rotation)
     const sinr_cosp = 2 * (q[3] * q[0] + q[1] * q[2]);
     const cosr_cosp = 1 - 2 * (q[0] * q[0] + q[1] * q[1]);

@@ -45,18 +45,18 @@ export class Camera {
 
         if (this.position[0] > 0 != this.position[2] > 0) {
             if (this.position[0] > 0) {
-                console.log("c1")
+                //CCconsole.log("c1")
                 this.lon = l90;
             } else {
-                console.log("c2")
+                //CCconsole.log("c2")
                 this.lon = 180 - l90;
             }
         } else {
             if (this.position[0] > 0) {
-                console.log("c3")
+                //CCconsole.log("c3")
                 this.lon = -180 - l90;
             } else {
-                console.log("c4")
+                //CCconsole.log("c4")
                 this.lon = l90;
             }
         }
@@ -82,7 +82,7 @@ export class Camera {
 
         var dest = vec4.create()
         vec4.transformMat4(dest, v, iqm);
-        console.log("movescreen2world " + vec2string(v) + " ->" + vec2string(dest))
+        //CCconsole.log("movescreen2world " + vec2string(v) + " ->" + vec2string(dest))
 
         // modify camera position by inversely rotated z
         this.position[0] += dest[0]
@@ -105,7 +105,7 @@ export class Camera {
     }
 
     lookat(center){
-        console.log("lookAt",center)
+        //CCconsole.log("lookAt",center)
         const m4out = mat4.create()
         const up=[0,1,0]
         mat4.lookAt(m4out,

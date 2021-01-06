@@ -94,7 +94,7 @@ export class Reflector extends BaseObj {
             color: [1.0, 1.0, 0.0],
         }
 
-        console.log("reflector done", retVal)
+        //CCconsole.log("reflector done", retVal)
         return retVal
 
     }

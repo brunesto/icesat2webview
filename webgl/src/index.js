@@ -23,7 +23,7 @@ function addMarker(lat,lon,h){
     const cm2 = mat4.create()
     mat4.identity(cm2);
     const xyz2=latlon23d(lat,lon,h)
-    console.log(""+lat+","+lon,xyz2)
+    //CCconsole.log(""+lat+","+lon,xyz2)
     mat4.translate(cm2, mat4.create(), xyz2);
     mat4.scale(cm2, cm2, [100, 100, 100]);    
     const cubeObj2 = new Reflector(lat+","+lon)
@@ -32,11 +32,11 @@ function addMarker(lat,lon,h){
 }
 
 $(document).ready(function() {
-    console.log('process.env.NODE_ENV:' + (process.env.NODE_ENV))
+    //CCconsole.log('process.env.NODE_ENV:' + (process.env.NODE_ENV))
 
     // position the camera
     const xyz=latlon23d(0,0,9000*1000)
-    console.log('xyz:' ,xyz)
+    //CCconsole.log('xyz:' ,xyz)
 
     // TODO:  camera negative due to camera.lookAt not working properly otherwise ???
     var camera = new Camera([-xyz[0], -xyz[1], -xyz[2]]) //-6472)
@@ -118,8 +118,8 @@ a=a/10
             max:[Math.min(80,camera.lat+a),Math.min(180,camera.lon+a*2)]
         }
         bbox = { min: [-10, -10], max: [10, 10 ] }
-        console.error("a:"+a)
-        console.error("bbox:"+JSON.stringify(bbox))
+        //CCconsole.log("a:"+a)
+        //CCconsole.log("bbox:"+JSON.stringify(bbox))
 
         const sm = mat4.create()
         mat4.scale(sm, sm, [1, 1, 1]);
