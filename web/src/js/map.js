@@ -153,13 +153,25 @@ export class Map {
         });
         this.tileLayers["dark"] = CartoDB_DarkMatter;
 
-
-
-
-
-
-
-
+        if (DEV) {
+            // https://gis.stackexchange.com/questions/149062/display-tile-grid-borders-with-leaflet-visual-debugging?newreg=06a9740ea5094fadb0ac8c73816dbc5d
+            L.GridLayer.GridDebug = L.GridLayer.extend({
+                createTile: function(coords) {
+                    const tile = document.createElement('div');
+                    tile.style.zIndex = -100;
+                    tile.style.outline = '1px dashed lime';
+                    tile.style.color = 'lime';
+                    tile.style.fontWeight = 'bold';
+                    tile.style.fontSize = '12pt';
+                    tile.style.fontFamily = 'monospace';
+                    tile.innerHTML = "&nbsp;@" + coords.z + " x:" + coords.x + " y:" + coords.y
+                    return tile;
+                },
+            });
+            const debugLayer = new L.GridLayer.GridDebug({});
+            debugLayer.setZIndex(1000)
+            this.myMap.addLayer(debugLayer)
+        }
 
         //var esriTileLayer=L.tileLayer.provider('Stamen.Watercolor')               
         //var switchBtn = L.control.layers({ "mapbox": mapBoxTileLayer, "satellite": esriTileLayer, "osm": osmTileLayer })

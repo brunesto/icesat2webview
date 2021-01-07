@@ -4,7 +4,7 @@ import {loadExtModule} from './extmodule.js'
 
 
 export class ButtonsMgr {
-    layerNames = ["outdoors", "aerial", "light"] //, "dark"]
+    layerNames = ["outdoors", "aerial", "light"]
     currentLayerIdx = -1
 
 
