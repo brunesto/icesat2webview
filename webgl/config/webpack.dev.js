@@ -19,7 +19,7 @@ module.exports = merge(common, {
     https:true,
     open: false,
     compress: true,
-    hot: true,
+    hot: false,
     port: 8443,
     serveIndex:true,
     contentBasePublicPath: [ '/'],
