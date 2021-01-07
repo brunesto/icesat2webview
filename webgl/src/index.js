@@ -1,6 +1,6 @@
 import './styles/body.css';
 
-import { Sphere } from './js/sphere.js';
+import { Sphere,CoordsTilesConverter,SlippyTilesConverter  } from './js/sphere.js';
 import { Cube } from './js/cube.js';
 import { Reflector } from './js/reflector.js';
 
@@ -17,7 +17,7 @@ import { WglUI,ModelBinder } from "./js/wglui.js";
 import { latlon23d } from "./js/latlon23d.js";
 import { radians2degrees } from './js/global';
 
-global.logFlag = false
+global.logFlag = true
 
 function addMarker(lat,lon,h){
     const cm2 = mat4.create()
@@ -117,13 +117,14 @@ a=a/10
             min:[Math.max(-80,camera.lat-a),Math.max(-180,camera.lon-a*2)],
             max:[Math.min(80,camera.lat+a),Math.min(180,camera.lon+a*2)]
         }
-        bbox = { min: [-10, -10], max: [10, 10 ] }
+        bbox = { min: [-2.5, -2.5], max: [2.5, 2.5 ] }
         //CCconsole.log("a:"+a)
         //CCconsole.log("bbox:"+JSON.stringify(bbox))
 
         const sm = mat4.create()
         mat4.scale(sm, sm, [1, 1, 1]);
-        const sphereObj = new Sphere("gaia",bbox)
+        //  const sphereObj = new Sphere("gaia",new CoordsTilesConverter(1),bbox)
+        const sphereObj = new Sphere("gaia",new SlippyTilesConverter(4),bbox)
         wglui.addBinder(new ModelBinder(sphereObj, () => sm,new ProgramPINT()))
     
     }

@@ -10,68 +10,91 @@ import { latlon23d } from "./latlon23d.js";
 
 
 
-class BaseTileConverter{
+class BaseTileConverter {
+    init(bbox) {
+        this.tilesBbox = this.bbox2tiles(bbox)
+        console.log("tilesBbox:", JSON.stringify(this.tilesBbox))
 
-    lon2tile(lon) { }
+        this.tilesBboxSize = this.tiles(this.tilesBbox)
+        console.log("tilesBboxSize :", this.tilesBboxSize)
 
-    lat2tile(lat) { }
+    }
+    lon2tile(lon) {}
 
-    bbox2tiles(bbox){
+    lat2tile(lat) {}
+
+    bbox2tiles(bbox) {
         const tileBBoxMin = [this.lon2tile(bbox.min[1]), this.lat2tile(bbox.min[0])]
         const tileBBoxMax = [this.lon2tile(bbox.max[1]), this.lat2tile(bbox.max[0])]
 
         const tileMin = [
-            Math.floor(Math.min(tileBBoxMin[0], tileBBoxMax[0])),
-            Math.floor(Math.min(tileBBoxMin[1], tileBBoxMax[1]))]
+            Math.min(tileBBoxMin[0], tileBBoxMax[0]),
+            Math.min(tileBBoxMin[1], tileBBoxMax[1])
+        ]
         const tileMax = [
-            Math.ceil(Math.max(tileBBoxMin[0], tileBBoxMax[0])),
-            Math.ceil(Math.max(tileBBoxMin[1], tileBBoxMax[1]))]
-        return {min:tileMin,max:tileMax}
+            1 + Math.max(tileBBoxMin[0], tileBBoxMax[0]),
+            1 + Math.max(tileBBoxMin[1], tileBBoxMax[1])
+        ]
+        return { min: tileMin, max: tileMax }
+    }
+    tiles(tilesBbox) {
+        return {
+            x: tilesBbox.max[0] - tilesBbox.min[0],
+            y: tilesBbox.max[1] - tilesBbox.min[1]
+        }
+
     }
 }
 /**
  * directly convert coordinates (lat,lon) into tiles
  */
-class CoordsTilesConverter extends BaseTileConverter {
-    constructor(bbox,granularity) {
+export class CoordsTilesConverter extends BaseTileConverter {
+    constructor(granularity) {
         super()
         this.granularity = granularity;
-        this.  tilesBbox=this.bbox2tiles(bbox)
-        const n = this.tiles()
+    }
+
+    init(bbox) {
+        super.init(bbox)
+
+
+
         //CCconsole.log(" n :", n )
-        this. texture = gridTexture(n.x+1, n.y+1,{text:(x,y)=>this.tileLabel(x,y)}); //
+        // this.texture = gridTexture(this.tilesBboxSize.x ,this.tilesBboxSize.y , { text: (x, y) => this.tileLabel(x, y),cross:true }); //
+        this.texture = gridTexture(this.tilesBboxSize.x, this.tilesBboxSize.y, { text: (x, y) => this.tileLabel(this.tilesBbox.min[0] + x, this.tilesBbox.min[1] + y), cross: true }); //
+
         //    loadTexture('/public/0.jpeg');
     }
     tile2lon(x) {
-        return x * this.granularity -180
+        return x * this.granularity - 180
     }
     tile2lat(y) {
-        return y * this.granularity -90
+        return y * this.granularity - 90
     }
 
     lon2tile(lon) {
-        return (lon +180)/ this.granularity
+        return Math.floor((lon + 180) / this.granularity)
     }
 
     lat2tile(lat) {
-        return (lat+90 )/ this.granularity
+        return Math.floor((lat + 90) / this.granularity)
     }
 
-    tiles() {
-        return {
-            x: Math.round(360 / this.granularity),
-            y: Math.round(180 / this.granularity)
-        }
-    }
+    // tiles() {
+    //     return {
+    //         x: Math.round(360 / this.granularity),
+    //         y: Math.round(180 / this.granularity)
+    //     }
+    // }
 
     isReversedTextures() {
         return false
     }
 
-    tileLabel(x,y){
-        const centerLat=(this.tile2lat(y)+this.tile2lat(y+1))/2
-        const centerLon=(this.tile2lon(x)+this.tile2lon(x+1))/2
-        return centerLat+","+centerLon
+    tileLabel(x, y) {
+        const centerLat = (this.tile2lat(y) + this.tile2lat(y + 1)) / 2
+        const centerLon = (this.tile2lon(x) + this.tile2lon(x + 1)) / 2
+        return centerLat + "," + centerLon
 
     }
 }
@@ -82,40 +105,45 @@ class CoordsTilesConverter extends BaseTileConverter {
  * this is interesting for texturing
  * 
  */
-class SlippyTilesConverter extends BaseTileConverter{
-    constructor(bbox,z) {
+export class SlippyTilesConverter extends BaseTileConverter {
+    constructor(z) {
         super()
         this.z = z;
-        const n = this.tiles()
-        //CCconsole.log(" n :", n )
-        this. texture = gridTexture(n.x+1, n.y+1,{text:(x,y)=>this.tileLabel(x,y)}); //
+    }
+
+    init(bbox) {
+        super.init(bbox)
+
+
         //    loadTexture('/public/0.jpeg');
 
         // longitude per tile
-        const lonPerTile = 360 / n.x
+        const lonPerTile = 360 / this.tilesBboxSize.x
             //  const latPerTile = 180 / n
 
         // remove 1 'peeling' from earth so that it is not overlapping
         // this is only required when displaying the full globe
         //var bbox = { min: [-85, -180], max: [90, 180 - lonPerTile] }
-            // var bbox = { min: [-85, 0], max: [90, 60 ] }
-         //   var bbox = { min: [-80, -180], max: [80, 180 ] }
+        // var bbox = { min: [-85, 0], max: [90, 60 ] }
+        //   var bbox = { min: [-80, -180], max: [80, 180 ] }
 
-        
+
         // const tileBBoxMin = [this.lon2tile(bbox.min[1]), this.lat2tile(bbox.min[0])]
         // const tileBBoxMax = [this.lon2tile(bbox.max[1]), this.lat2tile(bbox.max[0])]
 
         // const tileMin = [Math.min(tileBBoxMin[0], tileBBoxMax[0]), Math.min(tileBBoxMin[1], tileBBoxMax[1])]
         // const tileMax = [Math.max(tileBBoxMin[0], tileBBoxMax[0]), Math.max(tileBBoxMin[1], tileBBoxMax[1])]
-         this.  tilesBbox=this.bbox2tiles(bbox)
-         
+        //  this.tilesBbox = this.bbox2tiles(bbox)
+        //const thisConverter=this
+        this.texture = gridTexture(this.tilesBboxSize.x, this.tilesBboxSize.y, { text: (x, y) => this.tileLabel(this.tilesBbox.min[0] + x, this.tilesBbox.min[1] + y) }); //
+
     }
 
 
-   
 
 
-    
+
+
     tile2lon(x) {
         return (x / Math.pow(2, this.z) * 360 - 180);
     }
@@ -126,34 +154,34 @@ class SlippyTilesConverter extends BaseTileConverter{
         return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
     }
 
-    lon2tile(lon) { return (Math.floor((lon + 180) / 360 * Math.pow(2,  this.z))); }
+    lon2tile(lon) { return (Math.floor((lon + 180) / 360 * Math.pow(2, this.z))); }
 
     lat2tile(lat) {
         if (lat <= -90) // -85.0511) // 85.0511287798066
-            return Math.pow(2,  this.z) ;
+            return Math.pow(2, this.z);
         else if (lat >= 90) //85.0511)
             return 0;
         else
-            return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2,  this.z)));
+            return (Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, this.z)));
     }
 
-    // TODO not working!
-    tiles() {
-        // zoom level
-        //const this.z = 4
+    // // TODO not working!
+    // tiles() {
+    //     // zoom level
+    //     //const this.z = 4
 
-        // number of tiles accross a x or y
-        const n = Math.pow(2, this.z)
-        //CCconsole.log(" this.z:" + this.z + " n:" + n)
-        return { x: n, y: n }
-    }
+    //     // number of tiles accross a x or y
+    //     const n = Math.pow(2, this.z)
+    //         //CCconsole.log(" this.z:" + this.z + " n:" + n)
+    //     return { x: n, y: n }
+    // }
     isReversedTextures() {
         return true
     }
-    tileLabel(x,y){
+    tileLabel(x, y) {
         // const z=4
         // return this.tile2lat(y,z)+","+this.tile2lon(x,z)
-        return x+","+y
+        return x + "," + y
 
     }
 }
@@ -164,15 +192,17 @@ class SlippyTilesConverter extends BaseTileConverter{
 export class Sphere extends BaseObj {
 
 
-    constructor(name,bbox) {
+    constructor(name, tileConverter, bbox) {
         super(name)
             //CCconsole.log(" bbox:", bbox)
-            
 
-          // this.tileConverter=new SlippyTilesConverter(bbox,4)
-            this.tileConverter = new CoordsTilesConverter(bbox,10)
-           
-      
+
+        // this.tileConverter=new SlippyTilesConverter(bbox,4)
+        this.tileConverter = tileConverter //new CoordsTilesConverter( 10)
+        this.tileConverter.init(bbox)
+
+
+
     }
 
 
@@ -230,62 +260,72 @@ export class Sphere extends BaseObj {
     //
     getParams() {
         // zoom level
-        
-        
 
-        const tilesBbox=this.tileConverter.tilesBbox
-        //CCconsole.log("tilesBbox:", tilesBbox)
-        
+
+
+        const tilesBbox = this.tileConverter.tilesBbox
+        const tilesBboxSize = this.tileConverter.tilesBboxSize
+            //CCconsole.log("tilesBbox:", tilesBbox)
+
 
 
         // 2.1 positions
         var positions = [];
+        for (var j = 0; j <= tilesBboxSize.x; j++) {
+            const y = j + tilesBbox.min[1]
+            for (var i = 0; i <= tilesBboxSize.y; i++) {
+                // for (var y = tilesBbox.min[1]; y <= tilesBbox.max[1] ; y++) {
+                //     for (var x = tilesBbox.min[0]; x <= tilesBbox.max[0] ; x++) {
+                const x = i + tilesBbox.min[0]
 
-        for (var y = tilesBbox.min[1]; y <= tilesBbox.max[1] + 1; y++) {
-            for (var x = tilesBbox.min[0]; x <= tilesBbox.max[0] + 1; x++) {
-                var latLng = this.tile23d(x, y);
-                //CCconsole.log("xy:" + x + "," + y + " lll:" + latLng)
-                positions = positions.concat(latLng)
+                var lat = this.tileConverter.tile2lat(y)
+                var lon = this.tileConverter.tile2lon(x)
+
+                var pos = this.tile23d(x, y);
+                console.log("@" + positions.length + " xy:" + x + "," + y + " coords:" + lat + "," + lon + " 3d:" + pos)
+                positions = positions.concat(pos)
             }
         }
 
 
-        //CCconsole.log("positions: " + positions.length)
+        console.log("positions: " + positions.length + " (/3=" + (positions.length / 3) + ")")
 
         // 2.2 indices
 
         var indices = []
-        var xSize = tilesBbox.max[0] - tilesBbox.min[0] + 1
-        var ySize = tilesBbox.max[1] - tilesBbox.min[1] + 1
+            //var xSize = tilesBbox.max[0] - tilesBbox.min[0]
+            //var ySize = tilesBbox.max[1] - tilesBbox.min[1]
         const rev = this.tileConverter.isReversedTextures()
-        for (var y = 0; y < ySize; y++) {
-            for (var x = 0; x < xSize; x++) {
+            // for (var y = 0; y < ySize; y++) {
+            //     for (var x = 0; x < xSize; x++) {
 
+        for (var j = 0; j < tilesBboxSize.x; j++) {
+            for (var i = 0; i < tilesBboxSize.y; i++) {
 
 
 
                 if (!rev) {
-                    indices.push(x + 1 + (y) * (xSize + 1))
-                    indices.push(x + 1 + (y + 1) * (xSize + 1))
-                    indices.push(x + (y + 1) * (xSize + 1))
+                    indices.push(i + (j) * (tilesBboxSize.x + 1))
+                    indices.push(i + 1 + (j) * (tilesBboxSize.x + 1))
+                    indices.push(i + (j + 1) * (tilesBboxSize.x + 1))
 
-                    indices.push(x + (y) * (xSize + 1))
-                    indices.push(x + 1 + (y) * (xSize + 1))
-                    indices.push(x + (y + 1) * (xSize + 1))
+                    indices.push(i + 1 + (j) * (tilesBboxSize.x + 1))
+                    indices.push(i + 1 + (j + 1) * (tilesBboxSize.x + 1))
+                    indices.push(i + (j + 1) * (tilesBboxSize.x + 1))
 
 
                 } else {
-                    indices.push(x + (y + 1) * (xSize + 1))
-                    indices.push(x + 1 + (y) * (xSize + 1))
+                    indices.push(i + (j + 1) * (tilesBboxSize.x + 1))
+                    indices.push(i + 1 + (j) * (tilesBboxSize.x + 1))
 
-                    indices.push(x + (y) * (xSize + 1))
-
-
+                    indices.push(i + (j) * (tilesBboxSize.x + 1))
 
 
-                    indices.push(x + (y + 1) * (xSize + 1))
-                    indices.push(x + 1 + (y + 1) * (xSize + 1))
-                    indices.push(x + 1 + (y) * (xSize + 1))
+
+
+                    indices.push(i + (j + 1) * (tilesBboxSize.x + 1))
+                    indices.push(i + 1 + (j + 1) * (tilesBboxSize.x + 1))
+                    indices.push(i + 1 + (j) * (tilesBboxSize.x + 1))
                 }
 
 
@@ -295,7 +335,7 @@ export class Sphere extends BaseObj {
 
 
 
-        //CCconsole.log("indices: " + indices.length)
+        console.log("indices: " + indices.length)
 
         // 2.3 normals
         const vertexNormals = computeVertexNormals(positions, indices)
@@ -306,15 +346,18 @@ export class Sphere extends BaseObj {
         // 2.4 texture coords
         const textureCoordinates = []
 
-        for (var y = tilesBbox.min[1]; y <= tilesBbox.max[1] + 1; y++) {
-            for (var x = tilesBbox.min[0]; x <= tilesBbox.max[0] + 1; x++) {
+        for (var j = 0; j <= tilesBboxSize.x; j++) {
+            const y = j + tilesBbox.min[1]
+            for (var i = 0; i <= tilesBboxSize.y; i++) {
+                const x = i + tilesBbox.min[0]
+
                 // var latLng = this.tile23d(x, y);
                 if (rev) {
-                    textureCoordinates.push((x - tilesBbox.min[0]) / (xSize))
-                    textureCoordinates.push((y - tilesBbox.min[1]) / (ySize))
+                    textureCoordinates.push((x - tilesBbox.min[0]) / (tilesBboxSize.x))
+                    textureCoordinates.push((y - tilesBbox.min[1]) / (tilesBboxSize.y))
                 } else {
-                    textureCoordinates.push((x - tilesBbox.min[0]) / (xSize))
-                    textureCoordinates.push((-y + tilesBbox.max[1]) / (ySize))
+                    textureCoordinates.push((x - tilesBbox.min[0]) / (tilesBboxSize.x))
+                    textureCoordinates.push((-y + tilesBbox.max[1]) / (tilesBboxSize.y))
                 }
             }
         }

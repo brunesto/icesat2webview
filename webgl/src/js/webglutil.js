@@ -67,8 +67,8 @@ export function gridTexture(x, y,options) {
         
 
     const canvas = document.createElement("CANVAS");
-    canvas.width = 2*1024;
-    canvas.height = 2*1024;
+    canvas.width = 128*x;
+    canvas.height = 128*y;
     const cw = canvas.width / x
     const ch = canvas.height / y
     var ctx = canvas.getContext("2d");

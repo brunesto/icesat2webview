@@ -125,7 +125,7 @@ export class ProgramPINT extends BaseProgram {
         // draw
         {
             const trianglesCount = buffers.indicesSize;
-            console.debug("drawElements " + trianglesCount);
+            //console.debug("drawElements " + trianglesCount);
             const type = gl.UNSIGNED_SHORT;
             const offset = 0;
             gl.drawElements(gl.TRIANGLES, trianglesCount, type, offset);
