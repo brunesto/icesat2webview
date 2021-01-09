@@ -271,9 +271,9 @@ export class Sphere extends BaseObj {
 
         // 2.1 positions
         var positions = [];
-        for (var j = 0; j <= tilesBboxSize.x; j++) {
+        for (var j = 0; j <= tilesBboxSize.y; j++) {
             const y = j + tilesBbox.min[1]
-            for (var i = 0; i <= tilesBboxSize.y; i++) {
+            for (var i = 0; i <= tilesBboxSize.x; i++) {
                 // for (var y = tilesBbox.min[1]; y <= tilesBbox.max[1] ; y++) {
                 //     for (var x = tilesBbox.min[0]; x <= tilesBbox.max[0] ; x++) {
                 const x = i + tilesBbox.min[0]
@@ -282,13 +282,13 @@ export class Sphere extends BaseObj {
                 var lon = this.tileConverter.tile2lon(x)
 
                 var pos = this.tile23d(x, y);
-                console.log("@" + positions.length + " xy:" + x + "," + y + " coords:" + lat + "," + lon + " 3d:" + pos)
+                //CCconsole.log("@" + positions.length + " xy:" + x + "," + y + " coords:" + lat + "," + lon + " 3d:" + pos)
                 positions = positions.concat(pos)
             }
         }
 
 
-        console.log("positions: " + positions.length + " (/3=" + (positions.length / 3) + ")")
+        //CCconsole.log("positions: " + positions.length + " (/3=" + (positions.length / 3) + ")")
 
         // 2.2 indices
 
@@ -299,8 +299,8 @@ export class Sphere extends BaseObj {
             // for (var y = 0; y < ySize; y++) {
             //     for (var x = 0; x < xSize; x++) {
 
-        for (var j = 0; j < tilesBboxSize.x; j++) {
-            for (var i = 0; i < tilesBboxSize.y; i++) {
+        for (var j = 0; j < tilesBboxSize.y; j++) {
+            for (var i = 0; i < tilesBboxSize.x; i++) {
 
 
 
@@ -335,7 +335,7 @@ export class Sphere extends BaseObj {
 
 
 
-        console.log("indices: " + indices.length)
+       //CCconsole.log("indices: " + indices.length)
 
         // 2.3 normals
         const vertexNormals = computeVertexNormals(positions, indices)
@@ -346,9 +346,9 @@ export class Sphere extends BaseObj {
         // 2.4 texture coords
         const textureCoordinates = []
 
-        for (var j = 0; j <= tilesBboxSize.x; j++) {
+        for (var j = 0; j <= tilesBboxSize.y; j++) {
             const y = j + tilesBbox.min[1]
-            for (var i = 0; i <= tilesBboxSize.y; i++) {
+            for (var i = 0; i <= tilesBboxSize.x; i++) {
                 const x = i + tilesBbox.min[0]
 
                 // var latLng = this.tile23d(x, y);

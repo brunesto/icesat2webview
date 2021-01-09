@@ -8,7 +8,7 @@ import {logBufferArray,mat2string} from './global.js'
 export function createPositionAndIndexBuffers(params) {
     // -- 1 params.positions
     // dump...
-    console.log("createPositionAndIndexBuffers  ") // + params.positions.length);
+    //CCconsole.log("createPositionAndIndexBuffers  ") // + params.positions.length);
     if (logFlag)
         for (var i = 0; i < params.positions.length; i += 3){
             //CCconsole.log("[" + i  + ",...]=" + params.positions[i] + "," + params.positions[i + 1] + "," + params.positions[i + 2]);
@@ -27,10 +27,10 @@ export function createPositionAndIndexBuffers(params) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(params.positions), gl.STATIC_DRAW);
 
     // -- 2 params.indices  
-    console.log("params.indices: " + params.indices.length);
+    //CCconsole.log("params.indices: " + params.indices.length);
     if (logFlag)
         for (var i = 0; i < params.indices.length; i += 3) {
-            console.log("[" + i + ",...]=" + params.indices[i] + "," + params.indices[i + 1] + "," + params.indices[i + 2]);
+            //CCconsole.log("[" + i + ",...]=" + params.indices[i] + "," + params.indices[i + 1] + "," + params.indices[i + 2]);
         }
 
     const indexBuffer = gl.createBuffer();
