@@ -89,7 +89,8 @@ $(document).ready(function() {
     
 
     wglui.onDistance2surfaceChange=()=>{
-
+        if (!document.getElementById("updateModelBtn").checked)
+        return
 
         // TODO:
         // 1 only the relevant area of earth should be added
@@ -109,8 +110,10 @@ $(document).ready(function() {
         // https://sites.math.washington.edu/~conroy/m120-general/horizon.pdf
 
         const R=6378
+        var distance=camera.distanceFromEarthSurface
         console.log("distanceFromEarthSurface:"+camera.distanceFromEarthSurface)
-        const ratio=R/(camera.distanceFromEarthSurface+R)
+        
+        const ratio=R/(distance+R)
         console.log("ratio:"+ratio)
 
         // difference in lat/lon
@@ -126,10 +129,21 @@ $(document).ready(function() {
      
         console.log("bbox:"+JSON.stringify(bbox))
 
+
+        
+        const distanceL2f = Math.floor(Math.log(distance*5)/Math.log(2))
+        console.log("distanceL2f:"+distanceL2f)
+
+        var zl=18-distanceL2f        
+        console.log("zl:"+zl)
+        zl=Math.max(4,zl)
+        zl=Math.min(18,zl)
+        // zl=6
+
         const sm = mat4.create()
         mat4.scale(sm, sm, [1, 1, 1]);
-        //  const sphereObj = new Sphere("gaia",new CoordsTilesConverter(10),bbox)
-        const sphereObj = new Sphere("gaia",new SlippyTilesConverter(6),bbox)
+        //  const sphereObj = new Sphere("gaia",new CoordsTilesConverter(10,{x:2,y:6}),bbox)
+        const sphereObj = new Sphere("gaia",new SlippyTilesConverter(zl,{x:12,y:12}),bbox)
         wglui.addBinder(new ModelBinder(sphereObj, () => sm,new ProgramPINT()))
     
     }

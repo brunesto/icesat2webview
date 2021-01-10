@@ -11,17 +11,56 @@ import { latlon23d } from "./latlon23d.js";
 
 
 class BaseTileConverter {
+
+    constructor(maxSize){
+        this.maxSize=maxSize 
+    }
+
     init(bbox) {
+        //
         this.tilesBbox = this.bbox2tiles(bbox)
         console.log("tilesBbox:", JSON.stringify(this.tilesBbox))
 
         this.tilesBboxSize = this.tiles(this.tilesBbox)
         console.log("tilesBboxSize :", this.tilesBboxSize)
 
+        if (this.maxSize){
+            while (this.tilesBboxSize.x>this.maxSize.x){
+
+                this.tilesBbox.min[0]++
+                this.tilesBbox.max[0]--
+                this.tilesBboxSize.x-=2
+            }
+            while (this.tilesBboxSize.y>this.maxSize.y){
+
+                this.tilesBbox.min[1]++
+                this.tilesBbox.max[1]--
+                this.tilesBboxSize.y-=2
+            }
+            console.log("tilesBbox:", JSON.stringify(this.tilesBbox))
+            console.log("tilesBboxSize :", this.tilesBboxSize)
+                // AINT working for lat
+                // const maxDLon=this.tile2lon(this.maxSize.x)-this.tile2lon(-180) 
+                // const dLon=this.tile2lon(this.tilesBboxSize.x)-this.tile2lon(-180)             
+                // const reduceLon=(dLon-maxDLon)/2
+                // this.init({
+                //     min:[bbox.min[0],bbox.min[1]+reduceLon],
+                //     max:[bbox.max[0],bbox.max[1]-reduceLon],
+                //     }
+                // )
+
+            // }
+        }
+
     }
     lon2tile(lon) {}
 
     lat2tile(lat) {}
+
+    tile2lon(x) {}
+        
+    tile2lat(y) {}
+        
 
     bbox2tiles(bbox) {
         const tileBBoxMin = [this.lon2tile(bbox.min[1]), this.lat2tile(bbox.min[0])]
@@ -49,8 +88,8 @@ class BaseTileConverter {
  * directly convert coordinates (lat,lon) into tiles
  */
 export class CoordsTilesConverter extends BaseTileConverter {
-    constructor(granularity) {
-        super()
+    constructor(granularity ,maxSize){
+        super(maxSize)
         this.granularity = granularity;
     }
 
@@ -106,9 +145,10 @@ export class CoordsTilesConverter extends BaseTileConverter {
  * 
  */
 export class SlippyTilesConverter extends BaseTileConverter {
-    constructor(z) {
-        super()
+    constructor(z,maxSize) {
+        super(maxSize)
         this.z = z;
+       
     }
 
     init(bbox) {

@@ -405,7 +405,7 @@ export class WglUI {
     checkDistance2surfaceChange() {
         const distance = this.camera.distanceFromEarthSurface.toFixed(0)
 
-        const distanceL2f = Math.floor(Math.log2(this.prevDistance))
+        const distanceL2f = Math.floor(Math.log2(distance))
         //CCconsole.log("distanceFromEarthSurface:" + distance + " distanceL2f:" + distanceL2f)
         if (this.prevDistance == null || this.prevDl2f != distanceL2f) {
             this.onDistance2surfaceChange()
