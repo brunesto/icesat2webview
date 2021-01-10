@@ -26,7 +26,7 @@ function addMarker(lat,lon,h){
     //CCconsole.log(""+lat+","+lon,xyz2)
     mat4.translate(cm2, mat4.create(), xyz2);
     mat4.scale(cm2, cm2, [100, 100, 100]);    
-    const cubeObj2 = new Reflector(lat+","+lon)
+    const cubeObj2 = new Reflector(lat+","+lon+"@"+(h/1000)+"km")
     return new ModelBinder(cubeObj2, () => cm2,new ProgramPIU())
 
 }
@@ -86,6 +86,7 @@ $(document).ready(function() {
     // const cubeObj2 = new Reflector("harcoded")
     // step2s.push(new ModelBinder(cubeObj2, () => cm2,new ProgramPIU()))
 
+    
 
     wglui.onDistance2surfaceChange=()=>{
 
@@ -102,23 +103,27 @@ $(document).ready(function() {
      
 
         // camera.distanceFromEarthSurface
-        const distanceL2f = Math.floor(Math.log2(camera.distanceFromEarthSurface/1000))
+       // const distanceL2f = Math.floor(Math.log2(camera.distanceFromEarthSurface/1000))
 
         // this has a nice simple explanation
         // https://sites.math.washington.edu/~conroy/m120-general/horizon.pdf
 
         const R=6378
-        var a=radians2degrees(Math.acos(R/camera.distanceFromEarthCenter))
-        
-        
-a=a/10
+        console.log("distanceFromEarthSurface:"+camera.distanceFromEarthSurface)
+        const ratio=R/(camera.distanceFromEarthSurface+R)
+        console.log("ratio:"+ratio)
+
+        // difference in lat/lon
+        var a=radians2degrees(Math.acos(ratio))
+        console.log("a:"+a)
+
 
         var bbox={
-            min:[Math.max(-80,camera.lat-a),Math.max(-180,camera.lon-a*2)],
-            max:[Math.min(80,camera.lat+a),Math.min(180,camera.lon+a*2)]
+            min:[Math.max(-80,camera.lat-a),Math.max(-180,camera.lon-a)],
+            max:[Math.min(80,camera.lat+a),Math.min(180,camera.lon+a)]
         }
         // bbox = { min: [-2.5, -10.5], max: [2.5, 10.5 ] }
-        console.log("a:"+a)
+     
         console.log("bbox:"+JSON.stringify(bbox))
 
         const sm = mat4.create()

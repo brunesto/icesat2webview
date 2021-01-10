@@ -137,6 +137,19 @@ export class WglUI {
 
     }
 
+    renderInfo(){
+        const distanceL2f = Math.floor(Math.log2(this.prevDistance))
+        return "<pre>" +
+        "\n position:" + vec2string(this.camera.position) +
+        "\n orientation:" + vec2string(quat2EulerAngles(this.camera.orientation)) +
+
+        "\n center earth " + this.camera.distanceFromEarthCenter.toFixed(2) + "m" +
+        "log2=" + distanceL2f + " " +
+        "\n coords: " + this.camera.lat.toFixed(6) + "," + this.camera.lon.toFixed(6) + " amsl:" + this.camera.distanceFromEarthSurface +
+        this.glWrapper.lastRenderInfo +
+
+        "</pre>"
+    }
 
     drawRenderScene() {
 
@@ -145,17 +158,8 @@ export class WglUI {
         this.glWrapper.drawScene(this.camera, this.drawables4Render);
         this.camera.computeCoords();
 
-        const distanceL2f = Math.floor(Math.log2(this.prevDistance))
-        $('#info').html("<pre>" +
-            "\n position:" + vec2string(this.camera.position) +
-            "\n orientation:" + vec2string(quat2EulerAngles(this.camera.orientation)) +
-
-            "\n center earth " + this.camera.distanceFromEarthCenter.toFixed(2) + "m" +
-            "log2=" + distanceL2f + " " +
-            "\n coords: " + this.camera.lat.toFixed(6) + "," + this.camera.lon.toFixed(6) + " amsl:" + this.camera.distanceFromEarthSurface +
-            this.glWrapper.lastRenderInfo +
-
-            "</pre>")
+        
+        $('#info').html(this.renderInfo())
 
         this.drawLabels()
     }
